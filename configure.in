@@ -1,0 +1,130 @@
+AC_INIT([nautilus-share],[0.6.4])
+AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+
+AM_MAINTAINER_MODE
+AC_CONFIG_HEADERS([config.h])
+
+AC_PROG_INTLTOOL([0.29])
+
+NAUTILUS_REQUIRED=2.10.0
+EEL_REQUIRED=2.10.0
+GLIB_REQUIRED=2.4.0
+LIBGLADE_REQUIRED=2.4.0
+LIBDAEMON_REQUIRED=0.6
+DBUS_REQUIRED=0.23
+
+DATADIRNAME=share
+
+AC_PROG_CC
+AC_PROG_LIBTOOL
+
+dnl ========================================================
+dnl PKG_CONFIG and required versions
+dnl ========================================================
+dnl Check for pkgconfig first
+AC_CHECK_PROG(HAVE_PKGCONFIG, pkg-config, yes, no)
+
+dnl Give error and exit if we don't have pkgconfig
+if test "x$HAVE_PKGCONFIG" = "xno"; then
+  AC_MSG_ERROR(you need to have pkgconfig installed !)
+fi
+
+PKG_CHECK_MODULES(NAUTILUS, libnautilus-extension >= $NAUTILUS_REQUIRED eel-2.0 >= $EEL_REQUIRED)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLIB_REQUIRED)
+PKG_CHECK_MODULES(LIBGLADE, libglade-2.0 >= $LIBGLADE_REQUIRED)
+PKG_CHECK_MODULES(LIBDAEMON, [ libdaemon >= $LIBDAEMON_REQUIRED])
+
+AC_SUBST(NAUTILUS_CFLAGS)
+AC_SUBST(NAUTILUS_LIBS)
+
+AC_SUBST(GLIB_CFLAGS)
+AC_SUBST(GLIB_LIBS)
+
+AC_SUBST(LIBGLADE_CFLAGS)
+AC_SUBST(LIBGLADE_LIBS)
+
+AC_SUBST(LIBDAEMON_CFLAGS)
+AC_SUBST(LIBDAEMON_LIBS)
+
+
+dnl ========================================================
+dnl This is to check correct gconf installation
+dnl ========================================================
+
+SCHEMA_AGE=55
+AC_SUBST(SCHEMA_AGE)
+AM_GCONF_SOURCE_2
+
+
+dnl ========================================================
+dnl Set DBUS
+dnl ========================================================
+
+PKG_CHECK_MODULES(DBUS, dbus-1 >= $DBUS_REQUIRED dbus-glib-1 >= $DBUS_REQUIRED)
+
+AC_ARG_WITH(dbus-sys, [  --with-dbus-sys=<dir>   where D-BUS system.d directory is])
+
+if ! test -z "$with_dbus_sys" ; then
+    DBUS_SYS_DIR="$with_dbus_sys"
+else
+    DBUS_SYS_DIR="${sysconfdir}/dbus-1/system.d"
+fi
+AC_SUBST(DBUS_SYS_DIR)
+AC_DEFINE_UNQUOTED(DBUS_SYSTEMD_DIR, "$DBUS_SYS_DIR", [Where system.d dir for DBUS is])
+
+if pkg-config dbus-1 --atleast-version=0.30 ; then
+    AC_DEFINE(DBUS_USE_NEW_API, 1, [Whether to use the new API for DBUS 0.30])
+fi
+
+AC_SUBST(DBUS_CFLAGS)
+AC_SUBST(DBUS_LIBS)
+
+
+dnl ========================================================
+dnl Set SCRIPTS_DIR & PIXMAPS_DIR 
+dnl ========================================================
+
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps", [pixmaps directory])
+  pixmapsdir="${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps"
+  AC_DEFINE_UNQUOTED(INTERFACES_DIR, "${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/interfaces", [path where glade files will be installed])
+  interfacesdir="${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/interfaces"
+else
+  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps", [pixmaps directory])
+  pixmapsdir="${prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps"
+  AC_DEFINE_UNQUOTED(INTERFACES_DIR, "${prefix}/${DATADIRNAME}/${PACKAGE}/interfaces", [path where glade files will be installed])
+  interfacesdir="${prefix}/${DATADIRNAME}/${PACKAGE}/interfaces"
+fi
+
+AC_SUBST(pixmapsdir)
+AC_SUBST(interfacesdir)
+
+dnl ========================================================
+dnl Transtlations
+dnl ========================================================
+
+ALL_LINGUAS="de fi fr it pl pt_BR"
+GETTEXT_PACKAGE=nautilus-share
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package name])
+AM_GLIB_GNU_GETTEXT
+
+# AM_GNOME_GETTEXT above substs $DATADIRNAME
+# this is the directory where the *.{mo,gmo} files are installed
+gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
+AC_SUBST(gnomelocaledir)
+
+
+dnl ========================================================
+
+AC_CONFIG_FILES([
+  Makefile 
+  src/Makefile
+  schemas/Makefile
+  dbus/Makefile
+  pixmaps/Makefile
+  interfaces/Makefile
+  po/Makefile.in
+])
+AC_OUTPUT
+

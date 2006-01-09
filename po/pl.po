@@ -1,0 +1,65 @@
+# Polish translations for nautilus-share package.
+# Copyright (C) 2005 THE nautilus-share'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the nautilus-share package.
+# sebastien estienne <sebastien.estienne@gmail.com>, 2005.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilus-share 0.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-05-27 04:16+0200\n"
+"PO-Revision-Date: 2005-05-27 22:03+0200\n"
+"Last-Translator:  <vojcek@tlen.pl>\n"
+"Language-Team: Polish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../src/nautilus-share.c:105
+msgid "Sharename too long, may not appear on all Os"
+msgstr "Zbyt dĹuga nazwa, moĹźe siÄ nieukazaÄ w niektĂłrych systemach"
+
+#: ../src/nautilus-share.c:116
+msgid "Sharename already in use or forbidden!"
+msgstr "Nazwa ta juĹź jest uĹźyta, bÄdĹş teĹź zabroniona!"
+
+#: ../src/nautilus-share.c:457
+msgid "shared (read only)"
+msgstr "udostÄpniony (tylko do odczytu)"
+
+#: ../src/nautilus-share.c:462
+msgid "shared (read and write)"
+msgstr "udostÄpniony (odczyt i zapis)"
+
+#: ../src/nautilus-share.c:466
+msgid "not shared"
+msgstr "nie udostÄpniony"
+
+#: ../src/nautilus-share.c:637
+msgid "Share"
+msgstr "UdostÄpnij"
+
+#: ../src/nautilus-share.c:638 ../interfaces/share-dialog.glade.h:5
+msgid "Share this Folder"
+msgstr "UdostÄpnij ten Katalog"
+
+#: ../interfaces/share-dialog.glade.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b>UdostÄpnianie KatalogĂłw</b></big>"
+
+#: ../interfaces/share-dialog.glade.h:2
+msgid "Allow other people to write in this folder"
+msgstr "PozwĂłl innym na zapis w tym katalogu"
+
+#: ../interfaces/share-dialog.glade.h:3
+msgid "Comment :"
+msgstr "Komentarz :"
+
+#: ../interfaces/share-dialog.glade.h:4
+msgid "Share Name :"
+msgstr "Nazwa Katalogu :"
+
+#~ msgid "Close"
+#~ msgstr "Fermer"
+

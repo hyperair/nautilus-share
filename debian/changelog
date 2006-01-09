@@ -1,0 +1,107 @@
+nautilus-share (0.6.3-0ethium1) unstable; urgency=low
+
+  * New Release
+  * Bug fixing
+
+ -- Sebastien Estienne <sebest@ethium.net>  Wed, 08 Jun 2005 11:11:57 +0200
+
+nautilus-share (0.6.2-0ethium1) unstable; urgency=low
+
+  * New Release
+  * Bug fixing
+
+ -- Sebastien Estienne <sebest@ethium.net>  Sun, 05 Jun 2005 03:30:03 +0200
+
+nautilus-share (0.6.1-0ethium1) unstable; urgency=low
+
+  * New Release
+  * Bug fixing
+
+ -- Sebastien Estienne <sebest@ethium.net>  Sun, 05 Jun 2005 03:13:03 +0200
+
+nautilus-share (0.6.0-0ethium1) unstable; urgency=low
+
+  * New Release
+
+ -- Sebastien Estienne <sebest@ethium.net>  Fri, 27 May 2005 13:57:32 +0200
+
+nautilus-share (0.5.8-0ethium1) unstable; urgency=low
+
+  * Fix the icon in the right click menu
+  * Support all dbus api (0.2x, 0.3x)
+
+ -- Sebastien Estienne <sebest@ethium.net>  Sun, 22 May 2005 14:43:38 +0200
+
+nautilus-share (0.5.7-0ethium1) unstable; urgency=low
+
+  * Fix permissions on /etc/samba/smbshared.conf
+
+ -- Sebastien Estienne <sebest@ethium.net>  Tue, 17 May 2005 23:50:43 +0200
+
+nautilus-share (0.5.6-0ethium1) unstable; urgency=low
+
+  * Fix bug missing x bit on 70smbshared.
+
+ -- Sebastien Estienne <sebest@ethium.net>  Tue, 17 May 2005 23:37:43 +0200
+
+nautilus-share (0.5.5-0ethium1) unstable; urgency=low
+
+  * Fix bug missing x bit on 70smbshared.
+
+ -- Sebastien Estienne <sebest@ethium.net>  Tue, 17 May 2005 23:35:43 +0200
+
+nautilus-share (0.5.3-0ethium1) unstable; urgency=low
+
+  * Fixe samba depency.
+
+ -- Sebastien Estienne <sebest@ethium.net>  Tue, 17 May 2005 23:31:43 +0200
+
+nautilus-share (0.5.1-0ethium1) unstable; urgency=low
+
+  * Enhancement for dbus.
+
+ -- Sebastien Estienne <sebest@ethium.net>  Tue, 17 May 2005 19:31:43 +0200
+
+nautilus-share (0.5-0ethium1) unstable; urgency=low
+
+  * Many bug Fixes
+  * Use libglade for the Ui
+
+ -- Sebastien Estienne <sebest@ethium.net>  Tue, 17 May 2005 01:24:44 +0200
+
+nautilus-share (0.4-0ethium1) unstable; urgency=low
+
+  * Many bug Fixes
+
+ -- Sebastien Estienne <sebest@ethium.net>  Sun, 01 May 2005 13:47:34 +0200
+
+nautilus-share (0.3-2ethium1) unstable; urgency=low
+
+  * Debconf / postinst
+
+ -- Sebastien Estienne <sebest@ethium.net>  Sat, 29 Jan 2005 22:27:03 +0100
+
+nautilus-share (0.3-1ethium1) unstable; urgency=low
+
+  * More debianization
+
+ -- Sebastien Estienne <sebest@ethium.net>  Sat, 22 Jan 2005 00:55:58 +0100
+
+nautilus-share (0.3-0ethium1) unstable; urgency=low
+
+  * New version with dbus support.
+
+ -- Sebastien Estienne <sebest@ethium.net>  Mon, 03 Jan 2005 15:21:05 +0100
+
+nautilus-share (0.2-0ethium1) unstable; urgency=low
+
+  * Add depend gnome-icon-theme
+
+ -- Guillaume CAMARD <guillaume@ethium.net>  Tue, 28 Dec 2004 17:37:07 +0100
+
+nautilus-share (0.2-0ethium0) unstable; urgency=low
+
+  * Initial Release
+
+ -- Guillaume CAMARD <guillaume@ethium.net>  Tue, 28 Dec 2004 16:43:53 +0100
+

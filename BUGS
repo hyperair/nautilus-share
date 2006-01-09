@@ -1,0 +1,4 @@
+- handle the diconnect signal of dbus
+- check names given by the user
+- check utf8 support (strcmp)
+- when we rename the folder, it's unshared, but the palm doesn't disappear

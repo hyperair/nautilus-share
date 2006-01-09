@@ -1,0 +1,29 @@
+<gconfschemafile>
+    <schemalist>
+		<schema>
+			<key>/schemas/apps/nautilus-share/enable</key>
+			<applyto>/apps/nautilus-share/enable</applyto>
+			<owner>nautilus-share</owner>
+			<type>bool</type>
+			<default>TRUE</default>
+			<locale name="C">
+				<short>Enable nautilus-share.</short>
+				<long>
+				</long>
+			</locale>
+		</schema>
+		<schema>
+			<key>/schemas/apps/nautilus-share/smb_conf_file</key>
+			<applyto>/apps/nautilus-share/smb_conf_file</applyto>
+			<owner>nautilus-share</owner>
+			<type>string</type>
+			<default>.smb.conf</default>
+			<locale name="C">
+				<short>Samba config filename.</short>
+				<long>
+				</long>
+			</locale>
+		</schema>
+	</schemalist>
+</gconfschemafile>
+

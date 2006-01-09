@@ -1,0 +1,11 @@
+Source: nautilus-share
+Section: gnome
+Priority: optional
+Maintainer: Sebastien Estienne <sebest@ethium.net>
+Build-Depends: debhelper (>= 4.1.87), gnome-pkg-tools, intltool, autotools-dev, libgnomeui-dev, libnautilus-extension-dev (>= 2.6.1-2), dbus-glib-1-dev (>= 0.23), libglade2-dev (>= 2.8.0), libdaemon-dev (>= 0.7)
+Standards-Version: 0.2
+
+Package: nautilus-share
+Architecture: any
+Depends: gnome-icon-theme (>= 2.9.2), dbus-glib-1 (>= 0.23), libglade2-0 (>= 2.8.0), libdaemon0 (>= 0.7), samba (>= 3.0), nautilus (>= 2.8.0), lsb-base (>=2.0)
+Description: Nautilus extension to share folder by samba
