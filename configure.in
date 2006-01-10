@@ -108,6 +108,7 @@ GETTEXT_PACKAGE=nautilus-share
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package name])
 AM_GLIB_GNU_GETTEXT
+AM_GLIB_DEFINE_LOCALEDIR(NAUTILUS_SHARE_LOCALEDIR)
 
 # AM_GNOME_GETTEXT above substs $DATADIRNAME
 # this is the directory where the *.{mo,gmo} files are installed

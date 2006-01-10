@@ -3,7 +3,6 @@ libnautilus_share_la_CFLAGS =				\
 	-DG_LOG_DOMAIN=\"Nautilus-Share\"		\
 	-DDBUS_API_SUBJECT_TO_CHANGE			\
 	-DDATADIR=\"$(datadir)\"			\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	$(WARN_CFLAGS)                                  \
@@ -37,7 +36,9 @@ libnautilus_share_la_SOURCES =  \
 	smbparser-dbus-client.h		\
 	smbparser-dbus.h		\
 	nautilus-share.c        \
-	nautilus-share.h           
+	nautilus-share.h	\
+	shares.c		\
+	shares.h
 
 smbshared_SOURCES = \
 	smbparser.c		\

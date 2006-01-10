@@ -1,0 +1,75 @@
+2006-01-09  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/shares.[ch]: New files with small API that maintains a
+	list of current shares and talks to Samba's utilities for
+	modifying user shares.
+
+	* src/nautilus-share.h: Removed the prototypes for
+	nautilsu_share_get_type() and nautilus_share_register_type(); they
+	are internal to nautilus-share.c now.
+
+	* src/nautilus-share.c: Removed the d-bus includes.  Removed the
+	global g_dbus.  Made all functions static except for the module
+	API.  Put the unfinished share-editor stuff in an "#if 0".
+	(nautilus_module_initialize): Remove the d-bus initialization
+	code.  Pass NAUTILUS_SHARE_LOCALEDIR to bindtextdomain().
+	(nautilus_share_get_file_items): Don't copy the file list.
+	Instead, ref the fileinfo; release it when the menu item gets
+	destroyed by using g_object_set_data_full().
+	(get_fullpath_from_fileinfo): Assert that the fileinfo is not
+	NULL.
+	(PropertyPage): New PropertyPage structure, it holds all the
+	fields for a property page (widgets, xml, etc.).
+	(create_property_page): Create a PropertyPage and hook it to the
+	appropriate widgets, so that we can keep track of them easily, and
+	free their memory as appropriate.  Move all the widget fields from
+	here to that structure.
+	(free_property_page_cb): New callback; free the XML and other data
+	when the property page's main widget is destroyed.
+	(xml): Removed.  This should not be global!
+	(g_sharename): Removed.  This should not be global!
+	(create_property_page): Use g_filename_display_basename() to get
+	the fallback name from the path; g_path_get_basename() would give
+	us a string potentially not in UTF-8 encoding.
+	(create_property_page): Pass the PropertyPage to the callbacks,
+	instead of special-casing each one for strings or a file info.
+	Connect to "changed" on the text entries, not "focus-out-event".
+	(create_property_page): Connect the signal handlers *after*
+	setting the initial widget states so that they don't interfere
+	with the settings.
+	(create_property_page): Don't set the ->active field in toggle
+	buttons directly!  Call gtk_toggle_button_set_active().
+	(create_property_page): Compute the string length from the entry
+	with g_utf8_strlen(); not plain strlen().
+	(commit_property_page): New function; take a PropertyPage and
+	commit its properties to the shares_*() functions.
+	(on_checkbutton_share_rw_ro_toggled): Use commit_property_page().
+	(left_share_name_text_entry): Fix the prototype; this was taking
+	the wrong event type.  Now it gets passed a PropertyPage in the
+	user_data.  Use commit_property_page().
+	(property_page_set_sensitivity): New helper function.
+	(on_checkbutton_share_folder_toggled): Use
+	property_page_set_sensitivity().  Use property_page_commit().
+	(property_page_set_error): Renamed from set_error().  Take a
+	PropertyPage rather than a widget.  Take an error message; we'll
+	get this in the GError from the backend.
+	(property_page_set_warning): Renamed from set_warning().  Take a
+	PropertyPage rather than a widget.
+	(property_page_set_normal): Renamed form set_normal().  Take a
+	PropertyPage rather than a widget.
+	(validate_fields): New helper function.
+	(create_property_page): Connect to "changed" on the name entry
+	instead of "key-release-event".
+	(property_page_share_name_is_valid): New helper function.
+	(modify_share_name_text_entry): Use property_page_share_name_is_valid().
+	(left_share_name_text_entry): Likewise.
+	(modify_share_name_text_entry): New callback.
+	(file_get_share_status): Use the shares functions instead of the
+	d-bus backend.
+	(file_get_share_status_file): Remove redundant tests.
+
+	* src/Makefile.am (libnautilus_share_la_CFLAGS): Don't define GNOMELOCALEDIR.
+
+	* configure.in: Add "AM_GLIB_DEFINE_LOCALEDIR(NAUTILUS_SHARE_LOCALEDIR)".
+
+	* ChangeLog: Start the ChangeLog.

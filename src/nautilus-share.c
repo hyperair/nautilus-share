@@ -53,15 +53,36 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "smbparser-dbus-client.h"
-#include "smbparser-dbus.h"
+#include "shares.h"
+
 
 static GObjectClass *parent_class;
-DBusConnection *g_dbus;
-GladeXML *xml;
-gchar *g_sharename = NULL;
 
+/* Structure to hold all the information for a share's property page.  If
+ * you add stuff to this, add it to free_property_page_cb() as well.
+ */
+typedef struct {
+  char *path; /* Full path which is being shared */
+  NautilusFileInfo *fileinfo; /* Nautilus file to which this page refers */
 
+  GladeXML *xml;
+
+  GtkWidget *main; /* Widget that holds all the rest.  Its "PropertyPage" GObject-data points to this PropertyPage structure */
+  
+  GtkWidget *checkbutton_share_folder;
+  GtkWidget *hbox_share_name;
+  GtkWidget *hbox_share_comment;
+  GtkWidget *entry_share_name;
+  GtkWidget *checkbutton_share_rw_ro;
+  GtkWidget *entry_share_comment;
+  GtkWidget *label_status;
+} PropertyPage;
+
+static void property_page_set_warning (PropertyPage *page);
+static void property_page_set_error (PropertyPage *page, const char *message);
+static void property_page_set_normal (PropertyPage *page);
+
+#if 0
 /*--------------------------------------------------------------------------*/
 /* Share Editor */
 enum
@@ -77,7 +98,7 @@ typedef struct {
   GtkTreeIter iter;
 } MyList;
 
-void
+static void
 dump(char *path, gpointer user_data)
 {
   MyList *mylist = (MyList *)user_data;
@@ -91,7 +112,7 @@ dump(char *path, gpointer user_data)
 
 }
 
-int
+static int
 shareeditor (void)
 {
   GSList *paths;
@@ -142,29 +163,72 @@ shareeditor (void)
 
   return 0;
 }
+#endif
 
+static void
+property_page_validate_fields (PropertyPage *page)
+{
+  const char *name;
+
+  name = gtk_entry_get_text (GTK_ENTRY (page->entry_share_name));
+  
+  if (g_utf8_strlen (name, -1) <= 12)
+    property_page_set_normal (page);
+  else
+    property_page_set_warning (page);
+}
+
+static void
+property_page_commit (PropertyPage *page)
+{
+  ShareInfo share_info;
+  GError *error;
+
+  share_info.path = page->path;
+  share_info.share_name = (char *) gtk_entry_get_text (GTK_ENTRY (page->entry_share_name));
+  share_info.comment = (char *) gtk_entry_get_text (GTK_ENTRY (page->entry_share_comment));
+  share_info.is_writable = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro));
+
+  error = NULL;
+  if (!shares_modify_share (share_info.path, &share_info, &error))
+    {
+      property_page_set_error (page, error->message);
+      g_error_free (error);
+    }
+  else
+    {
+      property_page_validate_fields (page);
+      nautilus_file_info_invalidate_extension_info (page->fileinfo);
+    }
+}
 
 /*--------------------------------------------------------------------------*/
-gchar *
+static gchar *
 get_fullpath_from_fileinfo(NautilusFileInfo *fileinfo)
 {
   gchar *uri;
-  gchar *fullpath = NULL;
+  gchar *fullpath;
+
+  g_assert (fileinfo != NULL);
   
-  if (fileinfo)
-    {
-      uri = nautilus_file_info_get_uri(fileinfo);
-      fullpath = gnome_vfs_get_local_path_from_uri(uri);
-      g_free(uri);
-    }
+  uri = nautilus_file_info_get_uri(fileinfo);
+  fullpath = gnome_vfs_get_local_path_from_uri(uri);
+  g_assert (fullpath != NULL); /* In the beginning we checked that this was a local URI */
+  g_free(uri);
+
   return(fullpath);
 }
+
 /*--------------------------------------------------------------------------*/
-gboolean
+#if 0
+/* FMQ: FIXME: remove this function? */
+/* FMQ: this is a focus-out handler; the event type is wrong */
+static gboolean
 left_share_comment_text_entry  (GtkWidget *widget,
 				GdkEventCrossing *event,
 				gpointer user_data)
 {
+  /* FMQ: this now gets passed a PropertyPage! */
   gchar *fullpath = (gchar *)user_data;
   char *comment = (char *)gtk_entry_get_text((GtkEntry *)widget);
 
@@ -179,287 +243,288 @@ left_share_comment_text_entry  (GtkWidget *widget,
   smbparser_dbus_write(g_dbus);
   return FALSE;
 }
+#endif
+
+static void
+modify_share_comment_text_entry  (GtkEditable *editable,
+				  gpointer user_data)
+{
+  PropertyPage *page;
+
+  page = user_data;
+
+  property_page_commit (page);
+}
 
 /*--------------------------------------------------------------------------*/
-void
-set_warning(GtkWidget *widget)
+static void
+property_page_set_warning (PropertyPage *page)
 {
-  GdkColor   colorYellow;
-  GtkWidget *label_status = glade_xml_get_widget(xml,"label_status");
-  gtk_label_set_text((GtkLabel *)label_status, _("Sharename too long, may not appear on all Os"));
+  GdkColor  colorYellow;
+
+  gtk_label_set_text (GTK_LABEL (page->label_status), _("Share name is too long"));
+
   gdk_color_parse ("#ECDF62", &colorYellow);
-  gtk_widget_modify_base(widget,GTK_STATE_NORMAL, &colorYellow);
+  gtk_widget_modify_base (page->entry_share_name, GTK_STATE_NORMAL, &colorYellow);
 }
 
 
-void
-set_error(GtkWidget *widget)
+static void
+property_page_set_error (PropertyPage *page, const char *message)
 {
-  GdkColor   colorRed;
-  GtkWidget *label_status = glade_xml_get_widget(xml,"label_status");
-  gtk_label_set_text((GtkLabel *)label_status, _("Sharename already in use or forbidden!"));
+  GdkColor colorRed;
+
+  gtk_label_set_text (GTK_LABEL (page->label_status), message);
+
   gdk_color_parse ("#C1665A", &colorRed);
-  gtk_widget_modify_base(widget,GTK_STATE_NORMAL, &colorRed);
+  gtk_widget_modify_base (page->entry_share_name, GTK_STATE_NORMAL, &colorRed);
 }
 
-void
-set_normal(GtkWidget *widget)
+static void
+property_page_set_normal (PropertyPage *page)
 {
-  GtkWidget *label_status = glade_xml_get_widget(xml,"label_status");
-  gtk_label_set_text((GtkLabel *)label_status, "");
-  gtk_widget_modify_base(widget,GTK_STATE_NORMAL, NULL);
+  gtk_label_set_text (GTK_LABEL (page->label_status), "");
+  gtk_widget_modify_base (page->entry_share_name, GTK_STATE_NORMAL, NULL);
 }
 
-gboolean
-modify_share_name_text_entry  (GtkWidget *widget,
-			     gpointer user_data)
+static gboolean
+property_page_share_name_is_valid (PropertyPage *page)
 {
-  gchar *newname;
-  newname = (char *)gtk_entry_get_text((GtkEntry *)widget);
+  const char *newname;
 
- 
-  if(!g_sharename || ! newname)
+  newname = gtk_entry_get_text (GTK_ENTRY (page->entry_share_name));
+
+  if (strlen (newname) == 0)
     {
+      property_page_set_error (page, _("The share name cannot be empty"));
       return FALSE;
     }
-  /* not share name given */
-  if(strlen(newname) == 0)
+  else if (shares_get_share_name_exists (newname))
     {
-      set_error(widget);
+      property_page_set_error (page, _("Another share has the same name"));
       return FALSE;
     }
-  /* sharename is already in used */
-  if(smbparser_dbus_section_used(g_dbus,newname) == TRUE)
-    {
-      /* and the new name is not the same as the old one */
-      if(strcmp(newname,g_sharename) != 0)
-	{
-	  set_error(widget);
-	  return FALSE;
-	}
-    }
-  /*sharename is longer than 12 characters, may have problem with some implementations of smb */
-  if(strlen(newname) <= 12)
-    set_normal(widget);
-  else
-    set_warning(widget);
-  return FALSE;
+
+  return TRUE;
 }
+
+static void
+modify_share_name_text_entry  (GtkEditable *editable,
+			       gpointer user_data)
+{
+  PropertyPage *page;
+
+  page = user_data;
+
+  if (property_page_share_name_is_valid (page))
+    property_page_commit (page);
+}
+
+static void
+property_page_set_sensitivity (PropertyPage *page,
+			       gboolean      sensitive)
+{
+  gtk_widget_set_sensitive (page->entry_share_name, sensitive);
+  gtk_widget_set_sensitive (page->entry_share_comment, sensitive);
+  gtk_widget_set_sensitive (page->hbox_share_comment, sensitive);
+  gtk_widget_set_sensitive (page->hbox_share_name, sensitive);
+  gtk_widget_set_sensitive (page->checkbutton_share_rw_ro, sensitive);
+}
+
 /*--------------------------------------------------------------------------*/
-void
+static void
 on_checkbutton_share_folder_toggled    (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  NautilusFileInfo *fileinfo = (NautilusFileInfo *)user_data;
-  gchar *fullpath = get_fullpath_from_fileinfo(fileinfo);
-  GtkWidget *entry_share_comment = glade_xml_get_widget(xml,"entry_share_comment");
-  GtkWidget *checkbutton_share_rw_ro = glade_xml_get_widget(xml,"checkbutton_share_rw_ro");
-  GtkWidget *entry_share_name = glade_xml_get_widget(xml,"entry_share_name");
-  GtkWidget *hbox_share_comment = glade_xml_get_widget(xml,"hbox_share_comment");
-  GtkWidget *hbox_share_name = glade_xml_get_widget(xml,"hbox_share_name");
+  PropertyPage *page;
 
-  /* FIXME free? */
-  gchar *tmp;
-  
-  if(gtk_toggle_button_get_active (togglebutton))
+  page = user_data;
+
+  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder)))
     {
-      char *name = (char *)gtk_entry_get_text((GtkEntry *)entry_share_name);
-      /* sharing button is active so we make things editable */
-      gtk_widget_set_sensitive (entry_share_name, TRUE);
-      gtk_widget_set_sensitive (entry_share_comment, TRUE);
-      gtk_widget_set_sensitive (hbox_share_comment, TRUE);
-      gtk_widget_set_sensitive (hbox_share_name, TRUE);
-      gtk_widget_set_sensitive (checkbutton_share_rw_ro,TRUE);
-
-      if (smbparser_dbus_share_add(g_dbus,fullpath,name) == 0)
-	{
-	  if (strlen(name) <= 12)
-	    set_normal((GtkWidget *)entry_share_name);
-	  else
-	    set_warning((GtkWidget *)entry_share_name);
-	  /* 
-	     add_section return 0:
-	     - we create a new share gathering infos from the form
-	  */
-	  /* set the comment */
-	  if((tmp = (gchar *)gtk_entry_get_text((GtkEntry *)entry_share_comment)))
-	    if(strcmp(tmp,""))
-	      smbparser_dbus_share_set_key(g_dbus,fullpath,"comment",tmp);
-	  /* set writable state */
-	  if(gtk_toggle_button_get_active((GtkToggleButton *)checkbutton_share_rw_ro))
-	    smbparser_dbus_share_set_key(g_dbus,fullpath,"writable","yes");
-	  else
-	    smbparser_dbus_share_set_key(g_dbus,fullpath,"writable","no");
-	  /* always set public */
-	  smbparser_dbus_share_set_key(g_dbus,fullpath,"public","yes");
-	  /* write the result in config file */
-	  smbparser_dbus_write(g_dbus);
-	  /* ask nautilus to update emblem */
-	  nautilus_file_info_invalidate_extension_info (fileinfo);
-	}
-      /* 
-	 else
-	 add_section return 1;
-	 - the sharename is already in used
-      */
-      else
-	{
-	  set_error((GtkWidget *)entry_share_name);
-	}
+      property_page_set_sensitivity (page, TRUE);
+      property_page_commit (page);
     }
   else
     {
+      GError *error;
+
       /*  sharing button is inactive */
-      /* make form UNeditable (greyed) */
-      gtk_widget_set_sensitive (hbox_share_comment, FALSE);
-      gtk_widget_set_sensitive (hbox_share_name, FALSE);
-      gtk_widget_set_sensitive (checkbutton_share_rw_ro,FALSE);
-      gtk_widget_set_sensitive (entry_share_name, FALSE);
-      gtk_widget_set_sensitive (entry_share_comment, FALSE);
-      /* we remove the current section */
-      smbparser_dbus_share_remove(g_dbus,fullpath);
-      /* write the result in config file */
-      smbparser_dbus_write(g_dbus);
+      property_page_set_sensitivity (page, FALSE);
+
+      error = NULL;
+      if (!shares_modify_share (page->path, NULL, &error))
+	{
+	  property_page_set_error (page, error->message);
+	  g_error_free (error);
+	}
+
       /* ask nautilus to update emblem */
-      nautilus_file_info_invalidate_extension_info (fileinfo);
+      nautilus_file_info_invalidate_extension_info (page->fileinfo);
     }
-  g_free(fullpath);
 }
 
 
 /*--------------------------------------------------------------------------*/
-gboolean
+static gboolean
 left_share_name_text_entry  (GtkWidget *widget,
-			     GdkEventCrossing *event,
+			     GdkEventFocus *event,
 			     gpointer user_data)
 {
-  NautilusFileInfo *fileinfo = (NautilusFileInfo *)user_data;
-  gchar *fullpath = get_fullpath_from_fileinfo(fileinfo);
-  GtkWidget *entry_share_comment = glade_xml_get_widget(xml,"entry_share_comment");
-  GtkWidget *checkbutton_share_rw_ro = glade_xml_get_widget(xml,"checkbutton_share_rw_ro");
-  /*   GtkWidget *entry_share_name = glade_xml_get_widget(xml,"entry_share_name"); */
-  gchar *comment;
+  PropertyPage *page;
 
-/*   GtkWidget *checkbutton_share_folder = w->checkbutton_share_folder; */
+  page = user_data;
 
-  char *newname = (char *)gtk_entry_get_text((GtkEntry *)widget);
-  if (newname && strcmp(newname,"") && ! smbparser_dbus_section_used(g_dbus,newname))
-    {
-      if (smbparser_dbus_share_rename(g_dbus,fullpath,newname) == 2)
-	{
-	  if (smbparser_dbus_share_add(g_dbus,fullpath,newname) == 0)
-	    {
-	      if((comment = (gchar *)gtk_entry_get_text((GtkEntry *)entry_share_comment)))
-		if(strcmp(comment,""))
-		  smbparser_dbus_share_set_key(g_dbus,fullpath,"comment",comment);
-	      if(gtk_toggle_button_get_active((GtkToggleButton *)checkbutton_share_rw_ro))
-		smbparser_dbus_share_set_key(g_dbus,fullpath,"writable","yes");
-	      else
-		smbparser_dbus_share_set_key(g_dbus,fullpath,"writable","no");
-	      smbparser_dbus_share_set_key(g_dbus,fullpath,"public","yes");
-	      smbparser_dbus_write(g_dbus);
-	      /* FIXME do we need it? */
-	      nautilus_file_info_invalidate_extension_info (fileinfo);
-	    }
-	}
-      smbparser_dbus_write(g_dbus);
-    }
-  g_free(fullpath);
+  if (property_page_share_name_is_valid (page))
+    property_page_commit (page);
+
   return FALSE;
 }
 
 /*--------------------------------------------------------------------------*/
-void
+static void
 on_checkbutton_share_rw_ro_toggled     (GtkToggleButton *togglebutton,
                                         gpointer         user_data)
 {
-  gchar *fullpath = (gchar *)user_data;
+  PropertyPage *page;
 
-  smbparser_dbus_share_set_key(g_dbus,fullpath,"writable",
-			 gtk_toggle_button_get_active (togglebutton)?"yes":"no");
-  smbparser_dbus_write(g_dbus);
+  page = user_data;
+  property_page_commit (page);
+}
+
+static void
+free_property_page_cb (gpointer data)
+{
+  PropertyPage *page;
+
+  page = data;
+
+  g_free (page->path);
+  g_object_unref (page->fileinfo);
+  g_object_unref (page->xml);
+
+  g_free (page);
 }
 
 /*--------------------------------------------------------------------------*/
-static GtkWidget *
+static PropertyPage *
 create_property_page (NautilusFileInfo *fileinfo)
 {
-  GtkWidget * page;
+  PropertyPage *page;
+  ShareInfo *share_info;
+  char *share_name;
+  gboolean free_share_name;
+  const char *comment;
 
-  GtkWidget *checkbutton_share_folder;
-  GtkWidget *hbox_share_name;
-  GtkWidget *hbox_share_comment;
-  GtkWidget *entry_share_name;
-  GtkWidget *checkbutton_share_rw_ro;
-  GtkWidget *entry_share_comment;
+  page = g_new0 (PropertyPage, 1);
 
-  char *comment;
-  char *fullpath = get_fullpath_from_fileinfo(fileinfo);
+  page->path = get_fullpath_from_fileinfo(fileinfo);
+  page->fileinfo = g_object_ref (fileinfo);
 
-  xml = glade_xml_new(INTERFACES_DIR"/share-dialog.glade","vbox1",GETTEXT_PACKAGE);
-  
-  page = glade_xml_get_widget(xml,"vbox1");
-  checkbutton_share_folder = glade_xml_get_widget(xml,"checkbutton_share_folder");
-  hbox_share_comment = glade_xml_get_widget(xml,"hbox_share_comment");
-  hbox_share_name = glade_xml_get_widget(xml,"hbox_share_name");
-  checkbutton_share_rw_ro = glade_xml_get_widget(xml,"checkbutton_share_rw_ro");
-  entry_share_name = glade_xml_get_widget(xml,"entry_share_name");
-  entry_share_comment = glade_xml_get_widget(xml,"entry_share_comment");
+  share_info = shares_get_share_info_for_path (page->path);
 
-  g_free(g_sharename);
+  page->xml = glade_xml_new(INTERFACES_DIR"/share-dialog.glade","vbox1",GETTEXT_PACKAGE);
+  page->main = glade_xml_get_widget(page->xml,"vbox1");
+  g_object_set_data_full (G_OBJECT (page->main),
+			  "PropertyPage",
+			  page,
+			  free_property_page_cb);
 
-  if(!(g_sharename  = smbparser_dbus_share_get_name(g_dbus,fullpath)))
-    g_sharename = g_path_get_basename(fullpath);
+  page->checkbutton_share_folder = glade_xml_get_widget(page->xml,"checkbutton_share_folder");
+  page->hbox_share_comment = glade_xml_get_widget(page->xml,"hbox_share_comment");
+  page->hbox_share_name = glade_xml_get_widget(page->xml,"hbox_share_name");
+  page->checkbutton_share_rw_ro = glade_xml_get_widget(page->xml,"checkbutton_share_rw_ro");
+  page->entry_share_name = glade_xml_get_widget(page->xml,"entry_share_name");
+  page->entry_share_comment = glade_xml_get_widget(page->xml,"entry_share_comment");
+  page->label_status = glade_xml_get_widget(page->xml,"label_status");
 
-  gtk_entry_set_text((GtkEntry *)entry_share_name, g_sharename);
+  /* Sanity check so that we don't screw up the Glade file */
+  g_assert (page->checkbutton_share_folder != NULL
+	    && page->hbox_share_comment != NULL
+	    && page->hbox_share_name != NULL
+	    && page->checkbutton_share_rw_ro != NULL
+	    && page->entry_share_name != NULL
+	    && page->entry_share_comment != NULL
+	    && page->label_status != NULL);
 
-  comment = smbparser_dbus_share_get_key(g_dbus,fullpath, "comment");
-  gtk_entry_set_text((GtkEntry *)entry_share_comment,comment?comment:"");
+  /* Share name */
 
-  g_signal_connect ((gpointer) entry_share_comment,"focus-out-event",
-                    G_CALLBACK (left_share_comment_text_entry),
-                    fullpath);
-
-  g_signal_connect ((gpointer) entry_share_name, "focus-out-event",
-                    G_CALLBACK (left_share_name_text_entry),
-                    fileinfo);
-
-  g_signal_connect ((gpointer) entry_share_name, "key-release-event",
-                    G_CALLBACK (modify_share_name_text_entry),
-                    NULL);
-
-  g_signal_connect ((gpointer) checkbutton_share_folder, "toggled",
-                    G_CALLBACK (on_checkbutton_share_folder_toggled),
-                    fileinfo);
-
-  g_signal_connect ((gpointer) checkbutton_share_rw_ro, "toggled",
-                    G_CALLBACK (on_checkbutton_share_rw_ro_toggled),
-                    fullpath);
-
-  
-  if (file_get_share_status (fullpath) != NAUTILUS_SHARE_NOT_SHARED)
+  if (share_info)
     {
-      GTK_TOGGLE_BUTTON (checkbutton_share_folder)->active = TRUE;
+      share_name = share_info->share_name;
+      free_share_name = FALSE;
     }
   else
     {
-      gtk_widget_set_sensitive (hbox_share_comment, FALSE);
-      gtk_widget_set_sensitive (hbox_share_name, FALSE);
-      gtk_widget_set_sensitive (checkbutton_share_rw_ro,FALSE);
-      gtk_widget_set_sensitive (entry_share_name, FALSE);
-      gtk_widget_set_sensitive (entry_share_comment, FALSE);
+      share_name = g_filename_display_basename (page->path);
+      free_share_name = TRUE;
     }
 
-  if (strlen((char *)gtk_entry_get_text((GtkEntry *)entry_share_name)) > 12)
-    set_warning((GtkWidget *)entry_share_name);
+  gtk_entry_set_text (GTK_ENTRY (page->entry_share_name), share_name);
 
-  if (file_get_share_status (fullpath) == NAUTILUS_SHARE_SHARED_RW)
+  if (free_share_name)
+    g_free (share_name);
+
+  /* Comment */
+
+  if (share_info == NULL || share_info->comment == NULL)
+    comment = "";
+  else
+    comment = share_info->comment;
+
+  gtk_entry_set_text (GTK_ENTRY (page->entry_share_comment), comment);
+
+  /* Share toggle */
+
+  if (share_info)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder), TRUE);
+  else
     {
-      GTK_TOGGLE_BUTTON (checkbutton_share_rw_ro)->active = TRUE;
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder), FALSE);
+      property_page_set_sensitivity (page, FALSE);
     }
 
-/*   shareeditor(); */
-/*   g_free(fullpath); */
+  /* Share name */
+
+  if (g_utf8_strlen(gtk_entry_get_text (GTK_ENTRY (page->entry_share_name)), -1) > 12)
+    property_page_set_warning (page);
+
+  /* Permissions */
+  if (share_info != NULL && share_info->is_writable)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro), TRUE);
+  else
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro), FALSE);
+
+  /* Signal handlers */
+#if 0
+  /* FMQ: FIXME: remove these? */
+  g_signal_connect (page->entry_share_comment,"focus-out-event",
+                    G_CALLBACK (left_share_comment_text_entry),
+                    page);
+
+  g_signal_connect (page->entry_share_name, "focus-out-event",
+                    G_CALLBACK (left_share_name_text_entry),
+                    page);
+#endif
+  g_signal_connect (page->entry_share_name, "changed",
+                    G_CALLBACK (modify_share_name_text_entry),
+                    page);
+
+  g_signal_connect (page->entry_share_comment, "changed",
+		    G_CALLBACK (modify_share_comment_text_entry),
+		    page);
+
+  g_signal_connect (page->checkbutton_share_folder, "toggled",
+                    G_CALLBACK (on_checkbutton_share_folder_toggled),
+                    page);
+
+  g_signal_connect (page->checkbutton_share_rw_ro, "toggled",
+                    G_CALLBACK (on_checkbutton_share_rw_ro_toggled),
+                    page);
+
+  if (share_info != NULL)
+    shares_free_share_info (share_info);
+
   return page;
 }
 
@@ -496,17 +561,25 @@ typedef struct {
 
 /*--------------------------------------------------------------------------*/
 static NautilusShareStatus 
-file_get_share_status (gchar *fullpath) {
+file_get_share_status (gchar *fullpath)
+{
   NautilusShareStatus res;
+  ShareInfo *share_info;
 
-  if( smbparser_dbus_share_get_name(g_dbus,fullpath) == NULL)
+  share_info = shares_get_share_info_for_path (fullpath);
+
+  if (!share_info)
     res = NAUTILUS_SHARE_NOT_SHARED;
   else
-    if(smbparser_dbus_share_is_writable(g_dbus,fullpath) == TRUE)  
-      res = NAUTILUS_SHARE_SHARED_RW;
-    else
-      res = NAUTILUS_SHARE_SHARED_RO;
-  
+    {
+      if (share_info->is_writable)
+	res = NAUTILUS_SHARE_SHARED_RW;
+      else
+	res = NAUTILUS_SHARE_SHARED_RO;
+
+      shares_free_share_info (share_info);
+    }
+
   return res;
 }
 
@@ -514,37 +587,28 @@ file_get_share_status (gchar *fullpath) {
 static NautilusShareStatus 
 file_get_share_status_file(NautilusFileInfo *file)
 {
-  char		*path = NULL;
+  char		*uri = NULL;
   char		*local_path = NULL;
+  NautilusShareStatus result;
 
   if (!nautilus_file_info_is_directory(file) ||
-      !(path =  nautilus_file_info_get_uri(file)))
+      !(uri =  nautilus_file_info_get_uri(file)))
     {
       return NAUTILUS_SHARE_NOT_SHARED;
     }
-  if(!(local_path = gnome_vfs_get_local_path_from_uri(path)))
+
+  if(!(local_path = gnome_vfs_get_local_path_from_uri(uri)))
     {
-      g_free(path);
+      g_free(uri);
       return NAUTILUS_SHARE_NOT_SHARED;
     }
 
-  /* FIXME bad UTF8 */
-  if (!g_utf8_validate (local_path, -1, NULL)) {
-    g_free(path);
-    g_free(local_path);
-    return NAUTILUS_SHARE_NOT_SHARED;
-  }
+  result = file_get_share_status (local_path);
 
-  if ((strncmp(path,"file://",7)!=0) ||
-      (smbparser_dbus_share_get_name(g_dbus,local_path) == NULL))
-    {
-      g_free(path);
-      return NAUTILUS_SHARE_NOT_SHARED;
-    }
+  g_free (uri);
+  g_free (local_path);
 
-  g_free(path);
-  g_free(local_path);
-  return NAUTILUS_SHARE_SHARED_RO;
+  return result;
 }
 
 static NautilusOperationResult
@@ -616,8 +680,9 @@ static GList *
 nautilus_share_get_property_pages (NautilusPropertyPageProvider *provider,
 				   GList *files)
 {
+  PropertyPage *page;
   GList *pages;
-  NautilusPropertyPage *page;
+  NautilusPropertyPage *np_page;
   char *tmp;
   NautilusFileInfo *fileinfo;
 
@@ -638,13 +703,15 @@ nautilus_share_get_property_pages (NautilusPropertyPageProvider *provider,
       return NULL;
     }
   g_free(tmp);
+
+  page = create_property_page (fileinfo);
   
   pages = NULL;
-  page = nautilus_property_page_new
+  np_page = nautilus_property_page_new
     ("NautilusShare::property_page",
      gtk_label_new (_("Share")),
-     create_property_page (fileinfo));
-  pages = g_list_append (pages, page);
+     page->main);
+  pages = g_list_append (pages, np_page);
 
   return pages;
 }
@@ -688,34 +755,35 @@ static void button_callback( GtkWidget *widget,
 
 static void
 share_this_folder_callback (NautilusMenuItem *item,
-	      gpointer user_data)
+			    gpointer user_data)
 {
-  NautilusFileInfo *fileinfo =(NautilusFileInfo *)user_data;
-  GtkWidget * page;
+  NautilusFileInfo *fileinfo;
+  PropertyPage *page;
   GtkWidget * window;
   GtkWidget * button;
 
+  fileinfo = NAUTILUS_FILE_INFO (user_data);
+  g_assert (fileinfo != NULL);
+
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   page = create_property_page (fileinfo);
-  button = glade_xml_get_widget(xml,"button_close");
-  gtk_container_add (GTK_CONTAINER (window), page);
+  button = glade_xml_get_widget(page->xml,"button_close");
+  gtk_container_add (GTK_CONTAINER (window), page->main);
   gtk_widget_show (button);
   gtk_widget_show (window);
   g_signal_connect (G_OBJECT (button), "clicked",
 		    G_CALLBACK (button_callback), window);
 }
 
-
 static GList *
 nautilus_share_get_file_items (NautilusMenuProvider *provider,
 			     GtkWidget *window,
 			     GList *files)
 {
-  GList *items = NULL;
+  GList *items;
   NautilusMenuItem *item;
   char *tmp;
   NautilusFileInfo *fileinfo;
-
 
   /* Only show the property page if 1 file is selected */
   if (!files || files->next != NULL) {
@@ -726,7 +794,8 @@ nautilus_share_get_file_items (NautilusMenuProvider *provider,
   /* if it's not a directory it can't be shared */
   if (!nautilus_file_info_is_directory(fileinfo))
     return NULL;
-  
+
+  /* FMQ: add the "my-shares" scheme here */
   tmp = nautilus_file_info_get_uri_scheme(fileinfo);
   if (strncmp(tmp,"file",4) != 0)
     {
@@ -734,9 +803,13 @@ nautilus_share_get_file_items (NautilusMenuProvider *provider,
       return NULL;
     }
   g_free(tmp);
+
+  /* We don't own a reference to the file info to keep it around, so acquire one */
+  g_object_ref (fileinfo);
   
   tmp = nautilus_file_info_get_uri(fileinfo);
-  
+
+  /* FMQ: change the label to "Share with Windows users"? */
   item = nautilus_menu_item_new ("NautilusShare::share",
 				 _("Share"),
 				 _("Share this Folder"),
@@ -744,11 +817,12 @@ nautilus_share_get_file_items (NautilusMenuProvider *provider,
   g_signal_connect (item, "activate",
 		    G_CALLBACK (share_this_folder_callback),
 		    fileinfo);
-  g_object_set_data (G_OBJECT (item), 
-		     "files",
-		     nautilus_file_info_list_copy (files));
-  
-  items = g_list_append (items, item);
+  g_object_set_data_full (G_OBJECT (item), 
+			  "files",
+			  fileinfo,
+			  g_object_unref); /* Release our reference when the menu item goes away */
+
+  items = g_list_append (NULL, item);
   return items;
 }
 
@@ -766,13 +840,15 @@ nautilus_share_menu_provider_iface_init (NautilusMenuProviderIface *iface)
  * initialization function. */
 static GType share_type = 0;
 
-GType
+#define NAUTILUS_TYPE_SHARE  (nautilus_share_get_type ())
+
+static GType
 nautilus_share_get_type (void) 
 {
   return share_type;
 }
 
-void
+static void
 nautilus_share_register_type (GTypeModule *module)
 {
   static const GTypeInfo info = {
@@ -841,31 +917,10 @@ nautilus_share_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule  *module)
 {
-  DBusError error;
-
   g_print ("Initializing nautilus-share extension\n");
 
-  bindtextdomain("nautilus-share", NULL);
+  bindtextdomain("nautilus-share", NAUTILUS_SHARE_LOCALEDIR);
   bind_textdomain_codeset("nautilus-share", "UTF-8");
-
-  dbus_error_init (&error);
-  g_dbus = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
-  if (!g_dbus) {
-    g_warning ("Failed to connect to the D-BUS daemon: %s", error.message);
-    dbus_error_free (&error);
-    return;
-  }
-  dbus_error_free (&error);
-
-  /* FIXME error */
-/*   dbus_bus_set_base_service(g_dbus, NAUTILUS_DBUS_SRV); */
-#ifndef DBUS_USE_NEW_API
-  dbus_bus_acquire_service (g_dbus, NAUTILUS_DBUS_SRV,0, NULL);
-#else /* DBUS_USE_NEW_API */
-  dbus_bus_request_name (g_dbus, NAUTILUS_DBUS_SRV,0, NULL);
-#endif /* DBUS_USE_NEW_API */
-  
-  dbus_connection_setup_with_g_main (g_dbus, NULL);
 
   nautilus_share_register_type (module);
 }

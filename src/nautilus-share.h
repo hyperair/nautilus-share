@@ -34,8 +34,6 @@ G_BEGIN_DECLS
  * exported by libnautilus. */
 
 
-#define NAUTILUS_TYPE_SHARE  (nautilus_share_get_type ())
-
 typedef struct _NautilusShare      NautilusShare;
 typedef struct _NautilusShareClass NautilusShareClass;
 
@@ -57,9 +55,6 @@ struct _NautilusShareData {
   gchar		*section;
   NautilusFileInfo *fileinfo;
 };
-
-GType nautilus_share_get_type      (void);
-void  nautilus_share_register_type (GTypeModule *module);
 
 G_END_DECLS
 
