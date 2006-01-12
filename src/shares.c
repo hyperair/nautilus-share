@@ -553,7 +553,7 @@ shares_get_share_info_for_path (const char *path, ShareInfo **ret_share_info, GE
 
 	g_assert (path != NULL);
 	g_assert (ret_share_info != NULL);
-	g_assert (error != NULL && *error == NULL);
+	g_assert (error == NULL || *error == NULL);
 
 	if (!refresh_if_needed (error)) {
 		*ret_share_info = NULL;
@@ -616,7 +616,7 @@ shares_get_share_info_for_share_name (const char *share_name, ShareInfo **ret_sh
 
 	g_assert (share_name != NULL);
 	g_assert (ret_share_info != NULL);
-	g_assert (error != NULL && *error == NULL);
+	g_assert (error == NULL || *error == NULL);
 
 	if (!refresh_if_needed (error)) {
 		*ret_share_info = NULL;

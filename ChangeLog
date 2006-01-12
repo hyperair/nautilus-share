@@ -1,5 +1,9 @@
 2006-01-12  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/shares.c (shares_get_share_info_for_path): Oops, fix the
+	GError assertion.
+	(shares_get_share_info_for_share_name): Likewise.
+
 	* src/shares.c (DEBUG_SHARES): Add a debugging flag so that we
 	call a stub program instead of "net usershare".
 
