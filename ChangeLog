@@ -1,5 +1,10 @@
 2006-01-12  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/shares.c (DEBUG_SHARES): Add a debugging flag so that we
+	call a stub program instead of "net usershare".
+
+2006-01-12  Federico Mena Quintero  <federico@ximian.com>
+
 	* src/shares.c (add_key_group_to_hashes): New helper function to
 	get the share info out of a key file group.
 	(refresh_shares): Call net_usershare_run() to get a GKeyFile out

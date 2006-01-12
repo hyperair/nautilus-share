@@ -6,6 +6,13 @@
 #include <glib/gi18n-lib.h>
 #include "shares.h"
 
+#define DEBUG_SHARES
+#ifdef DEBUG_SHARES
+#  define NET_USERSHARE_ARGV0 "debug-net-usershare"
+#else
+#  define NET_USERSHARE_ARGV0 "net"
+#endif
+
 static GHashTable *path_share_info_hash;
 static GHashTable *share_name_share_info_hash;
 
@@ -51,7 +58,7 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	real_argc = 2 + argc + 1; /* "net" "usershare" [argv] NULL */
 	real_argv = g_new (char *, real_argc);
 
-	real_argv[0] = "net";
+	real_argv[0] = NET_USERSHARE_ARGV0;
 	real_argv[1] = "usershare";
 
 	for (i = 0; i < argc; i++) {
