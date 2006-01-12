@@ -1,3 +1,39 @@
+2006-01-11  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/shares.c (refresh_shares): Return a GError.
+	(refresh_if_needed): Likewise.
+	(shares_get_path_is_shared): Take a GError argument; make the
+	return value be a success condition.
+	(shares_get_share_info_for_path): Likewise.
+	(shares_get_share_name_exists): Likewise.
+	(shares_get_share_info_for_share_name): Likewise.
+	(shares_get_share_info_list): Likewise.
+	(throw_error_on_refresh): New debugging variable.
+	(shares_set_debug): Add an error_on_refresh argument.
+	(refresh_shares): Throw an error if throw_error_on_refresh is set.
+	(net_usershare_run): New function to run "net usershare" and parse
+	its output into a GKeyFile.
+
+	* src/nautilus-share.c (property_page_share_name_is_valid): Pass a
+	GError to the shares.h functions.
+	(file_get_share_status): Likewise.
+	(create_property_page): Likewise.  Also, throw an error dialog if
+	we can't get the sharing info.
+
+2006-01-10  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/shares.c (refresh_if_needed): New function; refreshes the
+	share list at a limited rate determined by an update counter and a
+	timestamp.
+	(refresh_shares): Took out of the #ifdef block along with its
+	helper functions.
+	(shares_get_path_is_shared): Call refresh_if_needed().
+	(shares_get_share_info_for_path): Likewise.
+	(shares_get_share_name_exists): Likewise.
+	(shares_get_share_info_for_share_name): Likewise.
+	(shares_modify_share): Likewise.
+	(shares_get_share_info_list): Likewise.
+
 2006-01-09  Federico Mena Quintero  <federico@ximian.com>
 
 	* src/shares.[ch]: New files with small API that maintains a

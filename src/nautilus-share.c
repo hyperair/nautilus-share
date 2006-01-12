@@ -299,13 +299,32 @@ property_page_share_name_is_valid (PropertyPage *page)
       property_page_set_error (page, _("The share name cannot be empty"));
       return FALSE;
     }
-  else if (shares_get_share_name_exists (newname))
+  else
     {
-      property_page_set_error (page, _("Another share has the same name"));
-      return FALSE;
-    }
+      GError *error;
+      gboolean exists;
 
-  return TRUE;
+      error = NULL;
+      if (!shares_get_share_name_exists (newname, &exists, &error))
+	{
+	  char *str;
+
+	  str = g_strdup_printf (_("Error while getting share information: %s"), error->message);
+	  property_page_set_error (page, str);
+	  g_free (str);
+	  g_error_free (error);
+
+	  return FALSE;
+	}
+
+      if (exists)
+	{
+	  property_page_set_error (page, _("Another share has the same name"));
+	  return FALSE;
+	}
+      else
+	return TRUE;
+    }
 }
 
 static void
@@ -411,6 +430,7 @@ static PropertyPage *
 create_property_page (NautilusFileInfo *fileinfo)
 {
   PropertyPage *page;
+  GError *error;
   ShareInfo *share_info;
   char *share_name;
   gboolean free_share_name;
@@ -421,7 +441,22 @@ create_property_page (NautilusFileInfo *fileinfo)
   page->path = get_fullpath_from_fileinfo(fileinfo);
   page->fileinfo = g_object_ref (fileinfo);
 
-  share_info = shares_get_share_info_for_path (page->path);
+  error = NULL;
+  if (!shares_get_share_info_for_path (page->path, &share_info, &error))
+    {
+      /* We'll assume that there is no share for that path, but we'll still
+       * bring up an error dialog.
+       */
+      GtkWidget *message;
+
+      message = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+					_("There was an error while getting the sharing information"));
+      gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (message), "%s", error->message);
+      gtk_widget_show (message);
+
+      share_info = NULL;
+      g_error_free (error);
+    }
 
   page->xml = glade_xml_new(INTERFACES_DIR"/share-dialog.glade","vbox1",GETTEXT_PACKAGE);
   page->main = glade_xml_get_widget(page->xml,"vbox1");
@@ -566,7 +601,9 @@ file_get_share_status (gchar *fullpath)
   NautilusShareStatus res;
   ShareInfo *share_info;
 
-  share_info = shares_get_share_info_for_path (fullpath);
+  /* FIXME: NULL GError */
+  if (!shares_get_share_info_for_path (fullpath, &share_info, NULL))
+    return NAUTILUS_SHARE_NOT_SHARED;
 
   if (!share_info)
     res = NAUTILUS_SHARE_NOT_SHARED;
