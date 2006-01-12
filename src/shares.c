@@ -14,6 +14,10 @@ static GHashTable *share_name_share_info_hash;
 static int refresh_timestamp_update_counter;
 static time_t refresh_timestamp;
 
+#define KEY_PATH "path"
+#define KEY_COMMENT "comment"
+#define KEY_ACL "usershare_acl"
+
 /* Debugging flags */
 static gboolean throw_error_on_refresh;
 static gboolean throw_error_on_add;
@@ -193,9 +197,95 @@ free_all_shares (void)
 	g_hash_table_foreach_remove (share_name_share_info_hash, remove_from_share_name_hash_cb, NULL);
 }
 
+static char *
+get_string_from_key_file (GKeyFile *key_file, const char *group, const char *key)
+{
+	GError *error;
+	char *str;
+
+	error = NULL;
+	str = NULL;
+
+	if (g_key_file_has_key (key_file, group, key, &error)) {
+		str = g_key_file_get_string (key_file, group, key, &error);
+		if (!str) {
+			g_assert (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_NOT_FOUND)
+				  && !g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND));
+
+			g_error_free (error);
+		}
+	} else {
+		g_assert (!g_error_matches (error, G_KEY_FILE_ERROR, G_KEY_FILE_ERROR_GROUP_NOT_FOUND));
+		g_error_free (error);
+	}
+
+	return str;
+}
+
+static void
+add_key_group_to_hashes (GKeyFile *key_file, const char *group)
+{
+	char *path;
+	char *comment;
+	char *acl;
+	gboolean is_writable;
+	ShareInfo *info;
+
+	path = get_string_from_key_file (key_file, group, KEY_PATH);
+	if (!path) {
+		g_message ("group '%s' doesn't have a '%s' key!  Ignoring group.", group, KEY_PATH);
+		return;
+	}
+
+	comment = get_string_from_key_file (key_file, group, KEY_COMMENT);
+
+	acl = get_string_from_key_file (key_file, group, KEY_ACL);
+	if (acl) {
+		if (strcmp (acl, "Everyone:R"))
+			is_writable = FALSE;
+		else if (strcmp (acl, "Everyone:F"))
+			is_writable = TRUE;
+		else {
+			g_message ("unknown format for key '%s/%s' as it contains '%s'.  Assuming that the share is read-only",
+				   group, KEY_ACL, acl);
+			is_writable = FALSE;
+		}
+
+		g_free (acl);
+	} else {
+		g_message ("group '%s' doesn't have a '%s' key!  Assuming that the share is read-only.", group, KEY_ACL);
+		is_writable = FALSE;
+	}
+
+	g_assert (path != NULL);
+
+	if (lookup_share_by_path (path) || lookup_share_by_share_name (group)) {
+		g_message ("Got a duplicate share called '%s' or with path '%s'!  Ignoring duplicate.",
+			   group, path);
+		g_free (path);
+		g_free (comment);
+		return;
+	}
+
+	info = g_new (ShareInfo, 1);
+	info->path = path;
+	info->share_name = g_strdup (group);
+	info->comment = comment;
+	info->is_writable = is_writable;
+
+	g_hash_table_insert (path_share_info_hash, info->path, info);
+	g_hash_table_insert (share_name_share_info_hash, info->share_name, info);
+}
+
 static gboolean
 refresh_shares (GError **error)
 {
+	GKeyFile *key_file;
+	const char *argv[] = { "list" };
+	gsize num_groups;
+	char **group_names;
+	int i;
+
 	free_all_shares ();
 
 	if (throw_error_on_refresh) {
@@ -206,7 +296,23 @@ refresh_shares (GError **error)
 		return FALSE;
 	}
 
-	/* FIXME: use "net usershare" */
+	if (!net_usershare_run (G_N_ELEMENTS (argv), (char **) argv, &key_file, error))
+		return FALSE;
+
+	g_assert (key_file != NULL);
+
+	group_names = g_key_file_get_groups (key_file, &num_groups);
+
+	/* FIXME: In add_key_group_to_hashes(), we simply ignore key groups
+	 * which have invalid data (i.e. no path).  We could probably accumulate a
+	 * GError with the list of invalid groups and propagate it upwards.
+	 */
+	for (i = 0; i < num_groups; i++) {
+		g_assert (group_names[i] != NULL);
+		add_key_group_to_hashes (key_file, group_names[i]);
+	}
+
+	g_strfreev (group_names);
 
 	return TRUE;
 }
@@ -270,6 +376,7 @@ add_share (ShareInfo *info, GError **error)
 
 	copy = copy_share_info (info);
 	g_hash_table_insert (path_share_info_hash, copy->path, copy);
+	/* FIXME: FAKE: put the share name into the other hash */
 
 	return TRUE;
 }
@@ -303,6 +410,8 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 
 	/* FIXME: remove the following and use "net share" */
 
+
+	/* FIXME: FAKE: change the hashes!  The following is wrong */
 	if (strcmp (old_info->share_name, info->share_name) != 0) {
 		g_free (old_info->share_name);
 		old_info->share_name = g_strdup (info->share_name);
@@ -349,6 +458,7 @@ remove_share (const char *path, GError **error)
 
 	/* FIXME: remove all the following and use "net share" */
 
+	/* FIXME: FAKE: remove from the other hash! */
 	g_hash_table_remove (path_share_info_hash, old_info->path);
 	shares_free_share_info (old_info);
 
