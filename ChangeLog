@@ -3,6 +3,7 @@
 	* src/shares.c (shares_get_share_info_for_path): Oops, fix the
 	GError assertion.
 	(shares_get_share_info_for_share_name): Likewise.
+	(add_key_group_to_hashes): Fix the sense of strcmp().
 
 	* src/shares.c (DEBUG_SHARES): Add a debugging flag so that we
 	call a stub program instead of "net usershare".
