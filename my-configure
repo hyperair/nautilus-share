@@ -1,0 +1,6 @@
+#!/bin/sh
+CFLAGS='-Wall -g -O2' ./configure\
+	--disable-schemas-install\
+	--prefix=/opt/gnome\
+	--sysconfdir=/etc\
+	--libdir=/opt/gnome/lib
