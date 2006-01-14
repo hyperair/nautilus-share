@@ -74,12 +74,12 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	stderr_contents = NULL;
 	*ret_key_file = NULL;
 
-	retval = g_spawn_sync (NULL,							/* cwd */
+	retval = g_spawn_sync (NULL,			/* cwd */
 			       real_argv,
-			       NULL, 							/* envp */
-			       G_SPAWN_SEARCH_PATH | G_SPAWN_FILE_AND_ARGV_ZERO,
-			       NULL, 							/* GSpawnChildSetupFunc */
-			       NULL,							/* user_data */
+			       NULL, 			/* envp */
+			       G_SPAWN_SEARCH_PATH,
+			       NULL, 			/* GSpawnChildSetupFunc */
+			       NULL,			/* user_data */
 			       &stdout_contents,
 			       &stderr_contents,
 			       &exit_status,
@@ -172,6 +172,22 @@ lookup_share_by_share_name (const char *share_name)
 {
 	ensure_hashes ();
 	return g_hash_table_lookup (share_name_share_info_hash, share_name);
+}
+
+static void
+add_share_info_to_hashes (ShareInfo *info)
+{
+	ensure_hashes ();
+	g_hash_table_insert (path_share_info_hash, info->path, info);
+	g_hash_table_insert (share_name_share_info_hash, info->share_name, info);
+}
+
+static void
+remove_share_info_from_hashes (ShareInfo *info)
+{
+	ensure_hashes ();
+	g_hash_table_remove (path_share_info_hash, info->path);
+	g_hash_table_remove (share_name_share_info_hash, info->share_name);
 }
 
 static gboolean
@@ -288,10 +304,11 @@ static gboolean
 refresh_shares (GError **error)
 {
 	GKeyFile *key_file;
-	const char *argv[] = { "list" };
+	char *argv[1];
 	gsize num_groups;
 	char **group_names;
 	int i;
+	GError *real_error;
 
 	free_all_shares ();
 
@@ -303,8 +320,14 @@ refresh_shares (GError **error)
 		return FALSE;
 	}
 
-	if (!net_usershare_run (G_N_ELEMENTS (argv), (char **) argv, &key_file, error))
+	argv[0] = "list";
+
+	real_error = NULL;
+	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, &key_file, &real_error)) {
+		g_message ("Called \"net usershare list\" but it failed: %s", real_error->message);
+		g_propagate_error (&error, real_error);
 		return FALSE;
+	}
 
 	g_assert (key_file != NULL);
 
@@ -369,7 +392,10 @@ copy_share_info (ShareInfo *info)
 static gboolean
 add_share (ShareInfo *info, GError **error)
 {
+	char *argv[5];
 	ShareInfo *copy;
+	ShareInfo *old_info;
+	GError *real_error;
 
 	if (throw_error_on_add) {
 		g_set_error (error,
@@ -379,11 +405,33 @@ add_share (ShareInfo *info, GError **error)
 		return FALSE;
 	}
 
-	/* FIXME: remove the following and use "net share" */
+	argv[0] = "add";
+	argv[1] = info->share_name;
+	argv[2] = info->path;
+	argv[3] = info->comment;
+	argv[4] = info->is_writable ? "Everyone:F" : "Everyone:R";
+
+	/* FIXME: the following won't return a keyfile.  Make that assumption in
+	 * net_usershare_run() conditional on an argument or something.
+	 */
+
+	real_error = NULL;
+	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, &key_file, &real_error)) {
+		g_message ("Called \"net usershare add\" but it failed: %s", real_error->message);
+		g_propagate_error (&error, real_error);
+		return FALSE;
+	}
+
+	old_info = lookup_share_by_path (info->path);
+	if (old_info) {
+		remove_share_info_from_hashes (old_info);
+		shares_free_share_info (old_info);
+	}
+
+	g_assert (lookup_share_by_share_name (info->share_name) == NULL);
 
 	copy = copy_share_info (info);
-	g_hash_table_insert (path_share_info_hash, copy->path, copy);
-	/* FIXME: FAKE: put the share name into the other hash */
+	add_share_info_to_hashes (copy);
 
 	return TRUE;
 }
@@ -415,22 +463,7 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 		return FALSE;
 	}
 
-	/* FIXME: remove the following and use "net share" */
-
-
-	/* FIXME: FAKE: change the hashes!  The following is wrong */
-	if (strcmp (old_info->share_name, info->share_name) != 0) {
-		g_free (old_info->share_name);
-		old_info->share_name = g_strdup (info->share_name);
-	}
-
-	if (strcmp (old_info->comment, info->comment) != 0) {
-		g_free (old_info->comment);
-		old_info->comment = g_strdup (info->comment);
-	}
-
-	if (old_info->is_writable != info->is_writable)
-		old_info->is_writable = info->is_writable;
+	/* FIXME: use net_usershare */
 
 	return TRUE;
 }

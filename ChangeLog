@@ -1,3 +1,11 @@
+2006-01-13  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/shares.c (net_usershare_run): Don't use G_SPAWN_FILE_AND_ARGV_ZERO.
+	(refresh_shares): g_message() if net_usershare_run() fails.
+	(add_share): Implement the call to net_usershare_run().
+	(add_share_info_to_hashes): New helper function.
+	(remove_share_info_from_hashes): New helper function.
+
 2006-01-12  Federico Mena Quintero  <federico@ximian.com>
 
 	* src/shares.c (shares_get_share_info_for_path): Oops, fix the
