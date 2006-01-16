@@ -50,7 +50,6 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 
 	g_assert (argc > 0);
 	g_assert (argv != NULL);
-	g_assert (ret_key_file != NULL);
 	g_assert (error == NULL || *error == NULL);
 
 	/* Build command line */
@@ -72,7 +71,6 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 
 	stdout_contents = NULL;
 	stderr_contents = NULL;
-	*ret_key_file = NULL;
 
 	retval = g_spawn_sync (NULL,			/* cwd */
 			       real_argv,
@@ -111,30 +109,35 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 		goto out;
 	}
 
-	/* FIXME: jeallison@novell.com says the output of "net usershare" is nearly always
-	 * in UTF-8, but that it can be configured in the master smb.conf.  We assume
-	 * UTF-8 for now.
-	 */
+	if (ret_key_file) {
+		*ret_key_file = NULL;
 
-	if (!g_utf8_validate (stdout_contents, -1, NULL)) {
-		g_set_error (error,
-			     G_SPAWN_ERROR,
-			     G_SPAWN_ERROR_FAILED,
-			     _("the output of 'net usershare' is not in valid UTF-8 encoding"));
-		retval = FALSE;
-		goto out;
-	}
+		/* FIXME: jeallison@novell.com says the output of "net usershare" is nearly always
+		 * in UTF-8, but that it can be configured in the master smb.conf.  We assume
+		 * UTF-8 for now.
+		 */
 
-	key_file = g_key_file_new ();
+		if (!g_utf8_validate (stdout_contents, -1, NULL)) {
+			g_set_error (error,
+				     G_SPAWN_ERROR,
+				     G_SPAWN_ERROR_FAILED,
+				     _("the output of 'net usershare' is not in valid UTF-8 encoding"));
+			retval = FALSE;
+			goto out;
+		}
 
-	if (!g_key_file_load_from_data (key_file, stdout_contents, -1, 0, error)) {
-		g_key_file_free (key_file);
-		retval = FALSE;
-		goto out;
-	}
+		key_file = g_key_file_new ();
 
-	retval = TRUE;
-	*ret_key_file = key_file;
+		if (!g_key_file_load_from_data (key_file, stdout_contents, -1, 0, error)) {
+			g_key_file_free (key_file);
+			retval = FALSE;
+			goto out;
+		}
+
+		retval = TRUE;
+		*ret_key_file = key_file;
+	} else
+		retval = TRUE;
 
  out:
 	g_free (real_argv);
@@ -325,7 +328,7 @@ refresh_shares (GError **error)
 	real_error = NULL;
 	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, &key_file, &real_error)) {
 		g_message ("Called \"net usershare list\" but it failed: %s", real_error->message);
-		g_propagate_error (&error, real_error);
+		g_propagate_error (error, real_error);
 		return FALSE;
 	}
 
@@ -411,14 +414,10 @@ add_share (ShareInfo *info, GError **error)
 	argv[3] = info->comment;
 	argv[4] = info->is_writable ? "Everyone:F" : "Everyone:R";
 
-	/* FIXME: the following won't return a keyfile.  Make that assumption in
-	 * net_usershare_run() conditional on an argument or something.
-	 */
-
 	real_error = NULL;
-	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, &key_file, &real_error)) {
+	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, NULL, &real_error)) {
 		g_message ("Called \"net usershare add\" but it failed: %s", real_error->message);
-		g_propagate_error (&error, real_error);
+		g_propagate_error (error, real_error);
 		return FALSE;
 	}
 
@@ -432,6 +431,52 @@ add_share (ShareInfo *info, GError **error)
 
 	copy = copy_share_info (info);
 	add_share_info_to_hashes (copy);
+
+	return TRUE;
+}
+
+static gboolean
+remove_share (const char *path, GError **error)
+{
+	ShareInfo *old_info;
+	char *argv[2];
+	GError *real_error;
+
+	if (throw_error_on_remove) {
+		g_set_error (error,
+			     SHARES_ERROR,
+			     SHARES_ERROR_FAILED,
+			     "Failed");
+		return FALSE;
+	}
+
+	old_info = lookup_share_by_path (path);
+	if (!old_info) {
+		char *display_name;
+
+		display_name = g_filename_display_name (path);
+		g_set_error (error,
+			     SHARES_ERROR,
+			     SHARES_ERROR_NONEXISTENT,
+			     _("Cannot remove the share for path %s: that path is not shared"),
+			     display_name);
+		g_free (display_name);
+
+		return FALSE;
+	}
+
+	argv[0] = "delete";
+	argv[1] = old_info->share_name;
+
+	real_error = NULL;
+	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, NULL, &real_error)) {
+		g_message ("Called \"net usershare delete\" but it failed: %s", real_error->message);
+		g_propagate_error (error, real_error);
+		return FALSE;
+	}
+
+	remove_share_info_from_hashes (old_info);
+	shares_free_share_info (old_info);
 
 	return TRUE;
 }
@@ -463,46 +508,10 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 		return FALSE;
 	}
 
-	/* FIXME: use net_usershare */
-
-	return TRUE;
-}
-
-static gboolean
-remove_share (const char *path, GError **error)
-{
-	ShareInfo *old_info;
-
-	if (throw_error_on_remove) {
-		g_set_error (error,
-			     SHARES_ERROR,
-			     SHARES_ERROR_FAILED,
-			     "Failed");
+	if (!remove_share (old_path, error))
 		return FALSE;
-	}
 
-	old_info = lookup_share_by_path (path);
-	if (!old_info) {
-		char *display_name;
-
-		display_name = g_filename_display_name (path);
-		g_set_error (error,
-			     SHARES_ERROR,
-			     SHARES_ERROR_NONEXISTENT,
-			     _("Cannot remove the share for path %s: that path is not shared"),
-			     display_name);
-		g_free (display_name);
-
-		return FALSE;
-	}
-
-	/* FIXME: remove all the following and use "net share" */
-
-	/* FIXME: FAKE: remove from the other hash! */
-	g_hash_table_remove (path_share_info_hash, old_info->path);
-	shares_free_share_info (old_info);
-
-	return TRUE;
+	return add_share (info, error);
 }
 
 

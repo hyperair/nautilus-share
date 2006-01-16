@@ -1,3 +1,11 @@
+2006-01-16  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/shares.c (net_usershare_run): Let the ret_key_file be NULL.
+	In that case, this won't attempt to parse the stdout of "net usershare".
+	(add_share): Don't expect a key file from net_usershare_run().
+	(modify_share): Implement in terms of remove_share() and add_share().
+	(remove_share): Implement in terms of "net usershare delete".
+
 2006-01-13  Federico Mena Quintero  <federico@ximian.com>
 
 	* src/shares.c (net_usershare_run): Don't use G_SPAWN_FILE_AND_ARGV_ZERO.
