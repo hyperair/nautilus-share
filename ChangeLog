@@ -1,5 +1,7 @@
 2006-01-16  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/shares.c (DEBUG_SHARES): #undef this; the code seems to work.
+
 	* src/shares.c (net_usershare_run): Let the ret_key_file be NULL.
 	In that case, this won't attempt to parse the stdout of "net usershare".
 	(add_share): Don't expect a key file from net_usershare_run().
