@@ -6,7 +6,7 @@
 #include <glib/gi18n-lib.h>
 #include "shares.h"
 
-#undef DEBUG_SHARES
+#define DEBUG_SHARES
 #ifdef DEBUG_SHARES
 #  define NET_USERSHARE_ARGV0 "debug-net-usershare"
 #else
@@ -93,14 +93,21 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 
 	if (exit_code != 0) {
 		char *str;
+		char *message_format;
 
 		/* stderr_contents is in the system locale encoding, not UTF-8 */
 
 		str = g_locale_to_utf8 (stderr_contents, -1, NULL, NULL, NULL);
+
+		if (str[0] != 0)
+			message_format = _("'net usershare' returned error %d: %s");
+		else
+			message_format = _("'net usershare' returned error %d");
+
 		g_set_error (error,
 			     G_SPAWN_ERROR,
 			     G_SPAWN_ERROR_FAILED,
-			     _("'net usershare' returned error %d: %s"),
+			     message_format,
 			     exit_code,
 			     str ? str : "???");
 		g_free (str);
@@ -323,11 +330,11 @@ refresh_shares (GError **error)
 		return FALSE;
 	}
 
-	argv[0] = "list";
+	argv[0] = "info";
 
 	real_error = NULL;
 	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, &key_file, &real_error)) {
-		g_message ("Called \"net usershare list\" but it failed: %s", real_error->message);
+		g_message ("Called \"net usershare info\" but it failed: %s", real_error->message);
 		g_propagate_error (error, real_error);
 		return FALSE;
 	}

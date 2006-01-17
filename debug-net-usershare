@@ -47,7 +47,7 @@ f.close ()
     
 command = sys.argv[2] # argv[1] is "usershare"
 
-if command == "list":
+if command == "info":
     list_shares ()
 elif command == "add":
     add_share (sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])

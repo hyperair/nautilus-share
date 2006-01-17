@@ -1,4 +1,17 @@
+2006-01-17  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/shares.c (refresh_shares): To list the info for all the
+	shares we need "net usershare info", not "net usershare list".
+	The latter only lists the share names.
+
+	* debug-net-usershare (command): Likewise; use "info" instead of
+	"list" to print the full info for all the shares.
+
 2006-01-16  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/shares.c (net_usershare_run): Use different printf
+	formats depending on whether we got an empty error string from
+	"net usershare".
 
 	* src/shares.c (DEBUG_SHARES): #undef this; the code seems to work.
 
