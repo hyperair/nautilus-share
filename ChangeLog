@@ -1,3 +1,12 @@
+2006-01-18  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/nautilus-share.c (file_get_share_status_file): Match the
+	file's URI against the "network://share-" prefix from gnome-vfs's
+	network method, and get the info for the corresponding share name.
+	(get_share_status_share_name): New helper function.
+	(get_share_status_and_free_share_info): New helper function.
+	(file_get_share_status): Use get_share_status_and_free_share_info().
+
 2006-01-17  Federico Mena Quintero  <federico@ximian.com>
 
 	* src/shares.c (refresh_shares): To list the info for all the

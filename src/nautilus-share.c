@@ -592,55 +592,94 @@ typedef struct {
   GClosure *update_complete;
 } NautilusShareHandle;
 
+static NautilusShareStatus 
+get_share_status_and_free_share_info (ShareInfo *share_info)
+{
+  NautilusShareStatus result;
+
+  if (!share_info)
+    result = NAUTILUS_SHARE_NOT_SHARED;
+  else
+    {
+      if (share_info->is_writable)
+	result = NAUTILUS_SHARE_SHARED_RW;
+      else
+	result = NAUTILUS_SHARE_SHARED_RO;
+
+      shares_free_share_info (share_info);
+    }
+
+  return result;
+}
 
 
 /*--------------------------------------------------------------------------*/
 static NautilusShareStatus 
 file_get_share_status (gchar *fullpath)
 {
-  NautilusShareStatus res;
   ShareInfo *share_info;
 
   /* FIXME: NULL GError */
   if (!shares_get_share_info_for_path (fullpath, &share_info, NULL))
     return NAUTILUS_SHARE_NOT_SHARED;
 
-  if (!share_info)
-    res = NAUTILUS_SHARE_NOT_SHARED;
-  else
-    {
-      if (share_info->is_writable)
-	res = NAUTILUS_SHARE_SHARED_RW;
-      else
-	res = NAUTILUS_SHARE_SHARED_RO;
+  return get_share_status_and_free_share_info (share_info);
+}
 
-      shares_free_share_info (share_info);
-    }
+static
+NautilusShareStatus
+get_share_status_share_name (const char *share_name)
+{
+  ShareInfo *share_info;
 
-  return res;
+  /* FIXME: NULL GError */
+  if (!shares_get_share_info_for_share_name (share_name, &share_info, NULL))
+    return NAUTILUS_SHARE_NOT_SHARED;
+
+  return get_share_status_and_free_share_info (share_info);
 }
 
 /*--------------------------------------------------------------------------*/
 static NautilusShareStatus 
 file_get_share_status_file(NautilusFileInfo *file)
 {
-  char		*uri = NULL;
+  char		*uri;
   char		*local_path = NULL;
   NautilusShareStatus result;
 
-  if (!nautilus_file_info_is_directory(file) ||
-      !(uri =  nautilus_file_info_get_uri(file)))
+  uri = nautilus_file_info_get_uri (file);
+  if (!uri)
     {
-      return NAUTILUS_SHARE_NOT_SHARED;
+      result = NAUTILUS_SHARE_NOT_SHARED;
+      goto out;
+    }
+
+#define NETWORK_SHARE_PREFIX "network://share-"
+
+  if (g_str_has_prefix (uri, NETWORK_SHARE_PREFIX))
+    {
+      const char *share_name;
+
+      share_name = uri + strlen (NETWORK_SHARE_PREFIX);
+      result = get_share_status_share_name (share_name);
+      goto out;
+    }
+
+  if (!nautilus_file_info_is_directory(file))
+    {
+      result = NAUTILUS_SHARE_NOT_SHARED;
+      goto out;
     }
 
   if(!(local_path = gnome_vfs_get_local_path_from_uri(uri)))
     {
-      g_free(uri);
-      return NAUTILUS_SHARE_NOT_SHARED;
+      result = NAUTILUS_SHARE_NOT_SHARED;
+      goto out;
     }
 
   result = file_get_share_status (local_path);
+
+ out:
 
   g_free (uri);
   g_free (local_path);
