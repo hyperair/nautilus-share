@@ -614,45 +614,18 @@ get_share_status_and_free_share_info (ShareInfo *share_info)
 
 
 /*--------------------------------------------------------------------------*/
-static NautilusShareStatus 
-file_get_share_status (gchar *fullpath)
-{
-  ShareInfo *share_info;
-
-  /* FIXME: NULL GError */
-  if (!shares_get_share_info_for_path (fullpath, &share_info, NULL))
-    return NAUTILUS_SHARE_NOT_SHARED;
-
-  return get_share_status_and_free_share_info (share_info);
-}
-
-static
-NautilusShareStatus
-get_share_status_share_name (const char *share_name)
-{
-  ShareInfo *share_info;
-
-  /* FIXME: NULL GError */
-  if (!shares_get_share_info_for_share_name (share_name, &share_info, NULL))
-    return NAUTILUS_SHARE_NOT_SHARED;
-
-  return get_share_status_and_free_share_info (share_info);
-}
-
-/*--------------------------------------------------------------------------*/
-static NautilusShareStatus 
-file_get_share_status_file(NautilusFileInfo *file)
+static void
+get_share_info_for_file_info (NautilusFileInfo *file, ShareInfo **share_info, gboolean *is_shareable)
 {
   char		*uri;
   char		*local_path = NULL;
-  NautilusShareStatus result;
+
+  *share_info = NULL;
+  *is_shareable = FALSE;
 
   uri = nautilus_file_info_get_uri (file);
   if (!uri)
-    {
-      result = NAUTILUS_SHARE_NOT_SHARED;
-      goto out;
-    }
+    goto out;
 
 #define NETWORK_SHARE_PREFIX "network:///share-"
 
@@ -661,30 +634,53 @@ file_get_share_status_file(NautilusFileInfo *file)
       const char *share_name;
 
       share_name = uri + strlen (NETWORK_SHARE_PREFIX);
-      result = get_share_status_share_name (share_name);
+
+      /* FIXME: NULL GError */
+      if (!shares_get_share_info_for_share_name (share_name, share_info, NULL))
+	{
+	  *share_info = NULL;
+	  *is_shareable = TRUE; /* it *has* the prefix, anyway... we are just unsynchronized with what gnome-vfs thinks */
+	}
+      else
+	{
+	  g_assert (*share_info != NULL);
+	  *is_shareable = TRUE;
+	}
+
       goto out;
     }
 
   if (!nautilus_file_info_is_directory(file))
-    {
-      result = NAUTILUS_SHARE_NOT_SHARED;
-      goto out;
-    }
+    goto out;
 
   if(!(local_path = gnome_vfs_get_local_path_from_uri(uri)))
-    {
-      result = NAUTILUS_SHARE_NOT_SHARED;
-      goto out;
-    }
+    goto out;
 
-  result = file_get_share_status (local_path);
+  /* FIXME: NULL GError */
+  if (!shares_get_share_info_for_path (local_path, share_info, NULL))
+    goto out;
+
+  *is_shareable = TRUE;
 
  out:
 
   g_free (uri);
   g_free (local_path);
+}
 
-  return result;
+/*--------------------------------------------------------------------------*/
+static NautilusShareStatus 
+file_get_share_status_file(NautilusFileInfo *file)
+{
+  ShareInfo *share_info;
+  gboolean is_shareable;
+
+  get_share_info_for_file_info (file, &share_info, &is_shareable);
+
+  if (!is_shareable)
+    return NAUTILUS_SHARE_NOT_SHARED;
+
+  return get_share_status_and_free_share_info (share_info);
 }
 
 static NautilusOperationResult
@@ -759,8 +755,9 @@ nautilus_share_get_property_pages (NautilusPropertyPageProvider *provider,
   PropertyPage *page;
   GList *pages;
   NautilusPropertyPage *np_page;
-  char *tmp;
   NautilusFileInfo *fileinfo;
+  ShareInfo *share_info;
+  gboolean is_shareable;
 
   /* Only show the property page if 1 file is selected */
   if (!files || files->next != NULL) {
@@ -768,17 +765,13 @@ nautilus_share_get_property_pages (NautilusPropertyPageProvider *provider,
   }
 
   fileinfo = NAUTILUS_FILE_INFO (files->data);
-  /* if it's not a directory it can't be shared */
-  if (!nautilus_file_info_is_directory(fileinfo))
+
+  get_share_info_for_file_info (fileinfo, &share_info, &is_shareable);
+  if (!is_shareable)
     return NULL;
-  
-  tmp = nautilus_file_info_get_uri_scheme(fileinfo);
-  if (strncmp(tmp,"file",4) != 0)
-    {
-      g_free(tmp);
-      return NULL;
-    }
-  g_free(tmp);
+
+  if (share_info)
+    shares_free_share_info (share_info);
 
   page = create_property_page (fileinfo);
   
@@ -858,8 +851,9 @@ nautilus_share_get_file_items (NautilusMenuProvider *provider,
 {
   GList *items;
   NautilusMenuItem *item;
-  char *tmp;
   NautilusFileInfo *fileinfo;
+  ShareInfo *share_info;
+  gboolean is_shareable;
 
   /* Only show the property page if 1 file is selected */
   if (!files || files->next != NULL) {
@@ -867,24 +861,18 @@ nautilus_share_get_file_items (NautilusMenuProvider *provider,
   }
 
   fileinfo = NAUTILUS_FILE_INFO (files->data);
-  /* if it's not a directory it can't be shared */
-  if (!nautilus_file_info_is_directory(fileinfo))
+
+  get_share_info_for_file_info (fileinfo, &share_info, &is_shareable);
+
+  if (!is_shareable)
     return NULL;
 
-  /* FMQ: add the "my-shares" scheme here */
-  tmp = nautilus_file_info_get_uri_scheme(fileinfo);
-  if (strncmp(tmp,"file",4) != 0)
-    {
-      g_free(tmp);
-      return NULL;
-    }
-  g_free(tmp);
+  if (share_info)
+    shares_free_share_info (share_info);
 
   /* We don't own a reference to the file info to keep it around, so acquire one */
   g_object_ref (fileinfo);
   
-  tmp = nautilus_file_info_get_uri(fileinfo);
-
   /* FMQ: change the label to "Share with Windows users"? */
   item = nautilus_menu_item_new ("NautilusShare::share",
 				 _("Share"),

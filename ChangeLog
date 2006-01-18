@@ -2,6 +2,17 @@
 
 	* src/nautilus-share.c (NETWORK_SHARE_PREFIX): Ahem, I missed one
 	slash in "network:///".
+	(get_share_info_for_file_info): New function.  This is intended to
+	be the master "is this NautilusFileInfo worthy of consideration" function.
+	(file_get_share_status_file): Simply use
+	get_share_info_for_file_info() and get_share_status_and_free_share_info().
+	(nautilus_share_get_property_pages): Use
+	get_share_info_for_file_info() instead of duplicating the code
+	that checks for shareability.
+	(nautilus_share_get_file_items): Likewise.
+	(file_get_share_status): Removed.
+
+	* src/nautilus-share.h: Removed prototype for file_get_share_status().
 
 2006-01-18  Federico Mena Quintero  <federico@ximian.com>
 

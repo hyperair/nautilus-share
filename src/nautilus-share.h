@@ -64,6 +64,5 @@ typedef enum {
   NAUTILUS_SHARE_SHARED_RW
 } NautilusShareStatus;
 
-static NautilusShareStatus file_get_share_status (gchar *fullpath);
 #endif
  
