@@ -654,7 +654,7 @@ file_get_share_status_file(NautilusFileInfo *file)
       goto out;
     }
 
-#define NETWORK_SHARE_PREFIX "network://share-"
+#define NETWORK_SHARE_PREFIX "network:///share-"
 
   if (g_str_has_prefix (uri, NETWORK_SHARE_PREFIX))
     {

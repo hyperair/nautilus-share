@@ -1,5 +1,10 @@
 2006-01-18  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/nautilus-share.c (NETWORK_SHARE_PREFIX): Ahem, I missed one
+	slash in "network:///".
+
+2006-01-18  Federico Mena Quintero  <federico@ximian.com>
+
 	* src/nautilus-share.c (file_get_share_status_file): Match the
 	file's URI against the "network://share-" prefix from gnome-vfs's
 	network method, and get the info for the corresponding share name.
