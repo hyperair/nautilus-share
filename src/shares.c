@@ -47,6 +47,7 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	int exit_status;
 	int exit_code;
 	GKeyFile *key_file;
+	GError *real_error;
 
 	g_assert (argc > 0);
 	g_assert (argv != NULL);
@@ -72,6 +73,18 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	stdout_contents = NULL;
 	stderr_contents = NULL;
 
+	{
+		char **p;
+
+		g_message ("------------------------------------------");
+
+		for (p = real_argv; *p; p++)
+			g_message ("spawn arg \"%s\"", *p);
+
+		g_message ("end of spawn args; SPAWNING\n");
+	}
+
+	real_error = NULL;
 	retval = g_spawn_sync (NULL,			/* cwd */
 			       real_argv,
 			       NULL, 			/* envp */
@@ -81,16 +94,23 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 			       &stdout_contents,
 			       &stderr_contents,
 			       &exit_status,
-			       error);
+			       &real_error);
+
+	g_message ("returned from spawn: %s: %s", retval ? "SUCCESS" : "FAIL", retval ? "" : real_error->message);
+
+	g_propagate_error (error, real_error);
 
 	if (!retval)
 		goto out;
 
-	if (!WIFEXITED (exit_status))
+	if (!WIFEXITED (exit_status)) {
+		g_message ("WIFEXITED(%d) was false!", exit_status);
 		goto out;
+	}
 
 	exit_code = WEXITSTATUS (exit_status);
 
+	g_message ("exit code %d", exit_code);
 	if (exit_code != 0) {
 		char *str;
 		char *message_format;
@@ -103,6 +123,9 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 			message_format = _("'net usershare' returned error %d: %s");
 		else
 			message_format = _("'net usershare' returned error %d");
+
+		g_message ("will return GError with the message:");
+		g_message (message_format, str ? str : "???");
 
 		g_set_error (error,
 			     G_SPAWN_ERROR,
@@ -117,6 +140,8 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	}
 
 	if (ret_key_file) {
+		g_message ("caller wants GKeyFile");
+
 		*ret_key_file = NULL;
 
 		/* FIXME: jeallison@novell.com says the output of "net usershare" is nearly always
@@ -125,6 +150,7 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 		 */
 
 		if (!g_utf8_validate (stdout_contents, -1, NULL)) {
+			g_message ("stdout of net usershare was not in valid UTF-8");
 			g_set_error (error,
 				     G_SPAWN_ERROR,
 				     G_SPAWN_ERROR_FAILED,
@@ -135,7 +161,10 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 
 		key_file = g_key_file_new ();
 
-		if (!g_key_file_load_from_data (key_file, stdout_contents, -1, 0, error)) {
+		real_error = NULL;
+		if (!g_key_file_load_from_data (key_file, stdout_contents, -1, 0, &real_error)) {
+			g_message ("Error when parsing key file {\n%s\n}: %s", stdout_contents, real_error->message);
+			g_propagate_error (error, real_error);
 			g_key_file_free (key_file);
 			retval = FALSE;
 			goto out;
@@ -146,10 +175,14 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	} else
 		retval = TRUE;
 
+	g_message ("success from calling net usershare and parsing its output");
+
  out:
 	g_free (real_argv);
 	g_free (stdout_contents);
 	g_free (stderr_contents);
+
+	g_message ("------------------------------------------");
 
 	return retval;
 }
@@ -387,9 +420,10 @@ refresh_if_needed (GError **error)
 		refresh_timestamp_update_counter = NUM_CALLS_BETWEEN_TIMESTAMP_UPDATES;
 
 		new_timestamp = time (NULL);
-		if (new_timestamp - refresh_timestamp > TIMESTAMP_THRESHOLD)
+		if (new_timestamp - refresh_timestamp > TIMESTAMP_THRESHOLD) {
+			g_message ("REFRESHING SHARES");
 			retval = refresh_shares (error);
-		else
+		} else
 			retval = TRUE;
 
 		refresh_timestamp = new_timestamp;
@@ -426,11 +460,14 @@ add_share (ShareInfo *info, GError **error)
 	GKeyFile *key_file;
 	GError *real_error;
 
+	g_message ("add_share() start");
+
 	if (throw_error_on_add) {
 		g_set_error (error,
 			     SHARES_ERROR,
 			     SHARES_ERROR_FAILED,
 			     _("Failed"));
+		g_message ("add_share() end FAIL");
 		return FALSE;
 	}
 
@@ -453,6 +490,8 @@ add_share (ShareInfo *info, GError **error)
 	copy = copy_share_info (info);
 	add_share_info_to_hashes (copy);
 
+	g_message ("add_share() end SUCCESS");
+
 	return TRUE;
 }
 
@@ -463,11 +502,14 @@ remove_share (const char *path, GError **error)
 	char *argv[2];
 	GError *real_error;
 
+	g_message ("remove_share() start");
+
 	if (throw_error_on_remove) {
 		g_set_error (error,
 			     SHARES_ERROR,
 			     SHARES_ERROR_FAILED,
 			     "Failed");
+		g_message ("remove_share() end FAIL");
 		return FALSE;
 	}
 
@@ -483,6 +525,7 @@ remove_share (const char *path, GError **error)
 			     display_name);
 		g_free (display_name);
 
+		g_message ("remove_share() end FAIL: path %s was not in our hashes", path);
 		return FALSE;
 	}
 
@@ -493,11 +536,14 @@ remove_share (const char *path, GError **error)
 	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, NULL, &real_error)) {
 		g_message ("Called \"net usershare delete\" but it failed: %s", real_error->message);
 		g_propagate_error (error, real_error);
+		g_message ("remove_share() end FAIL");
 		return FALSE;
 	}
 
 	remove_share_info_from_hashes (old_info);
 	shares_free_share_info (old_info);
+
+	g_message ("remove_share() end SUCCESS");
 
 	return TRUE;
 }
@@ -507,9 +553,13 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 {
 	ShareInfo *old_info;
 
+	g_message ("modify_share() start");
+
 	old_info = lookup_share_by_path (old_path);
-	if (old_info == NULL)
+	if (old_info == NULL) {
+		g_message ("modify_share() end; calling add_share() instead");
 		return add_share (info, error);
+	}
 
 	g_assert (old_info != NULL);
 
@@ -518,6 +568,7 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 			     SHARES_ERROR,
 			     SHARES_ERROR_FAILED,
 			     _("Cannot change the path of an existing share; please remove the old share first and add a new one"));
+		g_message ("modify_share() end FAIL: tried to change the path in a share!");
 		return FALSE;
 	}
 
@@ -526,6 +577,7 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 			     SHARES_ERROR,
 			     SHARES_ERROR_FAILED,
 			     "Failed");
+		g_message ("modify_share() end FAIL");
 		return FALSE;
 	}
 
@@ -535,9 +587,12 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 	 * to share names.  So, we must first remove the old share and then add the new/modified one.
 	 */
 
-	if (!remove_share (old_path, error))
+	if (!remove_share (old_path, error)) {
+		g_message ("modify_share() end FAIL: error when removing old share");
 		return FALSE;
+	}
 
+	g_message ("modify_share() end: will call add_share() with the new share info");
 	return add_share (info, error);
 }
 

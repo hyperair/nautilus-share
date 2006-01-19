@@ -1,5 +1,8 @@
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/shares.c: Add a bunch of debug logging code, enabled with
+	#ifdef VERBOSE.
+
 	* src/nautilus-share.c (share_this_folder_callback): Set the
 	page->standalone_window.
 	(PropertyPage): Add a standalone_window field.
