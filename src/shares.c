@@ -6,7 +6,7 @@
 #include <glib/gi18n-lib.h>
 #include "shares.h"
 
-#define DEBUG_SHARES
+#undef DEBUG_SHARES
 #ifdef DEBUG_SHARES
 #  define NET_USERSHARE_ARGV0 "debug-net-usershare"
 #else
