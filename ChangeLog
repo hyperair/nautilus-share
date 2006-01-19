@@ -1,5 +1,15 @@
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/nautilus-share.c (share_this_folder_callback): Set the
+	page->standalone_window.
+	(PropertyPage): Add a standalone_window field.
+	(button_apply_clicked_cb): Destroy the standalone_window if we
+	have it.
+	(property_page_commit): Oops, pass a NULL ShareInfo to
+	shares_modify_share() if we want to remove a share.
+
+2006-01-19  Federico Mena Quintero  <federico@ximian.com>
+
 	Finish the code for "net usershare add -l".  This makes "net
 	usershare" print back the info for the modified share; we use this
 	possibly-modified info to synchronize our view of the available

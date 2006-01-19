@@ -79,6 +79,8 @@ typedef struct {
   GtkWidget *button_cancel;
   GtkWidget *button_apply;
 
+  GtkWidget *standalone_window;
+
   gboolean was_initially_shared;
   gboolean is_dirty;
 } PropertyPage;
@@ -186,8 +188,11 @@ property_page_validate_fields (PropertyPage *page)
 static void
 property_page_commit (PropertyPage *page)
 {
+  gboolean is_shared;
   ShareInfo share_info;
   GError *error;
+
+  is_shared = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder));
 
   share_info.path = page->path;
   share_info.share_name = (char *) gtk_entry_get_text (GTK_ENTRY (page->entry_share_name));
@@ -195,7 +200,7 @@ property_page_commit (PropertyPage *page)
   share_info.is_writable = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro));
 
   error = NULL;
-  if (!shares_modify_share (share_info.path, &share_info, &error))
+  if (!shares_modify_share (share_info.path, is_shared ? &share_info : NULL, &error))
     {
       property_page_set_error (page, error->message);
       g_error_free (error);
@@ -402,6 +407,8 @@ button_apply_clicked_cb (GtkButton *button,
   page = data;
 
   property_page_commit (page);
+  if (page->standalone_window)
+    gtk_widget_destroy (page->standalone_window);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -836,6 +843,7 @@ share_this_folder_callback (NautilusMenuItem *item,
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   page = create_property_page (fileinfo);
+  page->standalone_window = window;
   g_signal_connect (page->button_cancel, "clicked",
 		    G_CALLBACK (button_cancel_clicked_cb), window);
 
