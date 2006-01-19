@@ -6,7 +6,7 @@
 #include <glib/gi18n-lib.h>
 #include "shares.h"
 
-#undef DEBUG_SHARES
+#define DEBUG_SHARES
 #ifdef DEBUG_SHARES
 #  define NET_USERSHARE_ARGV0 "debug-net-usershare"
 #else
@@ -306,8 +306,7 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 	info->comment = comment;
 	info->is_writable = is_writable;
 
-	g_hash_table_insert (path_share_info_hash, info->path, info);
-	g_hash_table_insert (share_name_share_info_hash, info->share_name, info);
+	add_share_info_to_hashes (info);
 }
 
 static gboolean
@@ -402,7 +401,7 @@ copy_share_info (ShareInfo *info)
 static gboolean
 add_share (ShareInfo *info, GError **error)
 {
-	char *argv[5];
+	char *argv[6];
 	ShareInfo *copy;
 	ShareInfo *old_info;
 	GError *real_error;
@@ -416,10 +415,15 @@ add_share (ShareInfo *info, GError **error)
 	}
 
 	argv[0] = "add";
-	argv[1] = info->share_name;
-	argv[2] = info->path;
-	argv[3] = info->comment;
-	argv[4] = info->is_writable ? "Everyone:F" : "Everyone:R";
+	argv[1] = "-l";
+	argv[2] = info->share_name;
+	argv[3] = info->path;
+	argv[4] = info->comment;
+	argv[5] = info->is_writable ? "Everyone:F" : "Everyone:R";
+
+	/* FIXME: read back a key file, since we have the -l option now.  Use
+	 * that to update our cache.
+	 */
 
 	real_error = NULL;
 	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, NULL, &real_error)) {
@@ -684,9 +688,10 @@ shares_get_share_info_for_share_name (const char *share_name, ShareInfo **ret_sh
  * @info: Info of the share to modify/add, or %NULL to delete a share.
  * @error: Location to store error, or #NULL.
  * 
- * Can add, modify, or delete shares.  To add a share, pass %NULL for @old_path, and a non-null @info.
- * To modify a share, pass a non-null @old_path and non-null @info.  To remove a share, pass a non-NULL
- * @old_path and a %NULL @info.
+ * Can add, modify, or delete shares.  To add a share, pass %NULL for @old_path,
+ * and a non-null @info.  To modify a share, pass a non-null @old_path and
+ * non-null @info; in this case, @info->path must have the same contents as
+ * @old_path.  To remove a share, pass a non-NULL @old_path and a %NULL @info.
  * 
  * Return value: TRUE if the share could be modified, FALSE otherwise.  If this returns
  * FALSE, then the error information will be placed in @error.

@@ -76,6 +76,8 @@ typedef struct {
   GtkWidget *checkbutton_share_rw_ro;
   GtkWidget *entry_share_comment;
   GtkWidget *label_status;
+  GtkWidget *button_cancel;
+  GtkWidget *button_apply;
 } PropertyPage;
 
 static void property_page_set_warning (PropertyPage *page);
@@ -335,8 +337,14 @@ modify_share_name_text_entry  (GtkEditable *editable,
 
   page = user_data;
 
+  /* This function does simple validation on the share name and sets the error label; just let it run
+   * and ignore the result value.
+   */
+  property_page_share_name_is_valid (page);
+#if 0
   if (property_page_share_name_is_valid (page))
     property_page_commit (page);
+#endif
 }
 
 static void
@@ -350,6 +358,7 @@ property_page_set_sensitivity (PropertyPage *page,
   gtk_widget_set_sensitive (page->checkbutton_share_rw_ro, sensitive);
 }
 
+#if 0
 /*--------------------------------------------------------------------------*/
 static void
 on_checkbutton_share_folder_toggled    (GtkToggleButton *togglebutton,
@@ -382,7 +391,7 @@ on_checkbutton_share_folder_toggled    (GtkToggleButton *togglebutton,
       nautilus_file_info_invalidate_extension_info (page->fileinfo);
     }
 }
-
+#endif
 
 /*--------------------------------------------------------------------------*/
 static gboolean
@@ -400,6 +409,7 @@ left_share_name_text_entry  (GtkWidget *widget,
   return FALSE;
 }
 
+#if 0
 /*--------------------------------------------------------------------------*/
 static void
 on_checkbutton_share_rw_ro_toggled     (GtkToggleButton *togglebutton,
@@ -410,6 +420,7 @@ on_checkbutton_share_rw_ro_toggled     (GtkToggleButton *togglebutton,
   page = user_data;
   property_page_commit (page);
 }
+#endif
 
 static void
 free_property_page_cb (gpointer data)
@@ -423,6 +434,17 @@ free_property_page_cb (gpointer data)
   g_object_unref (page->xml);
 
   g_free (page);
+}
+
+static void
+button_apply_clicked_cb (GtkButton *button,
+			 gpointer   data)
+{
+  PropertyPage *page;
+
+  page = data;
+
+  property_page_commit (page);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -472,6 +494,8 @@ create_property_page (NautilusFileInfo *fileinfo)
   page->entry_share_name = glade_xml_get_widget(page->xml,"entry_share_name");
   page->entry_share_comment = glade_xml_get_widget(page->xml,"entry_share_comment");
   page->label_status = glade_xml_get_widget(page->xml,"label_status");
+  page->button_cancel = glade_xml_get_widget(page->xml,"button_cancel");
+  page->button_apply = glade_xml_get_widget(page->xml,"button_apply");
 
   /* Sanity check so that we don't screw up the Glade file */
   g_assert (page->checkbutton_share_folder != NULL
@@ -480,7 +504,9 @@ create_property_page (NautilusFileInfo *fileinfo)
 	    && page->checkbutton_share_rw_ro != NULL
 	    && page->entry_share_name != NULL
 	    && page->entry_share_comment != NULL
-	    && page->label_status != NULL);
+	    && page->label_status != NULL
+	    && page->button_cancel != NULL
+	    && page->button_apply != NULL);
 
   /* Share name */
 
@@ -541,14 +567,15 @@ create_property_page (NautilusFileInfo *fileinfo)
                     G_CALLBACK (left_share_name_text_entry),
                     page);
 #endif
+
   g_signal_connect (page->entry_share_name, "changed",
                     G_CALLBACK (modify_share_name_text_entry),
                     page);
 
+#if 0
   g_signal_connect (page->entry_share_comment, "changed",
 		    G_CALLBACK (modify_share_comment_text_entry),
 		    page);
-
   g_signal_connect (page->checkbutton_share_folder, "toggled",
                     G_CALLBACK (on_checkbutton_share_folder_toggled),
                     page);
@@ -556,6 +583,10 @@ create_property_page (NautilusFileInfo *fileinfo)
   g_signal_connect (page->checkbutton_share_rw_ro, "toggled",
                     G_CALLBACK (on_checkbutton_share_rw_ro_toggled),
                     page);
+#endif
+
+  g_signal_connect (page->button_apply, "clicked",
+		    G_CALLBACK (button_apply_clicked_cb), page);
 
   if (share_info != NULL)
     shares_free_share_info (share_info);
@@ -643,7 +674,6 @@ get_share_info_for_file_info (NautilusFileInfo *file, ShareInfo **share_info, gb
 	}
       else
 	{
-	  g_assert (*share_info != NULL);
 	  *is_shareable = TRUE;
 	}
 
@@ -774,6 +804,7 @@ nautilus_share_get_property_pages (NautilusPropertyPageProvider *provider,
     shares_free_share_info (share_info);
 
   page = create_property_page (fileinfo);
+  gtk_widget_hide (page->button_cancel);
   
   pages = NULL;
   np_page = nautilus_property_page_new
@@ -816,10 +847,14 @@ nautilus_share_class_init (NautilusShareClass *class)
  * The function should return a GList of allocated NautilusMenuItem
  * items.
  */
-static void button_callback( GtkWidget *widget,
-                      gpointer   data )
+
+static void
+button_cancel_clicked_cb (GtkButton *button, gpointer data)
 {
-  gtk_widget_destroy((GtkWidget *)data);
+  GtkWidget *window;
+
+  window = GTK_WIDGET (data);
+  gtk_widget_destroy (window);
 }
 
 static void
@@ -829,19 +864,17 @@ share_this_folder_callback (NautilusMenuItem *item,
   NautilusFileInfo *fileinfo;
   PropertyPage *page;
   GtkWidget * window;
-  GtkWidget * button;
 
   fileinfo = NAUTILUS_FILE_INFO (user_data);
   g_assert (fileinfo != NULL);
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   page = create_property_page (fileinfo);
-  button = glade_xml_get_widget(page->xml,"button_close");
+  g_signal_connect (page->button_cancel, "clicked",
+		    G_CALLBACK (button_cancel_clicked_cb), window);
+
   gtk_container_add (GTK_CONTAINER (window), page->main);
-  gtk_widget_show (button);
   gtk_widget_show (window);
-  g_signal_connect (G_OBJECT (button), "clicked",
-		    G_CALLBACK (button_callback), window);
 }
 
 static GList *

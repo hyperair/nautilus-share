@@ -1,5 +1,40 @@
 2006-01-18  Federico Mena Quintero  <federico@ximian.com>
 
+	Make the standalone dialog and the property page explicit-apply
+	instead of instant-apply.
+
+	* interfaces/share-dialog.glade.in: Make the bottom separator
+	invisible.  Change the button's label to "Write changes to share";
+	add a Cancel button for use with the standalone dialog.  Add
+	underlined mnemonics.
+
+	* src/shares.c (add_share): Use "net usershare add -l" to have it
+	print back the canonicalized info for the share.
+	(add_key_group_to_hashes): Use add_share_info_to_hashes() instead
+	of adding the ShareInfo by hand.
+
+	* src/nautilus-share.c (get_share_info_for_file_info): Do not
+	assert that the share_info we get back exist; there's a race
+	condition in that the share could be removed between the time the
+	caller learns about it and the time we query for it.
+	(PropertyPage): Added fields for button_cancel and button_apply.
+	(create_property_page): Load the "button_cancel" and
+	"button_apply" widgets.
+	(create_property_page): Do not connect to "toggled" on the check
+	buttons; this won't be instant-apply.  Do not connect to "changed"
+	on the comment entry.
+	(on_checkbutton_share_rw_ro_toggled): #if-ed out
+	(on_checkbutton_share_folder_toggled): #if-ed out
+	(nautilus_share_get_property_pages): Hide the Cancel button.
+	(button_callback): Removed.
+	(share_this_folder_callback): Connect to the Cancel button so that
+	it destroys the standalone sharing window.
+	(create_property_page): Connect to button_apply.
+	(button_apply_clicked_cb): New callback; just commits the property
+	page.
+
+2006-01-18  Federico Mena Quintero  <federico@ximian.com>
+
 	* src/nautilus-share.c (NETWORK_SHARE_PREFIX): Ahem, I missed one
 	slash in "network:///".
 	(get_share_info_for_file_info): New function.  This is intended to
