@@ -1,5 +1,10 @@
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/nautilus-share.c (create_property_page): Turn on underlining
+	in the apply button label, and set its image explicitly.
+
+2006-01-19  Federico Mena Quintero  <federico@ximian.com>
+
 	* debug-net-usershare (add_share): Add a want_echo argument.
 	(toplevel): if the user specifies "add -l", pass want_echo=True to
 	add_share().
