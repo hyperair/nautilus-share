@@ -1,7 +1,38 @@
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 
+	Fine-tune the explicit-apply code.
+
 	* src/nautilus-share.c (create_property_page): Turn on underlining
 	in the apply button label, and set its image explicitly.
+	(nautilus_share_get_file_items): make the context menu item be
+	"Sharing Options" instead of just "Share".
+	(create_property_page): Oops, restore the "toggled" callback for
+	the share/don't whare checkbutton.
+	(on_checkbutton_share_folder_toggled): Simply call
+	property_page_set_sensitivity(); remove the instant-apply code.
+	(left_share_comment_text_entry): Removed unused function.
+	(modify_share_comment_text_entry): Removed unused function.
+	(modify_share_name_text_entry): Removed the instant-apply code.
+	(left_share_name_text_entry): Removed unused function.
+	(on_checkbutton_share_rw_ro_toggled): Removed unused function.
+	(create_property_page): Removed the instant-apply code.
+	(PropertyPage): Add a was_initially_shared field.  We use this to
+	know when to enable/disable the apply button.  Add an is_dirty
+	field to know when the other fields have changed.
+	(create_property_page): Set page->was_initially_shared
+	appropriately.
+	(modify_share_name_text_entry): Turn on page->is_dirty and call
+	property_page_check_sensitivity().
+	(modify_share_comment_text_entry): Likewise.
+	(on_checkbutton_rw_ro_toggled): Likewise; in addition, call
+	property_page_check_sensitivity().
+	(property_page_set_controls_sensitivity): Renamed from
+	property_page_set_sensitivity().
+	(property_page_check_sensitivity): New function; sets the
+	sensitivity of *all* the widgets based on the state of the
+	property page.
+	(on_checkbutton_share_folder_toggled): Simply use
+	property_page_check_sensitivity().
 
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 

@@ -78,6 +78,9 @@ typedef struct {
   GtkWidget *label_status;
   GtkWidget *button_cancel;
   GtkWidget *button_apply;
+
+  gboolean was_initially_shared;
+  gboolean is_dirty;
 } PropertyPage;
 
 static void property_page_set_warning (PropertyPage *page);
@@ -221,42 +224,6 @@ get_fullpath_from_fileinfo(NautilusFileInfo *fileinfo)
   return(fullpath);
 }
 
-/*--------------------------------------------------------------------------*/
-#if 0
-/* FMQ: FIXME: remove this function? */
-/* FMQ: this is a focus-out handler; the event type is wrong */
-static gboolean
-left_share_comment_text_entry  (GtkWidget *widget,
-				GdkEventCrossing *event,
-				gpointer user_data)
-{
-  /* FMQ: this now gets passed a PropertyPage! */
-  gchar *fullpath = (gchar *)user_data;
-  char *comment = (char *)gtk_entry_get_text((GtkEntry *)widget);
-
-  if(fullpath && comment)
-    {
-      /* check that the comment field is not empty */
-      if(strcmp(comment, ""))
-	smbparser_dbus_share_set_key(g_dbus,fullpath,"comment",comment);
-      else
-	smbparser_dbus_share_remove_key(g_dbus,fullpath,"comment");
-    }
-  smbparser_dbus_write(g_dbus);
-  return FALSE;
-}
-#endif
-
-static void
-modify_share_comment_text_entry  (GtkEditable *editable,
-				  gpointer user_data)
-{
-  PropertyPage *page;
-
-  page = user_data;
-
-  property_page_commit (page);
-}
 
 /*--------------------------------------------------------------------------*/
 static void
@@ -330,26 +297,8 @@ property_page_share_name_is_valid (PropertyPage *page)
 }
 
 static void
-modify_share_name_text_entry  (GtkEditable *editable,
-			       gpointer user_data)
-{
-  PropertyPage *page;
-
-  page = user_data;
-
-  /* This function does simple validation on the share name and sets the error label; just let it run
-   * and ignore the result value.
-   */
-  property_page_share_name_is_valid (page);
-#if 0
-  if (property_page_share_name_is_valid (page))
-    property_page_commit (page);
-#endif
-}
-
-static void
-property_page_set_sensitivity (PropertyPage *page,
-			       gboolean      sensitive)
+property_page_set_controls_sensitivity (PropertyPage *page,
+					gboolean      sensitive)
 {
   gtk_widget_set_sensitive (page->entry_share_name, sensitive);
   gtk_widget_set_sensitive (page->entry_share_comment, sensitive);
@@ -358,7 +307,53 @@ property_page_set_sensitivity (PropertyPage *page,
   gtk_widget_set_sensitive (page->checkbutton_share_rw_ro, sensitive);
 }
 
-#if 0
+static void
+property_page_check_sensitivity (PropertyPage *page)
+{
+  gboolean enabled;
+  gboolean apply_is_sensitive;
+
+  enabled = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder));
+  property_page_set_controls_sensitivity (page, enabled);
+
+  if (enabled)
+    apply_is_sensitive = page->is_dirty;
+  else
+    apply_is_sensitive = page->was_initially_shared;
+
+  gtk_widget_set_sensitive (page->button_apply, apply_is_sensitive);
+}
+
+static void
+modify_share_name_text_entry  (GtkEditable *editable,
+			       gpointer user_data)
+{
+  PropertyPage *page;
+
+  page = user_data;
+
+  page->is_dirty = TRUE;
+
+  /* This function does simple validation on the share name and sets the error
+   * label; just let it run and ignore the result value.
+   */
+  property_page_share_name_is_valid (page);
+
+  property_page_check_sensitivity (page);
+}
+
+static void
+modify_share_comment_text_entry  (GtkEditable *editable,
+				  gpointer user_data)
+{
+  PropertyPage *page;
+
+  page = user_data;
+
+  page->is_dirty = TRUE;
+  property_page_check_sensitivity (page);
+}
+
 /*--------------------------------------------------------------------------*/
 static void
 on_checkbutton_share_folder_toggled    (GtkToggleButton *togglebutton,
@@ -368,59 +363,21 @@ on_checkbutton_share_folder_toggled    (GtkToggleButton *togglebutton,
 
   page = user_data;
 
-  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder)))
-    {
-      property_page_set_sensitivity (page, TRUE);
-      property_page_commit (page);
-    }
-  else
-    {
-      GError *error;
-
-      /*  sharing button is inactive */
-      property_page_set_sensitivity (page, FALSE);
-
-      error = NULL;
-      if (!shares_modify_share (page->path, NULL, &error))
-	{
-	  property_page_set_error (page, error->message);
-	  g_error_free (error);
-	}
-
-      /* ask nautilus to update emblem */
-      nautilus_file_info_invalidate_extension_info (page->fileinfo);
-    }
-}
-#endif
-
-/*--------------------------------------------------------------------------*/
-static gboolean
-left_share_name_text_entry  (GtkWidget *widget,
-			     GdkEventFocus *event,
-			     gpointer user_data)
-{
-  PropertyPage *page;
-
-  page = user_data;
-
-  if (property_page_share_name_is_valid (page))
-    property_page_commit (page);
-
-  return FALSE;
+  property_page_check_sensitivity (page);
 }
 
-#if 0
-/*--------------------------------------------------------------------------*/
 static void
-on_checkbutton_share_rw_ro_toggled     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
+on_checkbutton_rw_ro_toggled    (GtkToggleButton *togglebutton,
+				 gpointer         user_data)
 {
   PropertyPage *page;
 
   page = user_data;
-  property_page_commit (page);
+
+  page->is_dirty = TRUE;
+
+  property_page_check_sensitivity (page);
 }
-#endif
 
 static void
 free_property_page_cb (gpointer data)
@@ -509,6 +466,9 @@ create_property_page (NautilusFileInfo *fileinfo)
 	    && page->button_cancel != NULL
 	    && page->button_apply != NULL);
 
+  if (share_info)
+    page->was_initially_shared = TRUE;
+
   /* Share name */
 
   if (share_info)
@@ -543,7 +503,6 @@ create_property_page (NautilusFileInfo *fileinfo)
   else
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder), FALSE);
-      property_page_set_sensitivity (page, FALSE);
     }
 
   /* Share name */
@@ -557,7 +516,7 @@ create_property_page (NautilusFileInfo *fileinfo)
   else
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro), FALSE);
 
-  /* Button label */
+  /* Apply button */
 
   if (share_info)
     apply_button_label = _("Modify _Share");
@@ -568,34 +527,29 @@ create_property_page (NautilusFileInfo *fileinfo)
   gtk_button_set_use_underline (GTK_BUTTON (page->button_apply), TRUE);
   gtk_button_set_image (GTK_BUTTON (page->button_apply), gtk_image_new_from_stock (GTK_STOCK_SAVE, GTK_ICON_SIZE_BUTTON));
 
+  gtk_widget_set_sensitive (page->button_apply, FALSE);
+
+  /* Sensitivity */
+
+  property_page_check_sensitivity (page);
+
   /* Signal handlers */
-#if 0
-  /* FMQ: FIXME: remove these? */
-  g_signal_connect (page->entry_share_comment,"focus-out-event",
-                    G_CALLBACK (left_share_comment_text_entry),
-                    page);
 
-  g_signal_connect (page->entry_share_name, "focus-out-event",
-                    G_CALLBACK (left_share_name_text_entry),
-                    page);
-#endif
-
-  g_signal_connect (page->entry_share_name, "changed",
-                    G_CALLBACK (modify_share_name_text_entry),
-                    page);
-
-#if 0
-  g_signal_connect (page->entry_share_comment, "changed",
-		    G_CALLBACK (modify_share_comment_text_entry),
-		    page);
   g_signal_connect (page->checkbutton_share_folder, "toggled",
                     G_CALLBACK (on_checkbutton_share_folder_toggled),
                     page);
 
   g_signal_connect (page->checkbutton_share_rw_ro, "toggled",
-                    G_CALLBACK (on_checkbutton_share_rw_ro_toggled),
+                    G_CALLBACK (on_checkbutton_rw_ro_toggled),
                     page);
-#endif
+
+  g_signal_connect (page->entry_share_name, "changed",
+                    G_CALLBACK (modify_share_name_text_entry),
+                    page);
+
+  g_signal_connect (page->entry_share_comment, "changed",
+		    G_CALLBACK (modify_share_comment_text_entry),
+		    page);
 
   g_signal_connect (page->button_apply, "clicked",
 		    G_CALLBACK (button_apply_clicked_cb), page);
@@ -920,7 +874,7 @@ nautilus_share_get_file_items (NautilusMenuProvider *provider,
   
   /* FMQ: change the label to "Share with Windows users"? */
   item = nautilus_menu_item_new ("NautilusShare::share",
-				 _("Share"),
+				 _("Sharing Options"),
 				 _("Share this Folder"),
 				 "stock_shared-by-me");
   g_signal_connect (item, "activate",
