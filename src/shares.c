@@ -263,12 +263,31 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 	char *acl;
 	gboolean is_writable;
 	ShareInfo *info;
+	ShareInfo *old_info;
+
+	/* Remove the old share based on the name */
+
+	old_info = lookup_share_by_share_name (group);
+	if (old_info) {
+		remove_share_info_from_hashes (old_info);
+		shares_free_share_info (old_info);
+	}
+
+	/* Start parsing, and remove the old share based on the path */
 
 	path = get_string_from_key_file (key_file, group, KEY_PATH);
 	if (!path) {
 		g_message ("group '%s' doesn't have a '%s' key!  Ignoring group.", group, KEY_PATH);
 		return;
 	}
+
+	old_info = lookup_share_by_path (path);
+	if (old_info) {
+		remove_share_info_from_hashes (old_info);
+		shares_free_share_info (old_info);
+	}
+
+	/* Finish parsing */
 
 	comment = get_string_from_key_file (key_file, group, KEY_COMMENT);
 
@@ -291,14 +310,7 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 	}
 
 	g_assert (path != NULL);
-
-	if (lookup_share_by_path (path) || lookup_share_by_share_name (group)) {
-		g_message ("Got a duplicate share called '%s' or with path '%s'!  Ignoring duplicate.",
-			   group, path);
-		g_free (path);
-		g_free (comment);
-		return;
-	}
+	g_assert (group != NULL);
 
 	info = g_new (ShareInfo, 1);
 	info->path = path;
@@ -309,14 +321,32 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 	add_share_info_to_hashes (info);
 }
 
+static void
+replace_shares_from_key_file (GKeyFile *key_file)
+{
+	gsize num_groups;
+	char **group_names;
+	gsize i;
+
+	group_names = g_key_file_get_groups (key_file, &num_groups);
+
+	/* FIXME: In add_key_group_to_hashes(), we simply ignore key groups
+	 * which have invalid data (i.e. no path).  We could probably accumulate a
+	 * GError with the list of invalid groups and propagate it upwards.
+	 */
+	for (i = 0; i < num_groups; i++) {
+		g_assert (group_names[i] != NULL);
+		add_key_group_to_hashes (key_file, group_names[i]);
+	}
+
+	g_strfreev (group_names);
+}
+
 static gboolean
 refresh_shares (GError **error)
 {
 	GKeyFile *key_file;
 	char *argv[1];
-	gsize num_groups;
-	char **group_names;
-	int i;
 	GError *real_error;
 
 	free_all_shares ();
@@ -340,18 +370,8 @@ refresh_shares (GError **error)
 
 	g_assert (key_file != NULL);
 
-	group_names = g_key_file_get_groups (key_file, &num_groups);
-
-	/* FIXME: In add_key_group_to_hashes(), we simply ignore key groups
-	 * which have invalid data (i.e. no path).  We could probably accumulate a
-	 * GError with the list of invalid groups and propagate it upwards.
-	 */
-	for (i = 0; i < num_groups; i++) {
-		g_assert (group_names[i] != NULL);
-		add_key_group_to_hashes (key_file, group_names[i]);
-	}
-
-	g_strfreev (group_names);
+	replace_shares_from_key_file (key_file);
+	g_key_file_free (key_file);
 
 	return TRUE;
 }
@@ -403,7 +423,7 @@ add_share (ShareInfo *info, GError **error)
 {
 	char *argv[6];
 	ShareInfo *copy;
-	ShareInfo *old_info;
+	GKeyFile *key_file;
 	GError *real_error;
 
 	if (throw_error_on_add) {
@@ -421,24 +441,14 @@ add_share (ShareInfo *info, GError **error)
 	argv[4] = info->comment;
 	argv[5] = info->is_writable ? "Everyone:F" : "Everyone:R";
 
-	/* FIXME: read back a key file, since we have the -l option now.  Use
-	 * that to update our cache.
-	 */
-
 	real_error = NULL;
-	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, NULL, &real_error)) {
+	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, &key_file, &real_error)) {
 		g_message ("Called \"net usershare add\" but it failed: %s", real_error->message);
 		g_propagate_error (error, real_error);
 		return FALSE;
 	}
 
-	old_info = lookup_share_by_path (info->path);
-	if (old_info) {
-		remove_share_info_from_hashes (old_info);
-		shares_free_share_info (old_info);
-	}
-
-	g_assert (lookup_share_by_share_name (info->share_name) == NULL);
+	replace_shares_from_key_file (key_file);
 
 	copy = copy_share_info (info);
 	add_share_info_to_hashes (copy);
@@ -519,6 +529,12 @@ modify_share (const char *old_path, ShareInfo *info, GError **error)
 		return FALSE;
 	}
 
+	/* Although "net usershare add" will modify an existing share if it has the same share name
+	 * as the one that gets passed in, our semantics are different.  We have a one-to-one mapping
+	 * between paths and share names; "net usershare" supports a one-to-many mapping from paths
+	 * to share names.  So, we must first remove the old share and then add the new/modified one.
+	 */
+
 	if (!remove_share (old_path, error))
 		return FALSE;
 
@@ -543,7 +559,7 @@ shares_error_quark (void)
 /**
  * shares_free_share_info:
  * @info: A #ShareInfo structure.
- * 
+ *
  * Frees a #ShareInfo structure.
  **/
 void
@@ -592,9 +608,9 @@ shares_get_path_is_shared (const char *path, gboolean *ret_is_shared, GError **e
  * will be non-NULL if the path is indeed shared, or #NULL if the path is not
  * shared.  You must free the non-NULL value with shares_free_share_info().
  * @error: Location to store error, or #NULL.
- * 
+ *
  * Queries the information for a shared path:  its share name, its read-only status, etc.
- * 
+ *
  * Return value: #TRUE if the info could be queried successfully, #FALSE
  * otherwise.  If this function returns #FALSE, an error code will be returned in the
  * @error argument, and *@ret_share_info will be set to #NULL.
@@ -625,7 +641,7 @@ shares_get_share_info_for_path (const char *path, ShareInfo **ret_share_info, GE
  * @ret_exists: Location to store return value; #TRUE if the share name exists, #FALSE otherwise.
  *
  * Queries whether a share name already exists in the user's list of shares.
- * 
+ *
  * Return value: #TRUE if the info could be queried successfully, #FALSE
  * otherwise.  If this function returns #FALSE, an error code will be returned in the
  * @error argument, and *@ret_exists will be set to #FALSE.
@@ -655,9 +671,9 @@ shares_get_share_name_exists (const char *share_name, gboolean *ret_exists, GErr
  * share has such name.  You must free the non-NULL value with
  * shares_free_share_info().
  * @error: Location to store error, or #NULL.
- * 
+ *
  * Queries the information for the share which has a specific name.
- * 
+ *
  * Return value: #TRUE if the info could be queried successfully, #FALSE
  * otherwise.  If this function returns #FALSE, an error code will be returned in the
  * @error argument, and *@ret_share_info will be set to #NULL.
@@ -687,12 +703,12 @@ shares_get_share_info_for_share_name (const char *share_name, ShareInfo **ret_sh
  * @old_path: Path of the share to modify, or %NULL.
  * @info: Info of the share to modify/add, or %NULL to delete a share.
  * @error: Location to store error, or #NULL.
- * 
+ *
  * Can add, modify, or delete shares.  To add a share, pass %NULL for @old_path,
  * and a non-null @info.  To modify a share, pass a non-null @old_path and
  * non-null @info; in this case, @info->path must have the same contents as
  * @old_path.  To remove a share, pass a non-NULL @old_path and a %NULL @info.
- * 
+ *
  * Return value: TRUE if the share could be modified, FALSE otherwise.  If this returns
  * FALSE, then the error information will be placed in @error.
  **/
@@ -736,7 +752,7 @@ copy_to_slist_cb (gpointer key, gpointer value, gpointer data)
  * @error: Location to store error, or #NULL.
  *
  * Gets the list of shared folders and their information.
- * 
+ *
  * Return value: #TRUE if the info could be queried successfully, #FALSE
  * otherwise.  If this function returns #FALSE, an error code will be returned in the
  * @error argument, and *@ret_info_list will be set to #NULL.
@@ -761,7 +777,7 @@ shares_get_share_info_list (GSList **ret_info_list, GError **error)
 /**
  * shares_free_share_info_list:
  * @list: List of #ShareInfo structures, or %NULL.
- * 
+ *
  * Frees a list of #ShareInfo structures as returned by shares_get_share_info_list().
  **/
 void

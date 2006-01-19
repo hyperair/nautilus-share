@@ -1,5 +1,22 @@
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 
+	Finish the code for "net usershare add -l".  This makes "net
+	usershare" print back the info for the modified share; we use this
+	possibly-modified info to synchronize our view of the available
+	shares, since it is the canonical info, instead of assuming that
+	what we passed to "net usershare" is the canonical info.
+
+	* src/shares.c (replace_shares_from_key_file): New function; takes
+	a GKeyFile and replaces the corresponding ShareInfo structures in
+	our hashes.
+	(refresh_shares): Simply use replace_shares_from_key_file().  Free
+	the goddamn key_file; we were leaking it.
+	(add_key_group_to_hashes): Remove old ShareInfo structures from
+	the hashes if they have the same share name or path as the ones
+	that come in the key file group.
+	(add_share): Use replace_shares_from_key_file(), since we use "net
+	usershare -l" now to get back the modified share info.
+
 	* src/nautilus-share.c (property_page_check_sensitivity): If
 	"share this folder" is enabled, also enable the apply button if
 	the folder was not initially shared (i.e. enable it not only if
