@@ -9,7 +9,9 @@ SHAREFILE="/home/federico/.debug-shares"
 def list_shares ():
     os.system ("cat %s" % (SHAREFILE))
 
-def add_share (sharename, path, comment, acl):
+def add_share (sharename, path, comment, acl, want_echo):
+    sharename = sharename.lower()
+
     parser = ConfigParser.ConfigParser ()
     if len (parser.read (SHAREFILE)) == 0:
         sys.exit (1)
@@ -25,8 +27,16 @@ def add_share (sharename, path, comment, acl):
     file = open (SHAREFILE, "w")
     parser.write (file)
     file.close ()
+
+    if want_echo:
+	print "[%s]" % sharename
+        print "path=%s" % path
+	print "comment=%s" % comment
+	print "usershare_acl=%s" % acl
     
 def delete_share (sharename):
+    sharename = sharename.lower()
+
     parser = ConfigParser.ConfigParser ()
     if len (parser.read (SHAREFILE)) == 0:
         sys.exit (1)
@@ -50,7 +60,19 @@ command = sys.argv[2] # argv[1] is "usershare"
 if command == "info":
     list_shares ()
 elif command == "add":
-    add_share (sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+    if sys.argv[3] == "-l":
+	i = 4;
+	want_echo = True
+    else:
+        i = 3;
+	want_echo = False
+
+    sharename = sys.argv[i]
+    path = sys.argv[i + 1]
+    comment = sys.argv[i + 2]
+    acl = sys.argv[i + 3]
+
+    add_share (sharename, path, comment, acl, want_echo)
 elif command == "delete":
     delete_share (sys.argv[3])
 else:

@@ -1,3 +1,18 @@
+2006-01-19  Federico Mena Quintero  <federico@ximian.com>
+
+	* debug-net-usershare (add_share): Add a want_echo argument.
+	(toplevel): if the user specifies "add -l", pass want_echo=True to
+	add_share().
+	(add_share): Make the sharename lowercase, like "net usershare" does.
+	(delete_share): Likewise.
+
+	* src/nautilus-share.c (create_property_page): Set the label of
+	the apply button as appropriate: "Create Share" / "Modify Share".
+
+	* interfaces/share-dialog.glade.in: Oops, show the Cancel dialog
+	by default; we'll hide it in the code as appropriate.  Fix the
+	capitalization of all the labels.
+
 2006-01-18  Federico Mena Quintero  <federico@ximian.com>
 
 	Make the standalone dialog and the property page explicit-apply

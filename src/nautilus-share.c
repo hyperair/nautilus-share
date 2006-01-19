@@ -457,6 +457,7 @@ create_property_page (NautilusFileInfo *fileinfo)
   char *share_name;
   gboolean free_share_name;
   const char *comment;
+  char *apply_button_label;
 
   page = g_new0 (PropertyPage, 1);
 
@@ -555,6 +556,15 @@ create_property_page (NautilusFileInfo *fileinfo)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro), TRUE);
   else
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro), FALSE);
+
+  /* Button label */
+
+  if (share_info)
+    apply_button_label = _("Modify _Share");
+  else
+    apply_button_label = _("Create _Share");
+
+  gtk_button_set_label (GTK_BUTTON (page->button_apply), apply_button_label);
 
   /* Signal handlers */
 #if 0
@@ -800,12 +810,12 @@ nautilus_share_get_property_pages (NautilusPropertyPageProvider *provider,
   if (!is_shareable)
     return NULL;
 
-  if (share_info)
-    shares_free_share_info (share_info);
-
   page = create_property_page (fileinfo);
   gtk_widget_hide (page->button_cancel);
   
+  if (share_info)
+    shares_free_share_info (share_info);
+
   pages = NULL;
   np_page = nautilus_property_page_new
     ("NautilusShare::property_page",
