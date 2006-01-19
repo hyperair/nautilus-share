@@ -317,7 +317,7 @@ property_page_check_sensitivity (PropertyPage *page)
   property_page_set_controls_sensitivity (page, enabled);
 
   if (enabled)
-    apply_is_sensitive = page->is_dirty;
+    apply_is_sensitive = page->is_dirty || !page->was_initially_shared;
   else
     apply_is_sensitive = page->was_initially_shared;
 

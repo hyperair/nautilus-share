@@ -1,5 +1,12 @@
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/nautilus-share.c (property_page_check_sensitivity): If
+	"share this folder" is enabled, also enable the apply button if
+	the folder was not initially shared (i.e. enable it not only if
+	the rest of the property page is dirty).
+
+2006-01-19  Federico Mena Quintero  <federico@ximian.com>
+
 	Fine-tune the explicit-apply code.
 
 	* src/nautilus-share.c (create_property_page): Turn on underlining
