@@ -98,10 +98,10 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 
 	g_message ("returned from spawn: %s: %s", retval ? "SUCCESS" : "FAIL", retval ? "" : real_error->message);
 
-	g_propagate_error (error, real_error);
-
-	if (!retval)
+	if (!retval) {
+		g_propagate_error (error, real_error);
 		goto out;
+	}
 
 	if (!WIFEXITED (exit_status)) {
 		g_message ("WIFEXITED(%d) was false!", exit_status);

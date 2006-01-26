@@ -1,5 +1,8 @@
 2006-01-26  Federico Mena Quintero  <federico@ximian.com>
 
+	* src/shares.c (net_usershare_run): Oops, don't propagate an error
+	when there wasn't one.
+
 	* interfaces/share-dialog.glade.in: Turn on word wrapping in the
 	label_status widget; make it left-justified, and selectable.
 
