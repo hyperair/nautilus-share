@@ -1,3 +1,10 @@
+2006-01-26  Federico Mena Quintero  <federico@ximian.com>
+
+	* src/nautilus-share.c (property_page_commit): Return a boolean
+	success code.
+	(button_apply_clicked_cb): Don't close the standalone window if we
+	fail to commit the page.  This lets the user see the error message.
+
 2006-01-19  Federico Mena Quintero  <federico@ximian.com>
 
 	* src/shares.c: Add a bunch of debug logging code, enabled with

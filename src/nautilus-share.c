@@ -185,12 +185,13 @@ property_page_validate_fields (PropertyPage *page)
     property_page_set_warning (page);
 }
 
-static void
+static gboolean
 property_page_commit (PropertyPage *page)
 {
   gboolean is_shared;
   ShareInfo share_info;
   GError *error;
+  gboolean retval;
 
   is_shared = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_folder));
 
@@ -200,7 +201,9 @@ property_page_commit (PropertyPage *page)
   share_info.is_writable = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro));
 
   error = NULL;
-  if (!shares_modify_share (share_info.path, is_shared ? &share_info : NULL, &error))
+  retval = shares_modify_share (share_info.path, is_shared ? &share_info : NULL, &error);
+
+  if (!retval)
     {
       property_page_set_error (page, error->message);
       g_error_free (error);
@@ -210,6 +213,8 @@ property_page_commit (PropertyPage *page)
       property_page_validate_fields (page);
       nautilus_file_info_invalidate_extension_info (page->fileinfo);
     }
+
+  return retval;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -406,9 +411,11 @@ button_apply_clicked_cb (GtkButton *button,
 
   page = data;
 
-  property_page_commit (page);
-  if (page->standalone_window)
-    gtk_widget_destroy (page->standalone_window);
+  if (property_page_commit (page))
+    {
+      if (page->standalone_window)
+	gtk_widget_destroy (page->standalone_window);
+    }
 }
 
 /*--------------------------------------------------------------------------*/
