@@ -113,27 +113,26 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	g_message ("exit code %d", exit_code);
 	if (exit_code != 0) {
 		char *str;
-		char *message_format;
+		char *message;
 
 		/* stderr_contents is in the system locale encoding, not UTF-8 */
 
 		str = g_locale_to_utf8 (stderr_contents, -1, NULL, NULL, NULL);
 
-		if (str[0] != 0)
-			message_format = _("'net usershare' returned error %d: %s");
+		if (str && str[0])
+			message = g_strdup_printf (_("'net usershare' returned error %d: %s"), exit_code, str);
 		else
-			message_format = _("'net usershare' returned error %d");
+			message = g_strdup_printf (_("'net usershare' returned error %d"), exit_code);
 
-		g_message ("will return GError with the message:");
-		g_message (message_format, str ? str : "???");
+		g_free (str);
 
 		g_set_error (error,
 			     G_SPAWN_ERROR,
 			     G_SPAWN_ERROR_FAILED,
-			     message_format,
-			     exit_code,
-			     str ? str : "???");
-		g_free (str);
+			     "%s",
+			     message);
+
+		g_free (message);
 
 		retval = FALSE;
 		goto out;
