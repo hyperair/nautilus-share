@@ -53,6 +53,9 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 	g_assert (argv != NULL);
 	g_assert (error == NULL || *error == NULL);
 
+	if (ret_key_file)
+		*ret_key_file = NULL;
+
 	/* Build command line */
 
 	real_argc = 2 + argc + 1; /* "net" "usershare" [argv] NULL */
@@ -105,6 +108,31 @@ net_usershare_run (int argc, char **argv, GKeyFile **ret_key_file, GError **erro
 
 	if (!WIFEXITED (exit_status)) {
 		g_message ("WIFEXITED(%d) was false!", exit_status);
+		retval = FALSE;
+
+		if (WIFSIGNALED (exit_status)) {
+			int signal_num;
+
+			signal_num = WTERMSIG (exit_status);
+			g_message ("Child got signal %d", signal_num);
+
+			g_set_error (error,
+				     SHARES_ERROR,
+				     SHARES_ERROR_FAILED,
+				     _("%s %s %s returned with signal %d"),
+				     real_argv[0],
+				     real_argv[1],
+				     real_argv[2],
+				     signal_num);
+		} else
+			g_set_error (error,
+				     SHARES_ERROR,
+				     SHARES_ERROR_FAILED,
+				     _("%s %s %s failed for an unknown reason"),
+				     real_argv[0],
+				     real_argv[1],
+				     real_argv[2]);
+
 		goto out;
 	}
 

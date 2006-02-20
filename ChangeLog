@@ -1,3 +1,9 @@
+2006-02-20  Federico Mena Quintero  <federico@novell.com>
+
+	* src/shares.c (net_usershare_run): Return an error when our
+	spawned command exits with a signal; we were returning success in
+	this case with an empty GKeyFile, which the caller doesn't like.
+
 2006-02-06  Federico Mena Quintero  <federico@ximian.com>
 
 	* src/shares.c (net_usershare_run): Oops, fix a printf format.
