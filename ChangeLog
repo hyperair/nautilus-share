@@ -1,5 +1,10 @@
 2006-02-20  Federico Mena Quintero  <federico@novell.com>
 
+	* src/nautilus-share.c (property_page_commit): Check that the
+	folder we are trying to share has enough "other" permissions.
+	Fixes https://bugzilla.novell.com/show_bug.cgi?id=149615
+	(check_sharing_permissions): New function.
+
 	* src/shares.c (net_usershare_run): Return an error when our
 	spawned command exits with a signal; we were returning success in
 	this case with an empty GKeyFile, which the caller doesn't like.
