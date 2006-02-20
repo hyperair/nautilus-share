@@ -275,7 +275,7 @@ check_sharing_permissions (GtkWidget *widget, const char *path, gboolean is_shar
     {
       message_missing_permissions (widget, path, need_r, need_w, need_x);
 
-      if (!chmod (path, new_mode))
+      if (chmod (path, new_mode) != 0)
 	error_when_changing_permissions (widget, path);
     }
 }
