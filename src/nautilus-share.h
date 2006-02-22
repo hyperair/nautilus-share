@@ -22,10 +22,7 @@
 #ifndef NAUTILUS_SHARE_H
 #define NAUTILUS_SHARE_H
 
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib.h>
 #include <glib-object.h>
-#include <dbus/dbus-glib-lowlevel.h>
 
 G_BEGIN_DECLS
 

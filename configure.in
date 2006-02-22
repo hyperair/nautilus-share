@@ -10,8 +10,6 @@ NAUTILUS_REQUIRED=2.10.0
 EEL_REQUIRED=2.10.0
 GLIB_REQUIRED=2.4.0
 LIBGLADE_REQUIRED=2.4.0
-LIBDAEMON_REQUIRED=0.6
-DBUS_REQUIRED=0.23
 
 DATADIRNAME=share
 
@@ -32,7 +30,6 @@ fi
 PKG_CHECK_MODULES(NAUTILUS, libnautilus-extension >= $NAUTILUS_REQUIRED eel-2.0 >= $EEL_REQUIRED)
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= $GLIB_REQUIRED)
 PKG_CHECK_MODULES(LIBGLADE, libglade-2.0 >= $LIBGLADE_REQUIRED)
-PKG_CHECK_MODULES(LIBDAEMON, [ libdaemon >= $LIBDAEMON_REQUIRED])
 
 AC_SUBST(NAUTILUS_CFLAGS)
 AC_SUBST(NAUTILUS_LIBS)
@@ -43,9 +40,6 @@ AC_SUBST(GLIB_LIBS)
 AC_SUBST(LIBGLADE_CFLAGS)
 AC_SUBST(LIBGLADE_LIBS)
 
-AC_SUBST(LIBDAEMON_CFLAGS)
-AC_SUBST(LIBDAEMON_LIBS)
-
 
 dnl ========================================================
 dnl This is to check correct gconf installation
@@ -54,30 +48,6 @@ dnl ========================================================
 SCHEMA_AGE=55
 AC_SUBST(SCHEMA_AGE)
 AM_GCONF_SOURCE_2
-
-
-dnl ========================================================
-dnl Set DBUS
-dnl ========================================================
-
-PKG_CHECK_MODULES(DBUS, dbus-1 >= $DBUS_REQUIRED dbus-glib-1 >= $DBUS_REQUIRED)
-
-AC_ARG_WITH(dbus-sys, [  --with-dbus-sys=<dir>   where D-BUS system.d directory is])
-
-if ! test -z "$with_dbus_sys" ; then
-    DBUS_SYS_DIR="$with_dbus_sys"
-else
-    DBUS_SYS_DIR="${sysconfdir}/dbus-1/system.d"
-fi
-AC_SUBST(DBUS_SYS_DIR)
-AC_DEFINE_UNQUOTED(DBUS_SYSTEMD_DIR, "$DBUS_SYS_DIR", [Where system.d dir for DBUS is])
-
-if pkg-config dbus-1 --atleast-version=0.30 ; then
-    AC_DEFINE(DBUS_USE_NEW_API, 1, [Whether to use the new API for DBUS 0.30])
-fi
-
-AC_SUBST(DBUS_CFLAGS)
-AC_SUBST(DBUS_LIBS)
 
 
 dnl ========================================================
@@ -121,8 +91,6 @@ dnl ========================================================
 AC_CONFIG_FILES([
   Makefile 
   src/Makefile
-  schemas/Makefile
-  dbus/Makefile
   pixmaps/Makefile
   interfaces/Makefile
   po/Makefile.in

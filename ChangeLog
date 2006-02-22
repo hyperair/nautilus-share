@@ -1,5 +1,16 @@
 2006-02-21  Federico Mena Quintero  <federico@novell.com>
 
+	* configure.in: Remove the requirements for d-bus and libdaemon.
+	Removed the subdirectories we don't need anymore.
+
+	* src/Makefile.am: Remove the smbshared entries; we only need the
+	extension's .so now.
+
+	* Makefile.am (SUBDIRS): Removed the dbus directory; we don't
+	install anything from there anymore.
+
+	* src/nautilus-share.h: Removed d-bus includes.
+
 	* src/nautilus-share.c (property_page_commit): Oops, fix reversed
 	return value when the user cancels the operation during the
 	permissions check.

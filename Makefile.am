@@ -1,4 +1,4 @@
-SUBDIRS = src pixmaps interfaces dbus po
+SUBDIRS = src pixmaps interfaces po
 
 EXTRA_DIST = \
         intltool-extract.in     \
