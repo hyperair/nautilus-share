@@ -1,5 +1,13 @@
 2006-02-21  Federico Mena Quintero  <federico@novell.com>
 
+	* src/nautilus-share.c (property_page_commit): Oops, fix reversed
+	return value when the user cancels the operation during the
+	permissions check.
+	(message_confirm_missing_permissions): Set the default response to
+	the "accept" button.
+
+2006-02-21  Federico Mena Quintero  <federico@novell.com>
+
 	* src/nautilus-share.c (confirm_sharing_permissions): Renamed from
 	check_sharing_permissions().  Now we let the user cancel the operation.
 	(message_confirm_missing_permissions): Renamed from

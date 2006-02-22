@@ -219,6 +219,7 @@ message_confirm_missing_permissions (GtkWidget *widget, const char *path,
 
   gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
   gtk_dialog_add_button (GTK_DIALOG (dialog), _("Add the permissions automatically"), GTK_RESPONSE_ACCEPT);
+  gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
 
   result = gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT;
   gtk_widget_destroy (dialog);
@@ -310,7 +311,7 @@ property_page_commit (PropertyPage *page)
   share_info.is_writable = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro));
 
   if (!confirm_sharing_permissions (page->main, page->path, is_shared, share_info.is_writable))
-    return TRUE; /* the user didn't want us to change his folder's permissions */
+    return FALSE; /* the user didn't want us to change his folder's permissions */
 
   error = NULL;
   retval = shares_modify_share (share_info.path, is_shared ? &share_info : NULL, &error);
