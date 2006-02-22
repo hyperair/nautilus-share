@@ -185,13 +185,14 @@ property_page_validate_fields (PropertyPage *page)
     property_page_set_warning (page);
 }
 
-static void
-message_missing_permissions (GtkWidget *widget, const char *path,
-			     gboolean need_r, gboolean need_w, gboolean need_x)
+static gboolean
+message_confirm_missing_permissions (GtkWidget *widget, const char *path,
+				     gboolean need_r, gboolean need_w, gboolean need_x)
 {
   GtkWidget *toplevel;
   GtkWidget *dialog;
   char *display_name;
+  gboolean result;
 
   toplevel = gtk_widget_get_toplevel (widget);
   if (!GTK_IS_WINDOW (toplevel))
@@ -201,21 +202,28 @@ message_missing_permissions (GtkWidget *widget, const char *path,
 
   dialog = gtk_message_dialog_new (toplevel ? GTK_WINDOW (toplevel) : NULL,
 				   0,
-				   GTK_MESSAGE_INFO,
-				   GTK_BUTTONS_OK,
-				   _("The folder \"%s\" has insufficient permissions for sharing"),
+				   GTK_MESSAGE_QUESTION,
+				   GTK_BUTTONS_NONE,
+				   _("Nautilus needs to add some permissions to your folder \"%s\" in order to share it"),
 				   display_name);
-  g_free (display_name);
 
   gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-					    _("Nautilus will add the following permissions automatically:\n"
-					      "%s%s%s"),
+					    _("The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+					      "%s%s%s"
+					      "Do you want Nautilus to add these permissions to the folder automatically?"),
+					    display_name,
 					    need_r ? _("  - read permission by others\n") : "",
 					    need_w ? _("  - write permission by others\n") : "",
 					    need_x ? _("  - execute permission by others\n") : "");
+  g_free (display_name);
 
-  gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+  gtk_dialog_add_button (GTK_DIALOG (dialog), _("Add the permissions automatically"), GTK_RESPONSE_ACCEPT);
+
+  result = gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT;
   gtk_widget_destroy (dialog);
+
+  return result;
 }
 
 static void
@@ -243,8 +251,8 @@ error_when_changing_permissions (GtkWidget *widget, const char *path)
   gtk_widget_destroy (dialog);
 }
 
-static void
-check_sharing_permissions (GtkWidget *widget, const char *path, gboolean is_shared, gboolean is_writable)
+static gboolean
+confirm_sharing_permissions (GtkWidget *widget, const char *path, gboolean is_shared, gboolean is_writable)
 {
   struct stat st;
   mode_t mode, new_mode;
@@ -253,10 +261,10 @@ check_sharing_permissions (GtkWidget *widget, const char *path, gboolean is_shar
   gboolean need_x;
 
   if (!is_shared)
-    return;
+    return TRUE;
 
   if (stat (path, &st) != 0)
-    return; /* We'll just let "net usershare" give back an error if the file disappears */
+    return TRUE; /* We'll just let "net usershare" give back an error if the file disappears */
 
   mode = st.st_mode;
   new_mode = mode;
@@ -273,11 +281,17 @@ check_sharing_permissions (GtkWidget *widget, const char *path, gboolean is_shar
 
   if (need_r || need_w || need_x)
     {
-      message_missing_permissions (widget, path, need_r, need_w, need_x);
+      if (!message_confirm_missing_permissions (widget, path, need_r, need_w, need_x))
+	return FALSE;
 
       if (chmod (path, new_mode) != 0)
-	error_when_changing_permissions (widget, path);
+	{
+	  error_when_changing_permissions (widget, path);
+	  return FALSE;
+	}
     }
+
+  return TRUE;
 }
 
 static gboolean
@@ -295,7 +309,8 @@ property_page_commit (PropertyPage *page)
   share_info.comment = (char *) gtk_entry_get_text (GTK_ENTRY (page->entry_share_comment));
   share_info.is_writable = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro));
 
-  check_sharing_permissions (page->main, page->path, is_shared, share_info.is_writable);
+  if (!confirm_sharing_permissions (page->main, page->path, is_shared, share_info.is_writable))
+    return TRUE; /* the user didn't want us to change his folder's permissions */
 
   error = NULL;
   retval = shares_modify_share (share_info.path, is_shared ? &share_info : NULL, &error);
