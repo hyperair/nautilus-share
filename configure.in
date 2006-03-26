@@ -1,8 +1,9 @@
-AC_INIT([nautilus-share],[0.6.4])
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
-
-AM_MAINTAINER_MODE
+AC_PREREQ(2.57)
+AC_INIT([nautilus-share],[0.7.0])
+AC_CONFIG_SRCDIR([src/nautilus-share.c])
 AC_CONFIG_HEADERS([config.h])
+AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
+
 
 AC_PROG_INTLTOOL([0.29])
 
@@ -42,16 +43,7 @@ AC_SUBST(LIBGLADE_LIBS)
 
 
 dnl ========================================================
-dnl This is to check correct gconf installation
-dnl ========================================================
-
-SCHEMA_AGE=55
-AC_SUBST(SCHEMA_AGE)
-AM_GCONF_SOURCE_2
-
-
-dnl ========================================================
-dnl Set SCRIPTS_DIR & PIXMAPS_DIR 
+dnl Set PIXMAPS_DIR 
 dnl ========================================================
 
 if test "x${prefix}" = "xNONE"; then

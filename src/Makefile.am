@@ -1,7 +1,6 @@
 libnautilus_share_la_CFLAGS =				\
 	-Wall						\
 	-DG_LOG_DOMAIN=\"Nautilus-Share\"		\
-	-DDBUS_API_SUBJECT_TO_CHANGE			\
 	-DDATADIR=\"$(datadir)\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -23,4 +22,4 @@ libnautilus_share_la_SOURCES =  \
 	shares.h
 
 libnautilus_share_la_LDFLAGS = -module -avoid-version
-libnautilus_share_la_LIBADD  = $(GLIB_LIBS) $(NAUTILUS_LIBS) $(DBUS_LIBS) $(LIBGLADE_LIBS)
+libnautilus_share_la_LIBADD  = $(GLIB_LIBS) $(NAUTILUS_LIBS) $(LIBGLADE_LIBS)
