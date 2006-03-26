@@ -1,3 +1,10 @@
+nautilus-share (0.7.0-0) unstable; urgency=low
+
+  * New Release
+  * use the new "net usershare" feature from samba
+	
+ -- Sebastien ESTIENNE <sebastien.estienne@gmail.com>  Sun, 26 Mar 2006 16:19:40 +0200
+
 nautilus-share (0.6.3-0ethium1) unstable; urgency=low
 
   * New Release
