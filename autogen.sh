@@ -51,6 +51,8 @@ else
 
     test "x$LIBTOOLIZE" = "x" && LIBTOOLIZE=libtoolize
 
+    glib-gettextize -c -f
+    intltoolize --automake -c -f  
     "$LIBTOOLIZE" -c --force
     run_versioned aclocal "$VERSION"
     run_versioned autoconf 2.59 -Wall

@@ -1,1 +1,0 @@
-cp emblem-shared.png emblem-shared.icon /usr/share/icons/gnome/48x48/emblems/
