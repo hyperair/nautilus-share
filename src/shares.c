@@ -480,12 +480,93 @@ copy_share_info (ShareInfo *info)
 }
 
 static gboolean
+samba_configuration_supports_guest_ok (gboolean *supports_guest_ok_ret, GError **error)
+{
+	gboolean retval;
+	gboolean result;
+	char *stdout_contents;
+	char *stderr_contents;
+	int exit_status;
+	int exit_code;
+
+	*supports_guest_ok_ret = FALSE;
+
+	result = g_spawn_command_line_sync ("testparm -s --parameter-name='usershare allow guests'",
+					    &stdout_contents,
+					    &stderr_contents,
+					    &exit_status,
+					    error);
+	if (!result)
+		return FALSE;
+
+	retval = FALSE;
+
+	if (!WIFEXITED (exit_status)) {
+		if (WIFSIGNALED (exit_status)) {
+			int signal_num;
+
+			signal_num = WTERMSIG (exit_status);
+			g_set_error (error,
+				     SHARES_ERROR,
+				     SHARES_ERROR_FAILED,
+				     _("Samba's testparm returned with signal %d"),
+				     signal_num);
+		} else
+			g_set_error (error,
+				     SHARES_ERROR,
+				     SHARES_ERROR_FAILED,
+				     _("Samba's testparm failed for an unknown reason"));
+
+		goto out;
+	}
+
+	exit_code = WEXITSTATUS (exit_status);
+	if (exit_code != 0) {
+		char *str;
+		char *message;
+
+		/* stderr_contents is in the system locale encoding, not UTF-8 */
+
+		str = g_locale_to_utf8 (stderr_contents, -1, NULL, NULL, NULL);
+
+		if (str && str[0])
+			message = g_strdup_printf (_("Samba's testparm returned error %d: %s"), exit_code, str);
+		else
+			message = g_strdup_printf (_("Samba's testparm returned error %d"), exit_code);
+
+		g_free (str);
+
+		g_set_error (error,
+			     G_SPAWN_ERROR,
+			     G_SPAWN_ERROR_FAILED,
+			     "%s",
+			     message);
+
+		g_free (message);
+
+		goto out;
+	}
+
+	retval = TRUE;
+	*supports_guest_ok_ret = (g_ascii_strncasecmp (stdout_contents, "Yes", 3) == 0);
+
+ out:
+	g_free (stdout_contents);
+	g_free (stderr_contents);
+
+	return retval;
+}
+
+static gboolean
 add_share (ShareInfo *info, GError **error)
 {
-	char *argv[6];
+	char *argv[7];
+	int argc;
 	ShareInfo *copy;
 	GKeyFile *key_file;
 	GError *real_error;
+	gboolean supports_success;
+	gboolean supports_guest_ok;
 
 	g_message ("add_share() start");
 
@@ -498,6 +579,10 @@ add_share (ShareInfo *info, GError **error)
 		return FALSE;
 	}
 
+	supports_success = samba_configuration_supports_guest_ok (&supports_guest_ok, error);
+	if (!supports_success)
+		return FALSE;
+
 	argv[0] = "add";
 	argv[1] = "-l";
 	argv[2] = info->share_name;
@@ -505,8 +590,14 @@ add_share (ShareInfo *info, GError **error)
 	argv[4] = info->comment;
 	argv[5] = info->is_writable ? "Everyone:F" : "Everyone:R";
 
+	if (supports_guest_ok) {
+		argv[6] = "guest_ok=y";
+		argc = 7;
+	} else
+		argc = 6;
+
 	real_error = NULL;
-	if (!net_usershare_run (G_N_ELEMENTS (argv), argv, &key_file, &real_error)) {
+	if (!net_usershare_run (argc, argv, &key_file, &real_error)) {
 		g_message ("Called \"net usershare add\" but it failed: %s", real_error->message);
 		g_propagate_error (error, real_error);
 		return FALSE;

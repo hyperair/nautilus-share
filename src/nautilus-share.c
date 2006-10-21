@@ -1,6 +1,6 @@
 /* nautilus-share -- Nautilus File Sharing Extension
  *
- * Sebastien Estienne <sebest@ethium.net>
+ * Sebastien Estienne <sebastien.estienne@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,10 @@
 #include "shares.h"
 
 
+#define NEED_ALWAYS_MASK      (S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH)	/* all usershares need go+rx */
+#define NEED_IF_WRITABLE_MASK (S_IWGRP | S_IWOTH)			/* writable usershares need go+w additionally*/
+#define NEED_ALL_MASK         (NEED_ALWAYS_MASK | NEED_IF_WRITABLE_MASK)
+
 static GObjectClass *parent_class;
 
 /* Structure to hold all the information for a share's property page.  If
@@ -82,6 +86,7 @@ typedef struct {
   GtkWidget *standalone_window;
 
   gboolean was_initially_shared;
+  gboolean was_writable;
   gboolean is_dirty;
 } PropertyPage;
 
@@ -103,8 +108,7 @@ property_page_validate_fields (PropertyPage *page)
 }
 
 static gboolean
-message_confirm_missing_permissions (GtkWidget *widget, const char *path,
-				     gboolean need_r, gboolean need_w, gboolean need_x)
+message_confirm_missing_permissions (GtkWidget *widget, const char *path, mode_t need_mask)
 {
   GtkWidget *toplevel;
   GtkWidget *dialog;
@@ -124,14 +128,18 @@ message_confirm_missing_permissions (GtkWidget *widget, const char *path,
 				   _("Nautilus needs to add some permissions to your folder \"%s\" in order to share it"),
 				   display_name);
 
+  /* FIXME: the following message only mentions "permission by others".  We
+   * should probably be more explicit and mention group/other permissions.
+   * We'll be able to do that after the period of string freeze.
+   */
   gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 					    _("The folder \"%s\" needs the following extra permissions for sharing to work:\n"
 					      "%s%s%s"
 					      "Do you want Nautilus to add these permissions to the folder automatically?"),
 					    display_name,
-					    need_r ? _("  - read permission by others\n") : "",
-					    need_w ? _("  - write permission by others\n") : "",
-					    need_x ? _("  - execute permission by others\n") : "");
+					    (need_mask & (S_IRGRP | S_IROTH)) ? _("  - read permission by others\n") : "",
+					    (need_mask & (S_IWGRP | S_IWOTH)) ? _("  - write permission by others\n") : "",
+					    (need_mask & (S_IXGRP | S_IXOTH)) ? _("  - execute permission by others\n") : "");
   g_free (display_name);
 
   gtk_dialog_add_button (GTK_DIALOG (dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
@@ -169,47 +177,194 @@ error_when_changing_permissions (GtkWidget *widget, const char *path)
   gtk_widget_destroy (dialog);
 }
 
-static gboolean
+static char *
+get_key_file_path (void)
+{
+  return g_build_filename (g_get_home_dir (), ".gnome2", "nautilus-share-modified-permissions", NULL);
+}
+
+static void
+save_key_file (const char *filename, GKeyFile *key_file)
+{
+  char *contents;
+  gsize length;
+
+  /* NULL GError */
+  contents = g_key_file_to_data (key_file, &length, NULL);
+  if (!contents)
+    return;
+
+  /* NULL GError */
+  g_file_set_contents (filename, contents, length, NULL);
+
+  g_free (contents);
+}
+
+static void
+save_changed_permissions (const char *path, mode_t need_mask)
+{
+  GKeyFile *key_file;
+  char *key_file_path;
+  char str[50];
+
+  key_file = g_key_file_new ();
+  key_file_path = get_key_file_path ();
+
+  /* NULL GError
+   *
+   * We don't check the return value of this.  If the file doesn't exist, we'll
+   * simply want to create it.
+   */
+  g_key_file_load_from_file (key_file, key_file_path, 0, NULL);
+
+  g_snprintf (str, sizeof (str), "%o", (guint) need_mask); /* octal, baby */
+  g_key_file_set_string (key_file, path, "need_mask", str);
+
+  save_key_file (key_file_path, key_file);
+
+  g_key_file_free (key_file);
+  g_free (key_file_path);
+}
+
+static void
+remove_permissions (const char *path, mode_t need_mask)
+{
+  struct stat st;
+  mode_t new_mode;
+
+  if (need_mask == 0)
+    return;
+
+  if (stat (path, &st) != 0)
+    return;
+
+  new_mode = st.st_mode & ~need_mask;
+
+  /* Bleah, no error checking */
+  chmod (path, new_mode);
+}
+
+static void
+remove_from_saved_permissions (const char *path, mode_t remove_mask)
+{
+  GKeyFile *key_file;
+  char *key_file_path;
+
+  if (remove_mask == 0)
+    return;
+
+  key_file = g_key_file_new ();
+  key_file_path = get_key_file_path ();
+
+  if (g_key_file_load_from_file (key_file, key_file_path, 0, NULL))
+    {
+      mode_t need_mask;
+      mode_t remove_from_current_mask;
+      char *str;
+
+      need_mask = 0;
+
+      /* NULL GError */
+      str = g_key_file_get_string (key_file, path, "need_mask", NULL);
+
+      if (str)
+	{
+	  guint i;
+
+	  if (sscanf (str, "%o", &i) == 1) /* octal */
+	    need_mask = i;
+
+	  g_free (str);
+	}
+
+      remove_from_current_mask = need_mask & remove_mask;
+      remove_permissions (path, remove_from_current_mask);
+
+      need_mask &= ~remove_mask;
+
+      if (need_mask == 0)
+	{
+	  /* NULL GError */
+	  g_key_file_remove_group (key_file, path, NULL);
+	}
+      else
+	{
+	  char buf[50];
+
+	  g_snprintf (buf, sizeof (buf), "%o", (guint) need_mask); /* octal */
+	  g_key_file_set_string (key_file, path, "need_mask", buf);
+	}
+
+      save_key_file (key_file_path, key_file);
+    }
+
+  g_key_file_free (key_file);
+  g_free (key_file_path);
+}
+
+static void
+restore_saved_permissions (const char *path)
+{
+  remove_from_saved_permissions (path, NEED_ALL_MASK);
+}
+
+static void
+restore_write_permissions (const char *path)
+{
+  remove_from_saved_permissions (path, NEED_IF_WRITABLE_MASK);
+}
+
+typedef enum {
+  CONFIRM_CANCEL_OR_ERROR,
+  CONFIRM_NO_MODIFICATIONS,
+  CONFIRM_MODIFIED
+} ConfirmPermissionsStatus;
+
+static ConfirmPermissionsStatus
 confirm_sharing_permissions (GtkWidget *widget, const char *path, gboolean is_shared, gboolean is_writable)
 {
   struct stat st;
-  mode_t mode, new_mode;
-  gboolean need_r;
-  gboolean need_w;
-  gboolean need_x;
+  mode_t mode, new_mode, need_mask;
 
   if (!is_shared)
-    return TRUE;
+    return CONFIRM_NO_MODIFICATIONS;
 
   if (stat (path, &st) != 0)
-    return TRUE; /* We'll just let "net usershare" give back an error if the file disappears */
+    return CONFIRM_NO_MODIFICATIONS; /* We'll just let "net usershare" give back an error if the file disappears */
 
   mode = st.st_mode;
-  new_mode = mode;
+  new_mode = mode | NEED_ALWAYS_MASK;
 
-  need_r = (mode & S_IROTH) == 0;
-  new_mode |= S_IROTH;
+  if (is_writable)
+    new_mode |= NEED_IF_WRITABLE_MASK;
 
-  need_w = is_writable && (mode & S_IWOTH) == 0;
-  if (need_w)
-    new_mode |= S_IWOTH;
+  need_mask = new_mode & ~mode;
 
-  need_x = (mode & S_IXOTH) == 0;
-  new_mode |= S_IXOTH;
-
-  if (need_r || need_w || need_x)
+  if (need_mask != 0)
     {
-      if (!message_confirm_missing_permissions (widget, path, need_r, need_w, need_x))
-	return FALSE;
+      g_assert (mode != new_mode);
+
+      if (!message_confirm_missing_permissions (widget, path, need_mask))
+	return CONFIRM_CANCEL_OR_ERROR;
 
       if (chmod (path, new_mode) != 0)
 	{
 	  error_when_changing_permissions (widget, path);
-	  return FALSE;
+	  return CONFIRM_CANCEL_OR_ERROR;
 	}
+
+      save_changed_permissions (path, need_mask);
+
+      return CONFIRM_MODIFIED;
+    }
+  else
+    {
+      g_assert (mode == new_mode);
+      return CONFIRM_NO_MODIFICATIONS;
     }
 
-  return TRUE;
+  g_assert_not_reached ();
+  return CONFIRM_CANCEL_OR_ERROR;
 }
 
 static gboolean
@@ -217,6 +372,7 @@ property_page_commit (PropertyPage *page)
 {
   gboolean is_shared;
   ShareInfo share_info;
+  ConfirmPermissionsStatus status;
   GError *error;
   gboolean retval;
 
@@ -227,7 +383,12 @@ property_page_commit (PropertyPage *page)
   share_info.comment = (char *) gtk_entry_get_text (GTK_ENTRY (page->entry_share_comment));
   share_info.is_writable = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro));
 
-  if (!confirm_sharing_permissions (page->main, page->path, is_shared, share_info.is_writable))
+  /* Do we need to unset the write permissions that we added in the past? */
+  if (is_shared && page->was_writable && !share_info.is_writable)
+    restore_write_permissions (page->path);
+
+  status = confirm_sharing_permissions (page->main, page->path, is_shared, share_info.is_writable);
+  if (status == CONFIRM_CANCEL_OR_ERROR)
     return FALSE; /* the user didn't want us to change his folder's permissions */
 
   error = NULL;
@@ -237,12 +398,19 @@ property_page_commit (PropertyPage *page)
     {
       property_page_set_error (page, error->message);
       g_error_free (error);
+
+      /* Since the operation failed, we restore things to the way they were */
+      if (status == CONFIRM_MODIFIED)
+	restore_saved_permissions (page->path);
     }
   else
     {
       property_page_validate_fields (page);
       nautilus_file_info_invalidate_extension_info (page->fileinfo);
     }
+
+  if (!is_shared)
+    restore_saved_permissions (page->path);
 
   return retval;
 }
@@ -511,7 +679,10 @@ create_property_page (NautilusFileInfo *fileinfo)
 	    && page->button_apply != NULL);
 
   if (share_info)
-    page->was_initially_shared = TRUE;
+    {
+      page->was_initially_shared = TRUE;
+      page->was_writable = share_info->is_writable;
+    }
 
   /* Share name */
 

@@ -1,3 +1,10 @@
+nautilus-share (0.7.1-0) unstable; urgency=low
+
+  * New Release
+  * added patches made by novell
+	
+ -- Sebastien ESTIENNE <sebastien.estienne@gmail.com>  Sat, 21 Oct 2006 12:39:36 +0200
+
 nautilus-share (0.7.0-0) unstable; urgency=low
 
   * New Release

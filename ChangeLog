@@ -1,3 +1,68 @@
+2006-06-14  Federico Mena Quintero  <federico@novell.com>
+
+	Fix https://bugzilla.novell.com/show_bug.cgi?id=183413:
+
+	* src/nautilus-share.c (PropertyPage): Add a "was_writable"
+	field.  We'll use this to know if we need to change the folder's
+	permissions once share gets modified:  we want to be able to
+	remove write permission as soon as possible if the share gets
+	modified to be read-only.
+	(create_property_page): Set page->was_writable.
+	(NEED_ALWAYS_MASK, NEED_IF_WRITABLE_MASK, NEED_ALL_MASK): New
+	macros for the sets of permissions that we may need to change in
+	the usershared folder.
+	(remove_from_saved_permissions): New function.  Removes a subset
+	of permissions from the ones we had saved previously.
+	(restore_write_permissions): New helper function.
+	(restore_saved_permissions): Use remove_from_saved_permissions()
+	with NEED_ALL_MASK so that we remove all the permissions that we
+	added previously.
+	(property_page_commit): If the page is no longer writable, restore
+	the write permissions that we added.
+
+2006-06-08  Federico Mena Quintero  <federico@novell.com>
+
+	Fix https://bugzilla.novell.com/show_bug.cgi?id=181811:
+
+	* src/shares.c (samba_configuration_supports_guest_ok): New
+	function.  Calls "testparm -s --parameter-name='usershare allow
+	guests'" to see if Samba is configured to support "guest_ok=y"
+	when calling "net usershare".
+	(add_share): Call samba_configuration_supports_guest_ok(), and
+	then add "guest_ok=y" to the "net usershare" command line if
+	appropriate.
+
+	* src/nautilus-share.c (confirm_sharing_permissions): For
+	read-only usershares, we need go+rx permissions on the shared
+	folder.  For writable usershares, we also need go+w.  Check the
+	group permissions instead of just the other ones.
+	(message_confirm_missing_permissions): Check the group permissions
+	as well as the other permissions.
+	(save_changed_permissions): Save the mask of needed permissions in
+	a single key, instead of using three separate keys for r/w/x.
+	(remove_permissions): Use a mask of needed permissions rather than
+	individual flags.
+	(restore_saved_permissions): Likewise.  Also, read the octal
+	string that was saved in save_changed_permissions().
+
+2006-05-03  Federico Mena Quintero  <federico@novell.com>
+
+	Fix https://bugzilla.novell.com/show_bug.cgi?id=170212 - restore
+	the permissions of folders when unsharing them if we had to modify
+	them.
+
+	* src/nautilus-share.c (save_changed_permissions): New function;
+	creates a GKeyFile in
+	~/.gnome2/nautilus-share-modified-permissions to save a list of
+	the folders for which we had to add permissions.
+	(restore_saved_permissions): New function; the counterpart to
+	restore_saved_permissions().  Restores the permissions of a
+	directory.
+	(confirm_sharing_permissions): Call save_changed_permissions()
+	after chmod() succeeds.  Return an enum rather than a boolean.
+	(property_page_commit): Call restore_saved_permissions() if we are
+	unsharing a folder, or if we failed to share the folder.
+
 2006-02-21  Federico Mena Quintero  <federico@novell.com>
 
 	* configure.in: Remove the requirements for d-bus and libdaemon.
