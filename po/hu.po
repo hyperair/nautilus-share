@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: new\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-04-05 03:35+0100\n"
-"PO-Revision-Date: 2007-04-06 03:13+0200\n"
+"PO-Revision-Date: 2007-04-06 03:36+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team:  <hu@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -82,11 +82,11 @@ msgstr "Hiba történt a megosztás információinak lekérdezése közben"
 
 #: ../src/nautilus-share.c:737
 msgid "Modify _Share"
-msgstr "Mego_sztás módosítása"
+msgstr "Mó_dosítás"
 
 #: ../src/nautilus-share.c:739
 msgid "Create _Share"
-msgstr "Megosztás _létrehozása"
+msgstr "_Megosztás"
 
 #: ../src/nautilus-share.c:993
 msgid "Share"
@@ -94,7 +94,7 @@ msgstr "Megosztás"
 
 #: ../src/nautilus-share.c:1093
 msgid "Sharing Options"
-msgstr "Megosztások beállítása"
+msgstr "Megosztás beállításai"
 
 #: ../src/nautilus-share.c:1094
 msgid "Share this Folder"
@@ -162,7 +162,7 @@ msgstr "A megosztás útvonala nem változtatható meg, először vonja vissza a
 
 #: ../interfaces/share-dialog.glade.in.h:1
 msgid "<big><b>Folder Sharing</b></big>"
-msgstr "<big><b>Mappamegosztás</b></big>"
+msgstr "<big><b>Mappa megosztása</b></big>"
 
 #: ../interfaces/share-dialog.glade.in.h:2
 msgid "Co_mment:"
