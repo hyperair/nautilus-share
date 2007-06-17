@@ -5,10 +5,10 @@
 # Jorge González <jorgegonz@svn.gnome.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-share.HEAD\n"
+"Project-Id-Version: nautilus-share.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-05-08 03:29+0100\n"
-"PO-Revision-Date: 2007-05-08 19:22+0200\n"
+"POT-Creation-Date: 2007-05-08 18:28+0100\n"
+"PO-Revision-Date: 2007-06-17 16:30+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,9 @@ msgstr ""
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
 "share it"
-msgstr "Nautilus necesita añadir algunos permisos a su carpeta «%s» para poder compartirla"
+msgstr ""
+"Nautilus necesita añadir algunos permisos a su carpeta «%s» para poder "
+"compartirla"
 
 #: ../src/nautilus-share.c:136
 #, c-format
@@ -35,15 +37,15 @@ msgstr ""
 
 #: ../src/nautilus-share.c:140
 msgid "  - read permission by others\n"
-msgstr ""
+msgstr "  - permisos de lectura por otros\n"
 
 #: ../src/nautilus-share.c:141
 msgid "  - write permission by others\n"
-msgstr ""
+msgstr "  - permisos de escritura por otros\n"
 
 #: ../src/nautilus-share.c:142
 msgid "  - execute permission by others\n"
-msgstr ""
+msgstr "  - permisos de ejecución por otros\n"
 
 #: ../src/nautilus-share.c:146
 msgid "Add the permissions automatically"
@@ -77,11 +79,11 @@ msgstr "Hubo un error al obtener la información de compartición"
 
 #: ../src/nautilus-share.c:737
 msgid "Modify _Share"
-msgstr ""
+msgstr "Modificar _compartición"
 
 #: ../src/nautilus-share.c:739
 msgid "Create _Share"
-msgstr ""
+msgstr "Crear _compartición"
 
 #: ../src/nautilus-share.c:993
 msgid "Share"
@@ -155,7 +157,7 @@ msgstr ""
 
 #: ../interfaces/share-dialog.glade.in.h:1
 msgid "<big><b>Folder Sharing</b></big>"
-msgstr ""
+msgstr "<big><b>Compartición de carpetas</b></big>"
 
 #: ../interfaces/share-dialog.glade.in.h:2
 msgid "Co_mment:"
@@ -163,7 +165,7 @@ msgstr "Co_mentario:"
 
 #: ../interfaces/share-dialog.glade.in.h:3
 msgid "Share _name:"
-msgstr ""
+msgstr "_Nombre compartido:"
 
 #: ../interfaces/share-dialog.glade.in.h:4
 msgid "Share this _folder"
