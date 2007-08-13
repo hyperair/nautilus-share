@@ -1,3 +1,7 @@
+2007-08-13  Jorge Gonzalez <jorgegonz@svn.gnome.org>
+
+        * configure.in: Added 'es' (Spanish) to ALL_LINGUAS.
+
 2007-08-11  Inaki Larranaga Murgoitio  <dooteo@zundan.com>
 
         * configure.in: Added 'eu' (Basque) to ALL_LINGUAS.
