@@ -1,4 +1,1 @@
-- enable/disable throught gconf
-- create an UI to see all the shared at a time
-- create a configfile for the deamon
-- faire la gestion des checks sur le meme modele que ShareAdd
+
