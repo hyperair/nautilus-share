@@ -24,6 +24,9 @@ static time_t refresh_timestamp;
 #define KEY_PATH "path"
 #define KEY_COMMENT "comment"
 #define KEY_ACL "usershare_acl"
+#define KEY_GUEST_OK "guest_ok"
+#define GROUP_ALLOW_GUESTS "global"
+#define KEY_ALLOW_GUESTS "usershare allow guests"
 
 /* Debugging flags */
 static gboolean throw_error_on_refresh;
@@ -322,6 +325,8 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 	char *comment;
 	char *acl;
 	gboolean is_writable;
+	char *guest_ok_str;
+	gboolean guest_ok;
 	ShareInfo *info;
 	ShareInfo *old_info;
 
@@ -369,6 +374,24 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 		is_writable = FALSE;
 	}
 
+	guest_ok_str = get_string_from_key_file (key_file, group, KEY_GUEST_OK);
+	if (guest_ok_str) {
+		if (strcmp (guest_ok_str, "n") == 0)
+			guest_ok = FALSE;
+		else if (strcmp (guest_ok_str, "y") == 0)
+			guest_ok = TRUE;
+		else {
+			g_message ("unknown format for key '%s/%s' as it contains '%s'.  Assuming that the share is not guest accessible.",
+				   group, KEY_GUEST_OK, guest_ok_str);
+			guest_ok = FALSE;
+		}
+
+		g_free (guest_ok_str);
+	} else {
+		g_message ("group '%s' doesn't have a '%s' key!  Assuming that the share is not guest accessible.", group, KEY_GUEST_OK);
+		guest_ok = FALSE;
+	}
+
 	g_assert (path != NULL);
 	g_assert (group != NULL);
 
@@ -377,6 +400,7 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 	info->share_name = g_strdup (group);
 	info->comment = comment;
 	info->is_writable = is_writable;
+	info->guest_ok = guest_ok;
 
 	add_share_info_to_hashes (info);
 }
@@ -475,12 +499,26 @@ copy_share_info (ShareInfo *info)
 	copy->share_name = g_strdup (info->share_name);
 	copy->comment = g_strdup (info->comment);
 	copy->is_writable = info->is_writable;
+	copy->guest_ok = info->guest_ok;
 
 	return copy;
 }
 
-static gboolean
-samba_configuration_supports_guest_ok (gboolean *supports_guest_ok_ret, GError **error)
+/**
+ * shares_supports_guest_ok:
+ * @supports_guest_ok_ret: Location to store whether "usershare allow guests"
+ * is enabled.
+ * @error: Location to store error, or #NULL.
+ *
+ * Determines whether the option "usershare allow guests" is enabled in samba
+ * config as shown by testparm.
+ *
+ * Return value: #TRUE if if the info could be queried successfully, #FALSE
+ * otherwise.  If this function returns #FALSE, an error code will be returned
+ * in the @error argument, and *@ret_info_list will be set to #FALSE.
+ **/
+gboolean
+shares_supports_guest_ok (gboolean *supports_guest_ok_ret, GError **error)
 {
 	gboolean retval;
 	gboolean result;
@@ -579,7 +617,7 @@ add_share (ShareInfo *info, GError **error)
 		return FALSE;
 	}
 
-	supports_success = samba_configuration_supports_guest_ok (&supports_guest_ok, error);
+	supports_success = shares_supports_guest_ok (&supports_guest_ok, error);
 	if (!supports_success)
 		return FALSE;
 
@@ -591,7 +629,7 @@ add_share (ShareInfo *info, GError **error)
 	argv[5] = info->is_writable ? "Everyone:F" : "Everyone:R";
 
 	if (supports_guest_ok) {
-		argv[6] = "guest_ok=y";
+		argv[6] = info->guest_ok ? "guest_ok=y" : "guest_ok=n";
 		argc = 7;
 	} else
 		argc = 6;

@@ -1,3 +1,8 @@
+2007-09-22  Sebastien Estienne <sebastien.estienne@gmail.com>
+
+	* A patch from Edward Catmur to implements a checkbox and keyfile 
+	entry to set whether guest access is allowed on a particular share
+
 2007-08-13  Jorge Gonzalez <jorgegonz@svn.gnome.org>
 
         * configure.in: Added 'es' (Spanish) to ALL_LINGUAS.

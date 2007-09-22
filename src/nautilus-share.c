@@ -78,6 +78,7 @@ typedef struct {
   GtkWidget *hbox_share_comment;
   GtkWidget *entry_share_name;
   GtkWidget *checkbutton_share_rw_ro;
+  GtkWidget *checkbutton_share_guest_ok;
   GtkWidget *entry_share_comment;
   GtkWidget *label_status;
   GtkWidget *button_cancel;
@@ -382,6 +383,7 @@ property_page_commit (PropertyPage *page)
   share_info.share_name = (char *) gtk_entry_get_text (GTK_ENTRY (page->entry_share_name));
   share_info.comment = (char *) gtk_entry_get_text (GTK_ENTRY (page->entry_share_comment));
   share_info.is_writable = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro));
+  share_info.guest_ok = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_guest_ok));
 
   /* Do we need to unset the write permissions that we added in the past? */
   if (is_shared && page->was_writable && !share_info.is_writable)
@@ -513,6 +515,15 @@ property_page_set_controls_sensitivity (PropertyPage *page,
   gtk_widget_set_sensitive (page->hbox_share_comment, sensitive);
   gtk_widget_set_sensitive (page->hbox_share_name, sensitive);
   gtk_widget_set_sensitive (page->checkbutton_share_rw_ro, sensitive);
+
+  if (sensitive)
+    {
+      gboolean guest_ok_allowed;
+      shares_supports_guest_ok (&guest_ok_allowed, NULL);
+      gtk_widget_set_sensitive (page->checkbutton_share_guest_ok, guest_ok_allowed);
+    }
+  else
+    gtk_widget_set_sensitive (page->checkbutton_share_guest_ok, FALSE);
 }
 
 static void
@@ -577,6 +588,19 @@ on_checkbutton_share_folder_toggled    (GtkToggleButton *togglebutton,
 static void
 on_checkbutton_rw_ro_toggled    (GtkToggleButton *togglebutton,
 				 gpointer         user_data)
+{
+  PropertyPage *page;
+
+  page = user_data;
+
+  page->is_dirty = TRUE;
+
+  property_page_check_sensitivity (page);
+}
+
+static void
+on_checkbutton_guest_ok_toggled    (GtkToggleButton *togglebutton,
+				    gpointer         user_data)
 {
   PropertyPage *page;
 
@@ -661,6 +685,7 @@ create_property_page (NautilusFileInfo *fileinfo)
   page->hbox_share_comment = glade_xml_get_widget(page->xml,"hbox_share_comment");
   page->hbox_share_name = glade_xml_get_widget(page->xml,"hbox_share_name");
   page->checkbutton_share_rw_ro = glade_xml_get_widget(page->xml,"checkbutton_share_rw_ro");
+  page->checkbutton_share_guest_ok = glade_xml_get_widget(page->xml,"checkbutton_share_guest_ok");
   page->entry_share_name = glade_xml_get_widget(page->xml,"entry_share_name");
   page->entry_share_comment = glade_xml_get_widget(page->xml,"entry_share_comment");
   page->label_status = glade_xml_get_widget(page->xml,"label_status");
@@ -672,6 +697,7 @@ create_property_page (NautilusFileInfo *fileinfo)
 	    && page->hbox_share_comment != NULL
 	    && page->hbox_share_name != NULL
 	    && page->checkbutton_share_rw_ro != NULL
+	    && page->checkbutton_share_guest_ok != NULL
 	    && page->entry_share_name != NULL
 	    && page->entry_share_comment != NULL
 	    && page->label_status != NULL
@@ -731,6 +757,12 @@ create_property_page (NautilusFileInfo *fileinfo)
   else
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_rw_ro), FALSE);
 
+  /* Guest access */
+  if (share_info != NULL && share_info->guest_ok)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_guest_ok), TRUE);
+  else
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (page->checkbutton_share_guest_ok), FALSE);
+
   /* Apply button */
 
   if (share_info)
@@ -756,6 +788,10 @@ create_property_page (NautilusFileInfo *fileinfo)
 
   g_signal_connect (page->checkbutton_share_rw_ro, "toggled",
                     G_CALLBACK (on_checkbutton_rw_ro_toggled),
+                    page);
+
+  g_signal_connect (page->checkbutton_share_guest_ok, "toggled",
+                    G_CALLBACK (on_checkbutton_guest_ok_toggled),
                     page);
 
   g_signal_connect (page->entry_share_name, "changed",

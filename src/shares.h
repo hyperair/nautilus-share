@@ -8,6 +8,7 @@ typedef struct {
 	char *share_name;
 	char *comment;
 	gboolean is_writable;
+	gboolean guest_ok;
 } ShareInfo;
 
 #define SHARES_ERROR (shares_error_quark ())
@@ -34,6 +35,9 @@ gboolean shares_modify_share (const char *old_path, ShareInfo *info, GError **er
 gboolean shares_get_share_info_list (GSList **ret_info_list, GError **error);
 
 void shares_free_share_info_list (GSList *list);
+
+gboolean shares_supports_guest_ok (gboolean *supports_guest_ok_ret, 
+				   GError **error);
 
 void shares_set_debug (gboolean error_on_refresh,
 		       gboolean error_on_add,

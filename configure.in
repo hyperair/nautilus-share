@@ -1,5 +1,5 @@
 AC_PREREQ(2.57)
-AC_INIT([nautilus-share],[0.7.1])
+AC_INIT([nautilus-share],[0.7.2])
 AC_CONFIG_SRCDIR([src/nautilus-share.c])
 AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE([foreign 1.9 -Wall])
