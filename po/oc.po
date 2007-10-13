@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-22 09:32+0200\n"
-"PO-Revision-Date: 2007-08-20 18:42+0200\n"
+"POT-Creation-Date: 2007-10-13 17:50+0200\n"
+"PO-Revision-Date: 2007-10-13 23:06+0200\n"
 "Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);"
 
-#: ../src/nautilus-share.c:128
+#: ../src/nautilus-share.c:129
 #, c-format
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
 "share it"
 msgstr ""
 
-#: ../src/nautilus-share.c:136
+#: ../src/nautilus-share.c:137
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -33,121 +33,125 @@ msgid ""
 "automatically?"
 msgstr ""
 
-#: ../src/nautilus-share.c:140
+#: ../src/nautilus-share.c:141
 msgid "  - read permission by others\n"
 msgstr ""
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:142
 msgid "  - write permission by others\n"
 msgstr ""
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:143
 msgid "  - execute permission by others\n"
 msgstr ""
 
-#: ../src/nautilus-share.c:146
+#: ../src/nautilus-share.c:147
 msgid "Add the permissions automatically"
 msgstr ""
 
-#: ../src/nautilus-share.c:172
+#: ../src/nautilus-share.c:173
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr ""
 
-#: ../src/nautilus-share.c:442
+#: ../src/nautilus-share.c:444
 msgid "Share name is too long"
 msgstr ""
 
-#: ../src/nautilus-share.c:476
+#: ../src/nautilus-share.c:478
 msgid "The share name cannot be empty"
 msgstr ""
 
-#: ../src/nautilus-share.c:489
+#: ../src/nautilus-share.c:491
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr ""
 
-#: ../src/nautilus-share.c:499
+#: ../src/nautilus-share.c:501
 msgid "Another share has the same name"
 msgstr ""
 
-#: ../src/nautilus-share.c:645
+#: ../src/nautilus-share.c:669
 msgid "There was an error while getting the sharing information"
 msgstr ""
 
-#: ../src/nautilus-share.c:737
+#: ../src/nautilus-share.c:769
 msgid "Modify _Share"
 msgstr ""
 
-#: ../src/nautilus-share.c:739
+#: ../src/nautilus-share.c:771
 msgid "Create _Share"
 msgstr ""
 
-#: ../src/nautilus-share.c:993
+#: ../src/nautilus-share.c:1029
 msgid "Share"
-msgstr ""
+msgstr "Partejar"
 
-#: ../src/nautilus-share.c:1093
+#: ../src/nautilus-share.c:1129
 msgid "Sharing Options"
 msgstr ""
 
-#: ../src/nautilus-share.c:1094
+#: ../src/nautilus-share.c:1130
 msgid "Share this Folder"
 msgstr "Partejar lo repertòri"
 
-#: ../src/shares.c:122
+#: ../src/shares.c:125
 #, c-format
 msgid "%s %s %s returned with signal %d"
 msgstr ""
 
-#: ../src/shares.c:131
+#: ../src/shares.c:134
 #, c-format
 msgid "%s %s %s failed for an unknown reason"
 msgstr ""
 
-#: ../src/shares.c:151
+#: ../src/shares.c:154
 #, c-format
 msgid "'net usershare' returned error %d: %s"
 msgstr ""
 
-#: ../src/shares.c:153
+#: ../src/shares.c:156
 #, c-format
 msgid "'net usershare' returned error %d"
 msgstr ""
 
-#: ../src/shares.c:184
+#: ../src/shares.c:187
+#, c-format
 msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
 msgstr ""
 
-#: ../src/shares.c:418 ../src/shares.c:577
+#: ../src/shares.c:442 ../src/shares.c:615
+#, c-format
 msgid "Failed"
 msgstr "Error"
 
-#: ../src/shares.c:512
+#: ../src/shares.c:550
 #, c-format
 msgid "Samba's testparm returned with signal %d"
 msgstr ""
 
-#: ../src/shares.c:518
+#: ../src/shares.c:556
+#, c-format
 msgid "Samba's testparm failed for an unknown reason"
 msgstr ""
 
-#: ../src/shares.c:533
+#: ../src/shares.c:571
 #, c-format
 msgid "Samba's testparm returned error %d: %s"
 msgstr ""
 
-#: ../src/shares.c:535
+#: ../src/shares.c:573
 #, c-format
 msgid "Samba's testparm returned error %d"
 msgstr ""
 
-#: ../src/shares.c:642
+#: ../src/shares.c:680
 #, c-format
 msgid "Cannot remove the share for path %s: that path is not shared"
 msgstr ""
 
-#: ../src/shares.c:688
+#: ../src/shares.c:726
+#, c-format
 msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
@@ -171,6 +175,10 @@ msgstr "Partejar lo _repertòri"
 
 #: ../interfaces/share-dialog.glade.in.h:5
 msgid "_Allow other people to write in this folder"
+msgstr ""
+
+#: ../interfaces/share-dialog.glade.in.h:6
+msgid "_Guest access (for people without a user account)"
 msgstr ""
 
 #~ msgid "Sharename too long, may not appear on all Os"
