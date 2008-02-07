@@ -7,17 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-27 10:12+0200\n"
-"PO-Revision-Date: 2007-06-26 17:51+0100\n"
+"POT-Creation-Date: 2008-02-07 23:19+0100\n"
+"PO-Revision-Date: 2008-02-07 23:12+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
-"Language-Team: Tomasz Dominikowski <dominikowski@gmail.com>\n"
+"Language-Team: Tomasz Dominikowski (Aviary.pl) <dominikowski@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
-#: ../src/nautilus-share.c:128
+#: ../src/nautilus-share.c:129
 #, c-format
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
@@ -26,7 +28,7 @@ msgstr ""
 "Nautilus musi nadać pewne uprawnienia na folder \"%s\", aby można było go "
 "współdzielić"
 
-#: ../src/nautilus-share.c:136
+#: ../src/nautilus-share.c:137
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -38,123 +40,127 @@ msgstr ""
 "współdzielenie:\n"
 "%s%s%sCzy chcesz, aby Nautilus nadał te uprawnienia automatycznie?"
 
-#: ../src/nautilus-share.c:140
+#: ../src/nautilus-share.c:141
 msgid "  - read permission by others\n"
 msgstr "  - uprawnienia odczytu przez innych\n"
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:142
 msgid "  - write permission by others\n"
 msgstr "  - uprawnienia zapisu przez innych\n"
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:143
 msgid "  - execute permission by others\n"
 msgstr "  - uprawnienia wykonania przez innych\n"
 
-#: ../src/nautilus-share.c:146
+#: ../src/nautilus-share.c:147
 msgid "Add the permissions automatically"
 msgstr "Nadaj uprawnienia automatycznie"
 
-#: ../src/nautilus-share.c:172
+#: ../src/nautilus-share.c:173
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "Nie można zmienić uprawnień folderu \"%s\""
 
-#: ../src/nautilus-share.c:442
+#: ../src/nautilus-share.c:444
 msgid "Share name is too long"
 msgstr "Nazwa udziału jest zbyt długa"
 
-#: ../src/nautilus-share.c:476
+#: ../src/nautilus-share.c:478
 msgid "The share name cannot be empty"
 msgstr "Nazwa udziału nie może być pusta"
 
-#: ../src/nautilus-share.c:489
+#: ../src/nautilus-share.c:491
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Błąd podczas uzyskiwania informacji o udziale: %s"
 
-#: ../src/nautilus-share.c:499
+#: ../src/nautilus-share.c:501
 msgid "Another share has the same name"
 msgstr "Inny udział ma już taką nazwę"
 
-#: ../src/nautilus-share.c:645
+#: ../src/nautilus-share.c:669
 msgid "There was an error while getting the sharing information"
 msgstr "Wystąpił błąd podczas pobierania informacji o współdzieleniu"
 
-#: ../src/nautilus-share.c:737
+#: ../src/nautilus-share.c:769
 msgid "Modify _Share"
 msgstr "_Zmodyfikuj udział"
 
-#: ../src/nautilus-share.c:739
+#: ../src/nautilus-share.c:771
 msgid "Create _Share"
 msgstr "_Utwórz udział"
 
-#: ../src/nautilus-share.c:993
+#: ../src/nautilus-share.c:1029
 msgid "Share"
 msgstr "Udostępnij"
 
-#: ../src/nautilus-share.c:1093
+#: ../src/nautilus-share.c:1129
 msgid "Sharing Options"
 msgstr "Opcje współdzielenia"
 
-#: ../src/nautilus-share.c:1094
+#: ../src/nautilus-share.c:1130
 msgid "Share this Folder"
 msgstr "Udostępnij ten folder"
 
-#: ../src/shares.c:122
+#: ../src/shares.c:125
 #, c-format
 msgid "%s %s %s returned with signal %d"
 msgstr "%s %s %s zwrócono z sygnałem %d"
 
-#: ../src/shares.c:131
+#: ../src/shares.c:134
 #, c-format
 msgid "%s %s %s failed for an unknown reason"
 msgstr "%s %s %s nieudane z nieznanego powodu"
 
-#: ../src/shares.c:151
+#: ../src/shares.c:154
 #, c-format
 msgid "'net usershare' returned error %d: %s"
 msgstr "\"net usershare\" zwrócił błąd %d: %s"
 
-#: ../src/shares.c:153
+#: ../src/shares.c:156
 #, c-format
 msgid "'net usershare' returned error %d"
 msgstr "\"net usershare\" zwrócił błąd %d"
 
-#: ../src/shares.c:184
+#: ../src/shares.c:187
+#, c-format
 msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
 msgstr ""
 "wiadomość zwrotna \"net usershare\" nie zawiera poprawnego kodowania UTF-8"
 
-#: ../src/shares.c:418 ../src/shares.c:577
+#: ../src/shares.c:442 ../src/shares.c:615
+#, c-format
 msgid "Failed"
 msgstr "Nieudane"
 
-#: ../src/shares.c:512
+#: ../src/shares.c:550
 #, c-format
 msgid "Samba's testparm returned with signal %d"
 msgstr "Testparm Samby zwrócił sygnał %d"
 
-#: ../src/shares.c:518
+#: ../src/shares.c:556
+#, c-format
 msgid "Samba's testparm failed for an unknown reason"
 msgstr "Testparm Samby nieudany z nieznanego powodu"
 
-#: ../src/shares.c:533
+#: ../src/shares.c:571
 #, c-format
 msgid "Samba's testparm returned error %d: %s"
 msgstr "Testparm Samby zwrócił błąd %d: %s"
 
-#: ../src/shares.c:535
+#: ../src/shares.c:573
 #, c-format
 msgid "Samba's testparm returned error %d"
 msgstr "Testparm Samby zwrócił błąd %d"
 
-#: ../src/shares.c:642
+#: ../src/shares.c:680
 #, c-format
 msgid "Cannot remove the share for path %s: that path is not shared"
 msgstr ""
 "Nie można usunąć udziału dla ścieżki %s: ta ścieżka nie jest współdzielona"
 
-#: ../src/shares.c:688
+#: ../src/shares.c:726
+#, c-format
 msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
@@ -181,6 +187,10 @@ msgstr "Udostępnij ten _folder"
 #: ../interfaces/share-dialog.glade.in.h:5
 msgid "_Allow other people to write in this folder"
 msgstr "Zezwolenie innym na z_apis w tym katalogu"
+
+#: ../interfaces/share-dialog.glade.in.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "_Dostęp dla gości (dla osób bez konta użytkownika)"
 
 #~ msgid "Sharename too long, may not appear on all Os"
 #~ msgstr "Zbyt dĹuga nazwa, moĹźe siÄ nieukazaÄ w niektĂłrych systemach"
