@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-27 13:20+0100\n"
+"POT-Creation-Date: 2008-02-19 20:26+0100\n"
 "PO-Revision-Date: 2007-12-30 18:56+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../src/nautilus-share.c:129
 #, c-format
@@ -182,4 +182,3 @@ msgstr "_Autorizar los autres a escriure dins aqueste repertòri"
 #: ../interfaces/share-dialog.glade.in.h:6
 msgid "_Guest access (for people without a user account)"
 msgstr "Accès _convidat (per los qu'an pas de compte d'utilizaire)"
-
