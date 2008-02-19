@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share 0.6.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-06 17:13+0300\n"
+"POT-Creation-Date: 2008-02-19 10:06+0300\n"
 "PO-Revision-Date: 2005-05-28 01:21+0100\n"
 "Last-Translator: WareKala <warekala@hotmail.com>\n"
 "Language-Team: Finnish\n"
@@ -18,7 +18,7 @@ msgstr ""
 "X-Poedit-Language: Finnish\n"
 "X-Poedit-Country: FINNISH\n"
 
-#: ../src/nautilus-share.c:128
+#: ../src/nautilus-share.c:129
 #, c-format
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
@@ -27,7 +27,7 @@ msgstr ""
 "Nautiluksen täytyy lisätä joitain oikeuksia kansioosi \"%s\", jotta se "
 "voidaan jakaa"
 
-#: ../src/nautilus-share.c:136
+#: ../src/nautilus-share.c:137
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -38,121 +38,125 @@ msgstr ""
 "Kansiolle \"%s\" täytyy antaa seuraavat lisäoikeudet, jotta jako toimii:\n"
 "%s%s%sHaluatko Nautiluksen muuttavan kansion oikeudet automaattisesti?"
 
-#: ../src/nautilus-share.c:140
+#: ../src/nautilus-share.c:141
 msgid "  - read permission by others\n"
 msgstr " - lukuoikeudet muille\n"
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:142
 msgid "  - write permission by others\n"
 msgstr " - kirjoitusoikeudet muille\n"
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:143
 msgid "  - execute permission by others\n"
 msgstr " - suoritusoikeudet muille\n"
 
-#: ../src/nautilus-share.c:146
+#: ../src/nautilus-share.c:147
 msgid "Add the permissions automatically"
 msgstr "Lisää oikeudet automaattisesti"
 
-#: ../src/nautilus-share.c:172
+#: ../src/nautilus-share.c:173
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "Kansion \"%s\" oikeuksia ei voitu muuttaa"
 
-#: ../src/nautilus-share.c:442
+#: ../src/nautilus-share.c:444
 msgid "Share name is too long"
 msgstr "Jaon nimi on liian pitkä"
 
-#: ../src/nautilus-share.c:476
+#: ../src/nautilus-share.c:478
 msgid "The share name cannot be empty"
 msgstr "Jaon nimi ei voi olla tyhjä"
 
-#: ../src/nautilus-share.c:489
+#: ../src/nautilus-share.c:491
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Virhe haettaessa jaon tietoja: %s"
 
-#: ../src/nautilus-share.c:499
+#: ../src/nautilus-share.c:501
 msgid "Another share has the same name"
 msgstr "Toinen jako on olemassa samalla nimellä"
 
-#: ../src/nautilus-share.c:645
+#: ../src/nautilus-share.c:669
 msgid "There was an error while getting the sharing information"
 msgstr "Virhe haettaessa tietoja levyjaosta"
 
-#: ../src/nautilus-share.c:737
+#: ../src/nautilus-share.c:769
 msgid "Modify _Share"
 msgstr "Muokkaa _levyjakoa"
 
-#: ../src/nautilus-share.c:739
+#: ../src/nautilus-share.c:771
 msgid "Create _Share"
 msgstr "Luo _levyjako"
 
-#: ../src/nautilus-share.c:993
+#: ../src/nautilus-share.c:1029
 msgid "Share"
 msgstr "Jaa"
 
-#: ../src/nautilus-share.c:1093
+#: ../src/nautilus-share.c:1129
 msgid "Sharing Options"
 msgstr "Jakamisen valinnat"
 
-#: ../src/nautilus-share.c:1094
+#: ../src/nautilus-share.c:1130
 msgid "Share this Folder"
 msgstr "Jaa tämä kansio"
 
-#: ../src/shares.c:122
+#: ../src/shares.c:125
 #, c-format
 msgid "%s %s %s returned with signal %d"
 msgstr "%s %s %s palautui signaalilla %d"
 
-#: ../src/shares.c:131
+#: ../src/shares.c:134
 #, c-format
 msgid "%s %s %s failed for an unknown reason"
 msgstr "%s %s %s epäonnistui tuntemattomasta syystä"
 
-#: ../src/shares.c:151
+#: ../src/shares.c:154
 #, c-format
 msgid "'net usershare' returned error %d: %s"
 msgstr "komento 'net usershare' palautti virheen %d: %s"
 
-#: ../src/shares.c:153
+#: ../src/shares.c:156
 #, c-format
 msgid "'net usershare' returned error %d"
 msgstr "'net usershare' palautti virheen %d"
 
-#: ../src/shares.c:184
+#: ../src/shares.c:187
+#, c-format
 msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
 msgstr "tuloste komennolta 'net usershare' ei ole UTF-8-koodattu"
 
-#: ../src/shares.c:418 ../src/shares.c:577
+#: ../src/shares.c:442 ../src/shares.c:615
+#, c-format
 msgid "Failed"
 msgstr "Epäonnistui"
 
-#: ../src/shares.c:512
+#: ../src/shares.c:550
 #, c-format
 msgid "Samba's testparm returned with signal %d"
 msgstr "Samban testparm suljettiin signaaliin %d"
 
-#: ../src/shares.c:518
+#: ../src/shares.c:556
+#, c-format
 msgid "Samba's testparm failed for an unknown reason"
 msgstr "Samban testparm epäonnistui tuntemattomasta syystä"
 
-#: ../src/shares.c:533
+#: ../src/shares.c:571
 #, c-format
 msgid "Samba's testparm returned error %d: %s"
 msgstr "Samban testparm palautti virheen %d: %s"
 
-#: ../src/shares.c:535
+#: ../src/shares.c:573
 #, c-format
 msgid "Samba's testparm returned error %d"
 msgstr "Samban testparm palautti virheen %d"
 
-#: ../src/shares.c:642
+#: ../src/shares.c:680
 #, c-format
 msgid "Cannot remove the share for path %s: that path is not shared"
 msgstr "Jakoa polulle %s ei voi poistaa: polku ei ole jaettu"
 
-#: ../src/shares.c:688
+#: ../src/shares.c:726
+#, c-format
 msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
@@ -180,17 +184,7 @@ msgstr "Jaa tämä _kansio"
 msgid "_Allow other people to write in this folder"
 msgstr "_Salli muiden kirjoittaa tähän kansioon"
 
-#~ msgid "Sharename too long, may not appear on all Os"
-#~ msgstr "Jakonimi liian pitkä, ei ehkä näy oikein muilla"
+#: ../interfaces/share-dialog.glade.in.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "_Vierastilin oikeudet (käyttäjille ilman käyttäjätunnusta)"
 
-#~ msgid "Sharename already in use or forbidden!"
-#~ msgstr "Jakonimi jo käytössä tai kielletty!"
-
-#~ msgid "shared (read only)"
-#~ msgstr "jaettu (vain luku)"
-
-#~ msgid "shared (read and write)"
-#~ msgstr "jaettu (luku ja kirjoitus)"
-
-#~ msgid "not shared"
-#~ msgstr "ei jaettu"
