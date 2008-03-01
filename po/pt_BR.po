@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the nautilus-share package.
 # sebastien estienne <sebastien.estienne@gmail.com>, 2005.
 # Og Maciel <ogmaciel@gnome.org>, 2007.
+# Leonardo Ferreira Fontenelle <leo.fontenelle@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-04-01 03:33+0100\n"
-"PO-Revision-Date: 2007-09-01 14:06-0500\n"
-"Last-Translator: Og Maciel <ogmaciel@gnome.org>\n"
+"POT-Creation-Date: 2008-03-01 17:24-0300\n"
+"PO-Revision-Date: 2008-03-01 17:24-0300\n"
+"Last-Translator: Leonardo Ferreira Fontenelle <leo.fontenelle@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <traduc@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,138 +20,155 @@ msgstr ""
 "X-Poedit-Language: Brazilian Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 
-#: ../src/nautilus-share.c:128
-#, c-format
-msgid "Nautilus needs to add some permissions to your folder \"%s\" in order to share it"
-msgstr "É necessário adicionar algumas permissões à sua pasta \"%s\" para compartilhá-lo"
-
-#: ../src/nautilus-share.c:136
+#: ../src/nautilus-share.c:129
 #, c-format
 msgid ""
-"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
-"%s%s%sDo you want Nautilus to add these permissions to the folder automatically?"
+"Nautilus needs to add some permissions to your folder \"%s\" in order to "
+"share it"
+msgstr ""
+"É necessário adicionar algumas permissões à sua pasta \"%s\" para "
+"compartilhá-la"
+
+#: ../src/nautilus-share.c:137
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to "
+"work:\n"
+"%s%s%sDo you want Nautilus to add these permissions to the folder "
+"automatically?"
 msgstr ""
 "A pasta \"%s\" precisa das seguintes permissões para ser compartilhada:\n"
 "%s%s%sVocê deseja adicionar estas permissões à pasta automaticamente?"
 
-#: ../src/nautilus-share.c:140
+#: ../src/nautilus-share.c:141
 msgid "  - read permission by others\n"
 msgstr "  - permissões de leituras por outros\n"
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:142
 msgid "  - write permission by others\n"
 msgstr "  - permissão de escrita por outros\n"
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:143
 msgid "  - execute permission by others\n"
 msgstr "  - permissão de execução por outros\n"
 
-#: ../src/nautilus-share.c:146
+#: ../src/nautilus-share.c:147
 msgid "Add the permissions automatically"
 msgstr "Adicionar as permissões automaticamente"
 
-#: ../src/nautilus-share.c:172
+#: ../src/nautilus-share.c:173
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "Não foi possível modificar as permissões da pasta \"%s\""
 
-#: ../src/nautilus-share.c:442
+#: ../src/nautilus-share.c:444
 msgid "Share name is too long"
 msgstr "Nome do compartilhamento é muito longo"
 
-#: ../src/nautilus-share.c:476
+#: ../src/nautilus-share.c:478
 msgid "The share name cannot be empty"
 msgstr "O nome do compartilhamento não pode ser vazio"
 
-#: ../src/nautilus-share.c:489
+#: ../src/nautilus-share.c:491
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Erro ao obter informação do compartilhamento: %s"
 
-#: ../src/nautilus-share.c:499
+#: ../src/nautilus-share.c:501
 msgid "Another share has the same name"
 msgstr "Um outro compartilhamento possui o mesmo nome"
 
-#: ../src/nautilus-share.c:645
+#: ../src/nautilus-share.c:669
 msgid "There was an error while getting the sharing information"
 msgstr "Houve um erro ao obter a informação do compartilhamento"
 
-#: ../src/nautilus-share.c:737
+#: ../src/nautilus-share.c:769
 msgid "Modify _Share"
 msgstr "Modificar Compar_tilhamento"
 
-#: ../src/nautilus-share.c:739
+#: ../src/nautilus-share.c:771
 msgid "Create _Share"
 msgstr "Criar _Compartilhamento"
 
-#: ../src/nautilus-share.c:993
+#: ../src/nautilus-share.c:1029
 msgid "Share"
 msgstr "Compartilhar"
 
-#: ../src/nautilus-share.c:1093
+#: ../src/nautilus-share.c:1129
 msgid "Sharing Options"
 msgstr "Opções de Compartilhamento"
 
-#: ../src/nautilus-share.c:1094
+#: ../src/nautilus-share.c:1130
 msgid "Share this Folder"
 msgstr "Compartilhar esta Pasta"
 
-#: ../src/shares.c:122
+#: ../src/shares.c:125
 #, c-format
 msgid "%s %s %s returned with signal %d"
-msgstr "%s %s %s retornou com signal %d"
+msgstr "%s %s %s retornou com sinal %d"
 
-#: ../src/shares.c:131
+#: ../src/shares.c:134
 #, c-format
 msgid "%s %s %s failed for an unknown reason"
 msgstr "%s %s %s falhou por um motivo desconhecido"
 
-#: ../src/shares.c:151
+#: ../src/shares.c:154
 #, c-format
 msgid "'net usershare' returned error %d: %s"
 msgstr "\"compartilhamento de rede de usuário\" retornou erro %d: %s"
 
-#: ../src/shares.c:153
+#: ../src/shares.c:156
 #, c-format
 msgid "'net usershare' returned error %d"
 msgstr "\"compartilhamento de rede de usuário\" retornou erro %d"
 
-#: ../src/shares.c:184
+#: ../src/shares.c:187
+#, c-format
 msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
-msgstr "a saída do \"compartilhamento de rede de usuário\" não está em uma codificação UTF-8 válida"
+msgstr ""
+"a saída do \"compartilhamento de rede de usuário\" não está em uma "
+"codificação UTF-8 válida"
 
-#: ../src/shares.c:418
-#: ../src/shares.c:577
+#: ../src/shares.c:442 ../src/shares.c:615
+#, c-format
 msgid "Failed"
 msgstr "Falhou"
 
-#: ../src/shares.c:512
+#: ../src/shares.c:550
 #, c-format
 msgid "Samba's testparm returned with signal %d"
 msgstr "O comando testparm do Samba retornou com sinal %d"
 
-#: ../src/shares.c:518
+#: ../src/shares.c:556
+#, c-format
 msgid "Samba's testparm failed for an unknown reason"
 msgstr "O comando testparm do Samba falhou por um motivo desconhecido"
 
-#: ../src/shares.c:533
+#: ../src/shares.c:571
 #, c-format
 msgid "Samba's testparm returned error %d: %s"
 msgstr "O comando testparm do Samba retornou erro %d: %s"
 
-#: ../src/shares.c:535
+#: ../src/shares.c:573
 #, c-format
 msgid "Samba's testparm returned error %d"
 msgstr "O comando testparm do Samba retornou erro %d"
 
-#: ../src/shares.c:642
+#: ../src/shares.c:680
 #, c-format
 msgid "Cannot remove the share for path %s: that path is not shared"
-msgstr "Não foi possível remover o compartilhamento do caminho %s: este caminho não é compartilhado"
+msgstr ""
+"Não foi possível remover o compartilhamento do caminho %s: este caminho não "
+"é compartilhado"
 
-#: ../src/shares.c:688
-msgid "Cannot change the path of an existing share; please remove the old share first and add a new one"
-msgstr "Não é possível modificar o caminho de um compartilhamento atual; por favor, remova-o primeiro e adicione um novo"
+#: ../src/shares.c:726
+#, c-format
+msgid ""
+"Cannot change the path of an existing share; please remove the old share "
+"first and add a new one"
+msgstr ""
+"Não é possível modificar o caminho de um compartilhamento atual; por favor, "
+"remova-o primeiro e adicione um novo"
 
 #: ../interfaces/share-dialog.glade.in.h:1
 msgid "<big><b>Folder Sharing</b></big>"
@@ -158,7 +176,7 @@ msgstr "<big><b>Compartilhamento de Pastas</b></big>"
 
 #: ../interfaces/share-dialog.glade.in.h:2
 msgid "Co_mment:"
-msgstr "Co_mentário:"
+msgstr "Comen_tário:"
 
 #: ../interfaces/share-dialog.glade.in.h:3
 msgid "Share _name:"
@@ -166,22 +184,29 @@ msgstr "_Nome do compartilhamento:"
 
 #: ../interfaces/share-dialog.glade.in.h:4
 msgid "Share this _folder"
-msgstr "Compar_tilhar esta pasta"
+msgstr "Compartilhar esta _pasta"
 
 #: ../interfaces/share-dialog.glade.in.h:5
 msgid "_Allow other people to write in this folder"
-msgstr "Permite outras pessoas escreverem nesta p_asta"
+msgstr "Permitir que outras pessoas _escrevam nesta pasta"
+
+#: ../interfaces/share-dialog.glade.in.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "Acesso _anônimo (para pessoas sem conta de usuário)"
 
 #~ msgid "Sharename too long, may not appear on all Os"
 #~ msgstr ""
 #~ "Nome de compartilhamento muito longo, pode não ser indicado em alguns "
 #~ "sistemas"
+
 #~ msgid "Sharename already in use or forbidden!"
 #~ msgstr "Nome de compartilhamento já em uso ou proibido!"
+
 #~ msgid "shared (read only)"
 #~ msgstr "compartilhado (apenas para leitura)"
+
 #~ msgid "shared (read and write)"
 #~ msgstr "compartilhado (leitura e escrita)"
+
 #~ msgid "not shared"
 #~ msgstr "não compartilhado"
-
