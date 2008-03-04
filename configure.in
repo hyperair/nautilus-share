@@ -41,6 +41,12 @@ AC_SUBST(GLIB_LIBS)
 AC_SUBST(LIBGLADE_CFLAGS)
 AC_SUBST(LIBGLADE_LIBS)
 
+dnl ========================================================
+dnl Get nautilus extensionsdir
+dnl ========================================================
+
+NAUTILUS_EXTENSION_DIR=`$PKG_CONFIG --variable=extensiondir libnautilus-extension`
+AC_SUBST(NAUTILUS_EXTENSION_DIR)
 
 dnl ========================================================
 dnl Set PIXMAPS_DIR 
