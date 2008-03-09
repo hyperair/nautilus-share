@@ -71,7 +71,7 @@ dnl ========================================================
 dnl Transtlations
 dnl ========================================================
 
-ALL_LINGUAS="ar ca en_GB es de dz eu fi fr gl hu it ko oc pl pt pt_BR"
+ALL_LINGUAS="ar ca en_GB es de dz eu fi fr gl hu it ko oc pl pt pt_BR zh_HK zh_TW"
 GETTEXT_PACKAGE=nautilus-share
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [gettext package name])
