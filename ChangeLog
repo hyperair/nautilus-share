@@ -1,3 +1,7 @@
+2008-03-14  Andre Klapper  <a9016009@gmx.de>
+
+	* configure.in: Added missing Swedish (sv) to ALL_LINGUAS.
+
 2008-03-09  Chao-Hsiung Liao  <j_h_liau@yahoo.com.tw>
 
         * configure.in: Added "zh_HK" "zh_TW" to ALL_LINGUAS.
