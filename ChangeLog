@@ -1,3 +1,7 @@
+2008-04-09  Petr Kovar  <pknbe@volny.cz>
+
+	* configure.in: Added cs to ALL_LINGUAS.
+
 2008-03-14  Andre Klapper  <a9016009@gmx.de>
 
 	* configure.in: Added missing Swedish (sv) to ALL_LINGUAS.

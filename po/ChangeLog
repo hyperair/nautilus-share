@@ -1,3 +1,8 @@
+2008-04-09  Petr Kovar  <pknbe@volny.cz>
+
+	* cs.po: Added Czech translation by Kamil Paral,
+	thanks to Lucas Lommer (bug #526970).
+
 2008-04-06  Artem Popov  <artfwo@gmail.com>
 
 	* ru.po: Added Russian translation.
