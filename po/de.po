@@ -1,64 +1,185 @@
 # German translations for nautilus-share package.
 # Copyright (C) 2005 THE nautilus-share'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the nautilus-share package.
-# sebastien estienne <sebastien.estienne@gmail.com>, 2005.
+# Michael Kanis <mkanis@gmx.de>, 2005.
+# Andre Klapper <ak-47@gmx.net>, 2008.
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-share 0.6.0\n"
+"Project-Id-Version: nautilus-share\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-05-28 13:49+0200\n"
-"PO-Revision-Date: 2005-06-05 14:10+0100\n"
-"Last-Translator: Michael Kanis <mkanis@gmx.de>\n"
-"Language-Team: German <traduc@traduc.org>\n"
+"POT-Creation-Date: 2008-06-29 00:26+0200\n"
+"PO-Revision-Date: 2008-06-29 00:57+0200\n"
+"Last-Translator: Andre Klapper <ak-47@gmx.net>\n"
+"Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/nautilus-share.c:105
-msgid "Sharename too long, may not appear on all Os"
-msgstr "Freigabename zu lang, könnte auf einigen Systemen nicht angezeigt werden."
+#: ../src/nautilus-share.c:129
+#, c-format
+msgid ""
+"Nautilus needs to add some permissions to your folder \"%s\" in order to "
+"share it"
+msgstr "Nautilus muss dem Ordner »%s« zusätzliche Zugriffsrechte verleihen, damit dieser freigegeben werden kann"
 
-#: ../src/nautilus-share.c:116
-msgid "Sharename already in use or forbidden!"
-msgstr "Freigabename bereits in Benutzung oder nicht erlaubt!"
+#: ../src/nautilus-share.c:137
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to "
+"work:\n"
+"%s%s%sDo you want Nautilus to add these permissions to the folder "
+"automatically?"
+msgstr ""
+"Der Ordner »%s« benötigt folgende zusätzlichen Zugriffsrechte um freigegeben zu werden:\n"
+"%s%s%sMöchten Sie, dass Nautilus diese Zugriffsrechte für den Ordner automatisch setzt?"
 
-#: ../src/nautilus-share.c:467
-msgid "shared (read only)"
-msgstr "freigegeben (nur lesen)"
+#: ../src/nautilus-share.c:141
+msgid "  - read permission by others\n"
+msgstr "  - Leserechte durch andere\n"
 
-#: ../src/nautilus-share.c:472
-msgid "shared (read and write)"
-msgstr "freigegeben (lesen und schreiben)"
+#: ../src/nautilus-share.c:142
+msgid "  - write permission by others\n"
+msgstr "  - Schreibrechte durch andere\n"
 
-#: ../src/nautilus-share.c:476
-msgid "not shared"
-msgstr "nicht freigegeben"
+#: ../src/nautilus-share.c:143
+msgid "  - execute permission by others\n"
+msgstr "  - Ausführrechte durch andere\n"
 
-#: ../src/nautilus-share.c:647
+#: ../src/nautilus-share.c:147
+msgid "Add the permissions automatically"
+msgstr "Die Zugriffsrechte automatisch hinzufügen"
+
+#: ../src/nautilus-share.c:173
+#, c-format
+msgid "Could not change the permissions of folder \"%s\""
+msgstr "Zugriffsrechte des Ordners »%s« konnten nicht geändert werden"
+
+#: ../src/nautilus-share.c:444
+msgid "Share name is too long"
+msgstr "Freigabename ist zu lang"
+
+#: ../src/nautilus-share.c:478
+msgid "The share name cannot be empty"
+msgstr "Der Freigabename kann nicht leer sein"
+
+#: ../src/nautilus-share.c:491
+#, c-format
+msgid "Error while getting share information: %s"
+msgstr "Fehler beim Erhalt der Freigabeinformationen: %s"
+
+#: ../src/nautilus-share.c:501
+msgid "Another share has the same name"
+msgstr "Eine andere Freigabe besitzt den gleichen Namen"
+
+#: ../src/nautilus-share.c:669
+msgid "There was an error while getting the sharing information"
+msgstr "Beim Erhalt der Freigabeinformationen ist ein Fehler aufgetreten"
+
+#: ../src/nautilus-share.c:769
+msgid "Modify _Share"
+msgstr "_Freigabe bearbeiten"
+
+#: ../src/nautilus-share.c:771
+msgid "Create _Share"
+msgstr "_Freigabe erstellen"
+
+#: ../src/nautilus-share.c:1029
 msgid "Share"
 msgstr "Ordner freigeben"
 
-#: ../src/nautilus-share.c:648
-#: ../interfaces/share-dialog.glade.h:5
+#: ../src/nautilus-share.c:1129
+msgid "Sharing Options"
+msgstr "Freigabeoptionen"
+
+#: ../src/nautilus-share.c:1130
 msgid "Share this Folder"
 msgstr "Diesen Ordner freigeben"
 
-#: ../interfaces/share-dialog.glade.h:1
+#: ../src/shares.c:125
+#, c-format
+msgid "%s %s %s returned with signal %d"
+msgstr "%s %s %s gab das Signal %d zurück"
+
+#: ../src/shares.c:134
+#, c-format
+msgid "%s %s %s failed for an unknown reason"
+msgstr "%s %s %s ist aus unbekanntem Grund fehlgeschlagen"
+
+#: ../src/shares.c:154
+#, c-format
+msgid "'net usershare' returned error %d: %s"
+msgstr "»net usershare« gab den Fehler %d zurück: %s"
+
+#: ../src/shares.c:156
+#, c-format
+msgid "'net usershare' returned error %d"
+msgstr "»net usershare« gab den Fehler %d zurück"
+
+#: ../src/shares.c:187
+#, c-format
+msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
+msgstr "Die Ausgabe von »net usershare« ist kein gültiger UTF-8-Zeichensatz"
+
+#: ../src/shares.c:442 ../src/shares.c:615
+#, c-format
+msgid "Failed"
+msgstr "Fehlgeschlagen"
+
+#: ../src/shares.c:550
+#, c-format
+msgid "Samba's testparm returned with signal %d"
+msgstr "Sambas Testparm gab das Signal %d zurück"
+
+#: ../src/shares.c:556
+#, c-format
+msgid "Samba's testparm failed for an unknown reason"
+msgstr "Sambas Testparm ist aus unbekanntem Grund fehlgeschlagen"
+
+#: ../src/shares.c:571
+#, c-format
+msgid "Samba's testparm returned error %d: %s"
+msgstr "Sambas Testparm gab den Fehler %d zurück: %s"
+
+#: ../src/shares.c:573
+#, c-format
+msgid "Samba's testparm returned error %d"
+msgstr "Sambas Testparm gab den Fehler %d zurück"
+
+#: ../src/shares.c:680
+#, c-format
+msgid "Cannot remove the share for path %s: that path is not shared"
+msgstr "Freigabe für den Pfad %s kann nicht entfernt werden: Der Pfad ist nicht freigegeben"
+
+#: ../src/shares.c:726
+#, c-format
+msgid ""
+"Cannot change the path of an existing share; please remove the old share "
+"first and add a new one"
+msgstr "Der Pfad einer bestehenden Freigabe kann nicht geändert werden. Bitte entfernen Sie zuerst die alte Freigabe und fügen Sie dann eine neue hinzu"
+
+#: ../interfaces/share-dialog.glade.in.h:1
 msgid "<big><b>Folder Sharing</b></big>"
 msgstr "<big><b>Ordner freigeben</b></big>"
 
-#: ../interfaces/share-dialog.glade.h:2
-msgid "Allow other people to write in this folder"
-msgstr "Anderen erlauben, in diesen Ordner zu schreiben"
+#: ../interfaces/share-dialog.glade.in.h:2
+msgid "Co_mment:"
+msgstr "Ko_mmentar:"
 
-#: ../interfaces/share-dialog.glade.h:3
-msgid "Comment :"
-msgstr "Kommentar:"
+#: ../interfaces/share-dialog.glade.in.h:3
+msgid "Share _name:"
+msgstr "Freigabe_name:"
 
-#: ../interfaces/share-dialog.glade.h:4
-msgid "Share Name :"
-msgstr "Freigabename:"
+#: ../interfaces/share-dialog.glade.in.h:4
+msgid "Share this _folder"
+msgstr "Diesen Ordner _freigeben"
 
+#: ../interfaces/share-dialog.glade.in.h:5
+msgid "_Allow other people to write in this folder"
+msgstr "_Anderen erlauben, in diesen Ordner zu schreiben"
+
+#: ../interfaces/share-dialog.glade.in.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "_Gastzugriff (für Nutzer ohne Benutzerkonto)"
 
