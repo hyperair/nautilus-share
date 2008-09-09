@@ -1,44 +1,43 @@
-# Polish translations for nautilus-share package.
-# Copyright (C) 2005 THE nautilus-share'S COPYRIGHT HOLDER
+# Polish translation for nautilus-share package.
+# Copyright (C) 2001-2008 Free Software Foundation, Inc.
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# Aviary.pl
+# Jeśli masz jakiekolwiek uwagi odnoszące się do tłumaczenia lub chcesz
+# pomóc w jego rozwijaniu i pielęgnowaniu, napisz do nas:
+# gnomepl@aviary.pl
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # This file is distributed under the same license as the nautilus-share package.
 # sebastien estienne <sebastien.estienne@gmail.com>, 2005.
+# Tomasz Dominikowski <tdominikowski@aviary.pl>, 2008
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-07 23:19+0100\n"
-"PO-Revision-Date: 2008-02-07 23:12+0100\n"
+"POT-Creation-Date: 2008-02-07 22:20+0000\n"
+"PO-Revision-Date: 2008-09-09 23:02+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
-"Language-Team: Tomasz Dominikowski (Aviary.pl) <dominikowski@gmail.com>\n"
+"Language-Team: Aviary.pl <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../src/nautilus-share.c:129
 #, c-format
-msgid ""
-"Nautilus needs to add some permissions to your folder \"%s\" in order to "
-"share it"
-msgstr ""
-"Nautilus musi nadać pewne uprawnienia na folder \"%s\", aby można było go "
-"współdzielić"
+msgid "Nautilus needs to add some permissions to your folder \"%s\" in order to share it"
+msgstr "Program Nautilus musi nadać pewne uprawnienia na katalog \"%s\", aby można było go współdzielić"
 
 #: ../src/nautilus-share.c:137
 #, c-format
 msgid ""
-"The folder \"%s\" needs the following extra permissions for sharing to "
-"work:\n"
-"%s%s%sDo you want Nautilus to add these permissions to the folder "
-"automatically?"
+"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+"%s%s%sDo you want Nautilus to add these permissions to the folder automatically?"
 msgstr ""
-"Folder \"%s\" wymaga następujących dodatkowych uprawnień, aby uruchomić "
-"współdzielenie:\n"
-"%s%s%sCzy chcesz, aby Nautilus nadał te uprawnienia automatycznie?"
+"Katalog \"%s\" wymaga następujących dodatkowych uprawnień, aby uruchomić współdzielenie:\n"
+"%s%s%sNadać te uprawnienia automatycznie?"
 
 #: ../src/nautilus-share.c:141
 msgid "  - read permission by others\n"
@@ -59,7 +58,7 @@ msgstr "Nadaj uprawnienia automatycznie"
 #: ../src/nautilus-share.c:173
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
-msgstr "Nie można zmienić uprawnień folderu \"%s\""
+msgstr "Nie można zmienić uprawnień katalogu \"%s\""
 
 #: ../src/nautilus-share.c:444
 msgid "Share name is too long"
@@ -100,7 +99,7 @@ msgstr "Opcje współdzielenia"
 
 #: ../src/nautilus-share.c:1130
 msgid "Share this Folder"
-msgstr "Udostępnij ten folder"
+msgstr "Udostępnij ten katalog"
 
 #: ../src/shares.c:125
 #, c-format
@@ -123,13 +122,11 @@ msgid "'net usershare' returned error %d"
 msgstr "\"net usershare\" zwrócił błąd %d"
 
 #: ../src/shares.c:187
-#, c-format
 msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
-msgstr ""
-"wiadomość zwrotna \"net usershare\" nie zawiera poprawnego kodowania UTF-8"
+msgstr "wiadomość zwrotna \"net usershare\" nie zawiera poprawnego kodowania UTF-8"
 
-#: ../src/shares.c:442 ../src/shares.c:615
-#, c-format
+#: ../src/shares.c:442
+#: ../src/shares.c:615
 msgid "Failed"
 msgstr "Nieudane"
 
@@ -139,7 +136,6 @@ msgid "Samba's testparm returned with signal %d"
 msgstr "Testparm Samby zwrócił sygnał %d"
 
 #: ../src/shares.c:556
-#, c-format
 msgid "Samba's testparm failed for an unknown reason"
 msgstr "Testparm Samby nieudany z nieznanego powodu"
 
@@ -156,21 +152,15 @@ msgstr "Testparm Samby zwrócił błąd %d"
 #: ../src/shares.c:680
 #, c-format
 msgid "Cannot remove the share for path %s: that path is not shared"
-msgstr ""
-"Nie można usunąć udziału dla ścieżki %s: ta ścieżka nie jest współdzielona"
+msgstr "Nie można usunąć udziału dla ścieżki %s: ta ścieżka nie jest współdzielona"
 
 #: ../src/shares.c:726
-#, c-format
-msgid ""
-"Cannot change the path of an existing share; please remove the old share "
-"first and add a new one"
-msgstr ""
-"Nie można zmienić ścieżki do istniejącego udziału; proszę najpierw usunąć "
-"poprzedni udział i utworzyć nowy"
+msgid "Cannot change the path of an existing share; please remove the old share first and add a new one"
+msgstr "Nie można zmienić ścieżki do istniejącego udziału; proszę najpierw usunąć poprzedni udział i utworzyć nowy"
 
 #: ../interfaces/share-dialog.glade.in.h:1
 msgid "<big><b>Folder Sharing</b></big>"
-msgstr "<big><b>Udostępnianie folderów</b></big>"
+msgstr "<big><b>Udostępnianie katalogół</b></big>"
 
 #: ../interfaces/share-dialog.glade.in.h:2
 msgid "Co_mment:"
@@ -182,11 +172,11 @@ msgstr "_Nazwa udziału:"
 
 #: ../interfaces/share-dialog.glade.in.h:4
 msgid "Share this _folder"
-msgstr "Udostępnij ten _folder"
+msgstr "Udostępnianie tego _katalogu"
 
 #: ../interfaces/share-dialog.glade.in.h:5
 msgid "_Allow other people to write in this folder"
-msgstr "Zezwolenie innym na z_apis w tym katalogu"
+msgstr "_Zezwolenie innym na zapis w tym katalogu"
 
 #: ../interfaces/share-dialog.glade.in.h:6
 msgid "_Guest access (for people without a user account)"
@@ -194,18 +184,14 @@ msgstr "_Dostęp dla gości (dla osób bez konta użytkownika)"
 
 #~ msgid "Sharename too long, may not appear on all Os"
 #~ msgstr "Zbyt dĹuga nazwa, moĹźe siÄ nieukazaÄ w niektĂłrych systemach"
-
 #~ msgid "Sharename already in use or forbidden!"
 #~ msgstr "Nazwa ta juĹź jest uĹźyta, bÄdĹş teĹź zabroniona!"
-
 #~ msgid "shared (read only)"
 #~ msgstr "udostÄpniony (tylko do odczytu)"
-
 #~ msgid "shared (read and write)"
 #~ msgstr "udostÄpniony (odczyt i zapis)"
-
 #~ msgid "not shared"
 #~ msgstr "nie udostÄpniony"
-
 #~ msgid "Close"
 #~ msgstr "Fermer"
+
