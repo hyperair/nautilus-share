@@ -1,3 +1,7 @@
+2008-10-07  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Added 'nb' to ALL_LINGUAS.
+
 2008-05-17  Yair Hershkovitz  <yairhr@gmail.com>
 
 	* he.po: Added 'he' to ALL_LINGUAS.
