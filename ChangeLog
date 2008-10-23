@@ -1,10 +1,14 @@
+2008-10-23  Andre Klapper  <a9016009@gmx.de>
+
+        * configure.in: Added ast to ALL_LINGUAS on behalf of Mikel González.
+
 2008-10-07  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* configure.in: Added 'nb' to ALL_LINGUAS.
 
 2008-05-17  Yair Hershkovitz  <yairhr@gmail.com>
 
-	* he.po: Added 'he' to ALL_LINGUAS.
+	* configure.in: Added 'he' to ALL_LINGUAS.
 
 2008-04-09  Petr Kovar  <pknbe@volny.cz>
 
