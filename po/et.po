@@ -1,0 +1,182 @@
+# Nautilus-share eesti tõlge.
+# Estonian translation of Nautilus-share.
+#
+# Copyright (C) 2009, The Gnome Project.
+# This file is distributed under the same license as the PACKAGE package.
+# Mattias Põldaru <mahfiaz gmail com>, 2008-2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Nautilus-share\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus-share&component=general\n"
+"POT-Creation-Date: 2009-01-05 13:15+0000\n"
+"PO-Revision-Date: 2009-02-18 19:33+0300\n"
+"Last-Translator: Mattias Põldaru <mahfiaz gmail com>\n"
+"Language-Team: Gnome Estonian Translation Team <gnome-et@linux.ee>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: Estonian\n"
+
+#: ../src/nautilus-share.c:129
+#, c-format
+msgid "Nautilus needs to add some permissions to your folder \"%s\" in order to share it"
+msgstr "Nautilus peab muutma kataloogi \"%s\" pääsuõiguseid, et seda saaks jagada"
+
+#: ../src/nautilus-share.c:137
+#, c-format
+msgid ""
+"The folder \"%s\" needs the following extra permissions for sharing to work:\n"
+"%s%s%sDo you want Nautilus to add these permissions to the folder automatically?"
+msgstr ""
+"Et jagamine toimiks, peavad kataloogile \"%s\" olema määratud järgmiseid lisaõiguseid:\n"
+"%s%s%sKas Nautilus peaks kataloogile need õigused määrama?"
+
+#: ../src/nautilus-share.c:141
+msgid "  - read permission by others\n"
+msgstr "  - teiste lugemisõigus\n"
+
+#: ../src/nautilus-share.c:142
+msgid "  - write permission by others\n"
+msgstr "  - teiste kirjutamisõigus\n"
+
+#: ../src/nautilus-share.c:143
+msgid "  - execute permission by others\n"
+msgstr "  - teiste käivitamisõigus\n"
+
+#: ../src/nautilus-share.c:147
+msgid "Add the permissions automatically"
+msgstr "Lisa õigused automaatselt"
+
+#: ../src/nautilus-share.c:173
+#, c-format
+msgid "Could not change the permissions of folder \"%s\""
+msgstr "Kataloogi \"%s\" õiguseid pole võimalik muuta"
+
+#: ../src/nautilus-share.c:444
+msgid "Share name is too long"
+msgstr "Jagatud ressursi nimi on liiga pikk"
+
+#: ../src/nautilus-share.c:478
+msgid "The share name cannot be empty"
+msgstr "Jagatud ressursi nimi ei saa olla tühi"
+
+#: ../src/nautilus-share.c:491
+#, c-format
+msgid "Error while getting share information: %s"
+msgstr "Viga jagatud ressursi kohta andmete hankimisel: %s"
+
+#: ../src/nautilus-share.c:501
+msgid "Another share has the same name"
+msgstr "Sellenimeline jagatud ressurss on juba olemas"
+
+#: ../src/nautilus-share.c:669
+msgid "There was an error while getting the sharing information"
+msgstr "Jagatud ressursi kohta andmete hankimisel esines viga"
+
+#: ../src/nautilus-share.c:769
+msgid "Modify _Share"
+msgstr "Muuda _jagatud ressurssi"
+
+#: ../src/nautilus-share.c:771
+msgid "Create _Share"
+msgstr "Loo _jagatud ressurss"
+
+#: ../src/nautilus-share.c:1029
+msgid "Share"
+msgstr "Jagatud ressurss"
+
+#: ../src/nautilus-share.c:1129
+msgid "Sharing Options"
+msgstr "Jagamise valikud"
+
+#: ../src/nautilus-share.c:1130
+msgid "Share this Folder"
+msgstr "See kataloog on jagatud"
+
+#: ../src/shares.c:125
+#, c-format
+msgid "%s %s %s returned with signal %d"
+msgstr "%s %s %s tagastas signaali %d"
+
+#: ../src/shares.c:134
+#, c-format
+msgid "%s %s %s failed for an unknown reason"
+msgstr "%s %s %s nurjus teadmata põhjusel"
+
+#: ../src/shares.c:154
+#, c-format
+msgid "'net usershare' returned error %d: %s"
+msgstr "'net usershare' tagastas vea %d: %s"
+
+#: ../src/shares.c:156
+#, c-format
+msgid "'net usershare' returned error %d"
+msgstr "'net usershare' tagastas vea %d"
+
+#: ../src/shares.c:187
+#, c-format
+msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
+msgstr "'net usershare' väljund ei ole korrektselt UTF-8 kodeeringus"
+
+#: ../src/shares.c:442
+#: ../src/shares.c:615
+#, c-format
+msgid "Failed"
+msgstr "Nurjumine"
+
+#: ../src/shares.c:550
+#, c-format
+msgid "Samba's testparm returned with signal %d"
+msgstr "Samba testparm tagastas signaali %d"
+
+#: ../src/shares.c:556
+#, c-format
+msgid "Samba's testparm failed for an unknown reason"
+msgstr "Samba testparm töö nurjus teadmata põhjusel"
+
+#: ../src/shares.c:571
+#, c-format
+msgid "Samba's testparm returned error %d: %s"
+msgstr "Samba testparm tagastas vea %d: %s"
+
+#: ../src/shares.c:573
+#, c-format
+msgid "Samba's testparm returned error %d"
+msgstr "Samba testparm tagastas vea %d"
+
+#: ../src/shares.c:680
+#, c-format
+msgid "Cannot remove the share for path %s: that path is not shared"
+msgstr "Kataloogi %s jagamist pole võimalik lõpetada: see kataloog pole jagatud"
+
+#: ../src/shares.c:726
+#, c-format
+msgid "Cannot change the path of an existing share; please remove the old share first and add a new one"
+msgstr "Olemasoleva jagatud ressursi kataloogi pole võimalik muuta; eemalda eelmine jagamine ja lisa uus"
+
+#: ../interfaces/share-dialog.glade.in.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b>Kataloogi jagamine</b></big>"
+
+#: ../interfaces/share-dialog.glade.in.h:2
+msgid "Co_mment:"
+msgstr "Ko_mmentaar:"
+
+#: ../interfaces/share-dialog.glade.in.h:3
+msgid "Share _name:"
+msgstr "Ressursi _nimi:"
+
+#: ../interfaces/share-dialog.glade.in.h:4
+msgid "Share this _folder"
+msgstr "See _kataloog on jagatud"
+
+#: ../interfaces/share-dialog.glade.in.h:5
+msgid "_Allow other people to write in this folder"
+msgstr "_Teistel lubatakse sellesse kataloogi kirjutada"
+
+#: ../interfaces/share-dialog.glade.in.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "_Külalistele võimaldatakse ligipääs (kasutajakontota)"
+

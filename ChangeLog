@@ -1,3 +1,7 @@
+2009-02-20  Priit Laes <plaes@plaes.org>
+
+	* configure.in: Added "et" to ALL_LINGUAS
+
 2008-12-21  Andre Klapper  <a9016009@gmx.de>
 
 	* configure.in: Added "de" to ALL_LINGUAS (Thanks, Kenneth!)
