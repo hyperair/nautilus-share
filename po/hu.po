@@ -1,17 +1,17 @@
-# translation of new.po to
-# Translation of SuSE patches included in gnome-patch-translation.
-#
+# Hungarian translation of nautilus-share
+# 
 # Keresztes Ákos <xsak@c2.hu>, 2006.
 # Kalman Kemenczy <kkemenczy@novell.com>, 2006, 2007.
 # Gabor Kelemen <kelemeng@gnome.hu>, 2007.
+# Gabor Kelemen <kelemeng at gnome dot hu>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: new\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-09-22 17:05+0100\n"
-"PO-Revision-Date: 2007-11-01 11:27+0100\n"
-"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
-"Language-Team:  <hu@li.org>\n"
+"Project-Id-Version: nautilus-share.master.hu\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus-share&component=general\n"
+"POT-Creation-Date: 2009-04-17 13:24+0000\n"
+"PO-Revision-Date: 2009-06-03 11:34+0200\n"
+"Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
+"Language-Team: Hungarian <gnome at gnome dot hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,7 +25,7 @@ msgid ""
 "share it"
 msgstr ""
 "A megosztáshoz a Nautilusnak fel kell vennie néhány jogosultságot a "
-"következő mappához: \"%s\""
+"következő mappához: „%s”"
 
 #: ../src/nautilus-share.c:137
 #, c-format
@@ -35,7 +35,7 @@ msgid ""
 "%s%s%sDo you want Nautilus to add these permissions to the folder "
 "automatically?"
 msgstr ""
-"A megosztáshoz a következő jogokat kell felvenni a(z) \"%s\" mappához:\n"
+"A megosztáshoz a következő jogokat kell felvenni a(z) „%s” mappához:\n"
 "%s%s%s Kívánja, hogy a Nautilus automatikusan hozzáadja a szükséges jogokat "
 "a mappához?"
 
@@ -58,7 +58,7 @@ msgstr "Jogosultságok automatikus felvétele"
 #: ../src/nautilus-share.c:173
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
-msgstr "A(z) \"%s\" mappa jogosultságainak megváltoztatása nem sikerült"
+msgstr "A(z) „%s” mappa jogosultságainak megváltoztatása nem sikerült"
 
 #: ../src/nautilus-share.c:444
 msgid "Share name is too long"
@@ -71,7 +71,7 @@ msgstr "A megosztás neve nem lehet üres"
 #: ../src/nautilus-share.c:491
 #, c-format
 msgid "Error while getting share information: %s"
-msgstr "Hiba történt a(z) %s megosztás információinak lekérdezése közben"
+msgstr "Hiba történt a megosztás információinak lekérdezése közben: %s"
 
 #: ../src/nautilus-share.c:501
 msgid "Another share has the same name"
@@ -114,18 +114,20 @@ msgstr "%s %s %s ismeretlen okból sikertelen"
 #: ../src/shares.c:154
 #, c-format
 msgid "'net usershare' returned error %d: %s"
-msgstr "A 'net usershare' a következő hibát adta vissza: %d: %s"
+msgstr "A „net usershare” a következő hibát adta vissza: %d: %s"
 
 #: ../src/shares.c:156
 #, c-format
 msgid "'net usershare' returned error %d"
-msgstr "A 'net usershare' a következő hibát adta vissza: %d"
+msgstr "A „net usershare” a következő hibát adta vissza: %d"
 
 #: ../src/shares.c:187
+#, c-format
 msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
-msgstr "a 'net usershare' kimenete nem UTF-8 kódolású"
+msgstr "A „net usershare” kimenete nem UTF-8 kódolású"
 
 #: ../src/shares.c:442 ../src/shares.c:615
+#, c-format
 msgid "Failed"
 msgstr "Sikertelen"
 
@@ -135,6 +137,7 @@ msgid "Samba's testparm returned with signal %d"
 msgstr "A Samba testparm parancsa a következő szignállal tért vissza: %d"
 
 #: ../src/shares.c:556
+#, c-format
 msgid "Samba's testparm failed for an unknown reason"
 msgstr "A Samba testparm parancsa ismeretlen okból nem futott le"
 
@@ -156,6 +159,7 @@ msgstr ""
 "nem megosztott"
 
 #: ../src/shares.c:726
+#, c-format
 msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
