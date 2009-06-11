@@ -500,7 +500,10 @@ property_page_share_name_is_valid (PropertyPage *page)
 	  return FALSE;
 	}
       else
-	return TRUE;
+	{
+	  property_page_set_normal (page);
+	  return TRUE;
+	}
     }
 }
 
