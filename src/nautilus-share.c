@@ -1232,7 +1232,7 @@ nautilus_share_register_type (GTypeModule *module)
 void
 nautilus_module_initialize (GTypeModule  *module)
 {
-  g_print ("Initializing nautilus-share extension\n");
+  /*g_print ("Initializing nautilus-share extension\n");*/
 
   bindtextdomain("nautilus-share", NAUTILUS_SHARE_LOCALEDIR);
   bind_textdomain_codeset("nautilus-share", "UTF-8");
@@ -1244,7 +1244,7 @@ nautilus_module_initialize (GTypeModule  *module)
 void
 nautilus_module_shutdown   (void)
 {
-  g_print ("Shutting down nautilus-share extension\n");
+  /*g_print ("Shutting down nautilus-share extension\n");*/
   /* FIXME freeing */
 }
 
