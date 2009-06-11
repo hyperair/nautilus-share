@@ -1128,7 +1128,7 @@ nautilus_share_get_file_items (NautilusMenuProvider *provider,
   item = nautilus_menu_item_new ("NautilusShare::share",
 				 _("Sharing Options"),
 				 _("Share this Folder"),
-				 "stock_shared-by-me");
+				 "folder-remote");
   g_signal_connect (item, "activate",
 		    G_CALLBACK (share_this_folder_callback),
 		    fileinfo);
