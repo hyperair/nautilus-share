@@ -1087,6 +1087,7 @@ share_this_folder_callback (NautilusMenuItem *item,
   g_assert (fileinfo != NULL);
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (window), _("Folder Sharing"));
   page = create_property_page (fileinfo);
   page->standalone_window = window;
   g_signal_connect (page->button_cancel, "clicked",
