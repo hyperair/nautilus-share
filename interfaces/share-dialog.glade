@@ -304,7 +304,7 @@
 	    <widget class="GtkCheckButton" id="checkbutton_share_rw_ro">
 	      <property name="visible">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">_Allow other people to write in this folder</property>
+	      <property name="label" translatable="yes">_Allow others to create and delete files in this folder</property>
 	      <property name="use_underline">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <property name="focus_on_click">True</property>
