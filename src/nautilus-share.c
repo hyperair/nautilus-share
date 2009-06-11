@@ -34,8 +34,6 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-share.h"
 
-#include <eel/eel-vfs-extensions.h>
-
 #include <glib/gi18n-lib.h>
 
 #include <gtk/gtktable.h>
