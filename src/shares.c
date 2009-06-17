@@ -358,9 +358,9 @@ add_key_group_to_hashes (GKeyFile *key_file, const char *group)
 
 	acl = get_string_from_key_file (key_file, group, KEY_ACL);
 	if (acl) {
-		if (strcmp (acl, "Everyone:R") == 0)
+		if (strstr (acl, "Everyone:R"))
 			is_writable = FALSE;
-		else if (strcmp (acl, "Everyone:F") == 0)
+		else if (strstr (acl, "Everyone:F"))
 			is_writable = TRUE;
 		else {
 			g_message ("unknown format for key '%s/%s' as it contains '%s'.  Assuming that the share is read-only",
