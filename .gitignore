@@ -1,5 +1,7 @@
 Makefile
 Makefile.in
+Makefile.in.in
+POTFILES
 aclocal.m4
 autom4te.cache
 config.h

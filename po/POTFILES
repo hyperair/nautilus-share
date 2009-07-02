@@ -1,3 +1,0 @@
-	../src/nautilus-share.c \
-	../src/shares.c \
-	../interfaces/share-dialog.glade.in
