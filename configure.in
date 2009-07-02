@@ -44,22 +44,17 @@ NAUTILUS_EXTENSION_DIR=`$PKG_CONFIG --variable=extensiondir libnautilus-extensio
 AC_SUBST(NAUTILUS_EXTENSION_DIR)
 
 dnl ========================================================
-dnl Set PIXMAPS_DIR 
+dnl Set INTERFACES_DIR 
 dnl ========================================================
 
 if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps", [pixmaps directory])
-  pixmapsdir="${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps"
   AC_DEFINE_UNQUOTED(INTERFACES_DIR, "${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/interfaces", [path where glade files will be installed])
   interfacesdir="${ac_default_prefix}/${DATADIRNAME}/${PACKAGE}/interfaces"
 else
-  AC_DEFINE_UNQUOTED(PIXMAPS_DIR, "${prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps", [pixmaps directory])
-  pixmapsdir="${prefix}/${DATADIRNAME}/${PACKAGE}/pixmaps"
   AC_DEFINE_UNQUOTED(INTERFACES_DIR, "${prefix}/${DATADIRNAME}/${PACKAGE}/interfaces", [path where glade files will be installed])
   interfacesdir="${prefix}/${DATADIRNAME}/${PACKAGE}/interfaces"
 fi
 
-AC_SUBST(pixmapsdir)
 AC_SUBST(interfacesdir)
 
 dnl ========================================================
@@ -84,7 +79,6 @@ dnl ========================================================
 AC_CONFIG_FILES([
   Makefile 
   src/Makefile
-  pixmaps/Makefile
   interfaces/Makefile
   po/Makefile.in
 ])
