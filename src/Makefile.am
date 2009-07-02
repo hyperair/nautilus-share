@@ -7,7 +7,6 @@ libnautilus_share_la_CFLAGS =				\
 	$(WARN_CFLAGS)                                  \
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(NAUTILUS_CFLAGS)				\
-	$(LIBGLADE_CFLAGS)				\
 	$(GLIB_CFLAGS)
 
 nautilus_extensiondir=$(NAUTILUS_EXTENSION_DIR)
@@ -21,4 +20,4 @@ libnautilus_share_la_SOURCES =  \
 	shares.h
 
 libnautilus_share_la_LDFLAGS = -module -avoid-version
-libnautilus_share_la_LIBADD  = $(GLIB_LIBS) $(NAUTILUS_LIBS) $(LIBGLADE_LIBS)
+libnautilus_share_la_LIBADD  = $(GLIB_LIBS) $(NAUTILUS_LIBS)

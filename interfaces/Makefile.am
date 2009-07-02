@@ -1,1 +1,1 @@
-interfaces_DATA = share-dialog.glade
+interfaces_DATA = share-dialog.ui
