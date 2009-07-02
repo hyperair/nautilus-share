@@ -31,10 +31,11 @@
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
 
-#include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-share.h"
 
 #include <glib/gi18n-lib.h>
+
+#include <gio/gio.h>
 
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
@@ -48,6 +49,8 @@
 #include <string.h>
 #include <time.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -419,15 +422,15 @@ property_page_commit (PropertyPage *page)
 static gchar *
 get_fullpath_from_fileinfo(NautilusFileInfo *fileinfo)
 {
-  gchar *uri;
+  GFile *file;
   gchar *fullpath;
 
   g_assert (fileinfo != NULL);
   
-  uri = nautilus_file_info_get_uri(fileinfo);
-  fullpath = gnome_vfs_get_local_path_from_uri(uri);
-  g_assert (fullpath != NULL); /* In the beginning we checked that this was a local URI */
-  g_free(uri);
+  file = nautilus_file_info_get_location(fileinfo);
+  fullpath = g_file_get_path(file);
+  g_assert (fullpath != NULL && g_file_is_native(file)); /* In the beginning we checked that this was a local URI */
+  g_object_unref(file);
 
   return(fullpath);
 }
@@ -868,11 +871,13 @@ get_share_info_for_file_info (NautilusFileInfo *file, ShareInfo **share_info, gb
 {
   char		*uri;
   char		*local_path = NULL;
+  GFile         *f;
 
   *share_info = NULL;
   *is_shareable = FALSE;
 
   uri = nautilus_file_info_get_uri (file);
+  f = nautilus_file_info_get_location(file);
   if (!uri)
     goto out;
 
@@ -901,7 +906,8 @@ get_share_info_for_file_info (NautilusFileInfo *file, ShareInfo **share_info, gb
   if (!nautilus_file_info_is_directory(file))
     goto out;
 
-  if(!(local_path = gnome_vfs_get_local_path_from_uri(uri)))
+  local_path = g_file_get_path(f);
+  if (!local_path || !g_file_is_native(f))
     goto out;
 
   /* FIXME: NULL GError */
@@ -912,6 +918,7 @@ get_share_info_for_file_info (NautilusFileInfo *file, ShareInfo **share_info, gb
 
  out:
 
+  g_object_unref(f);
   g_free (uri);
   g_free (local_path);
 }
