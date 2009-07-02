@@ -415,6 +415,13 @@ property_page_commit (PropertyPage *page)
   if (!is_shared)
     restore_saved_permissions (page->path);
 
+  /* update initially shared state, so that we may undo later on */
+  if (retval)
+    {
+      page->was_initially_shared = is_shared;
+      page->is_dirty = FALSE;
+    }
+
   return retval;
 }
 
@@ -545,6 +552,8 @@ property_page_check_sensitivity (PropertyPage *page)
     apply_is_sensitive = page->was_initially_shared;
 
   gtk_widget_set_sensitive (page->button_apply, apply_is_sensitive);
+  gtk_button_set_label (GTK_BUTTON(page->button_apply),
+			page->was_initially_shared ? _("Modify _Share") : _("Create _Share"));
 }
 
 static void
@@ -641,6 +650,8 @@ button_apply_clicked_cb (GtkButton *button,
     {
       if (page->standalone_window)
 	gtk_widget_destroy (page->standalone_window);
+      else
+        property_page_check_sensitivity (page);
     }
 }
 
