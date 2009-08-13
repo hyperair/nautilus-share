@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bn_IN\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus-share&component=general\n"
-"POT-Creation-Date: 2009-07-13 04:50+0000\n"
-"PO-Revision-Date: 2009-07-15 17:49+0530\n"
+"POT-Creation-Date: 2009-08-09 23:38+0000\n"
+"PO-Revision-Date: 2009-08-13 18:34+0530\n"
 "Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
 "Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
 "MIME-Version: 1.0\n"
@@ -18,14 +18,16 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/nautilus-share.c:129
+#: ../src/nautilus-share.c:128
 #, c-format
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
 "share it"
-msgstr "যৌথব্যবহারের জন্য \"%s\" ফোল্ডারটি উপলব্ধ করার জন্য Nautilus দ্বারা এই ফোল্ডারের ক্ষেত্রে কিছু অনুমতি যোগ করা আবশ্যক"
+msgstr ""
+"যৌথব্যবহারের জন্য \"%s\" ফোল্ডারটি উপলব্ধ করার জন্য Nautilus দ্বারা এই ফোল্ডারের "
+"ক্ষেত্রে কিছু অনুমতি যোগ করা আবশ্যক"
 
-#: ../src/nautilus-share.c:137
+#: ../src/nautilus-share.c:136
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -33,68 +35,75 @@ msgid ""
 "%s%s%sDo you want Nautilus to add these permissions to the folder "
 "automatically?"
 msgstr ""
-"যৌথ ব্যবহারের জন্য \"%s\" ফোল্ডাটি উপলব্ধ করা জন্য কিছু অতিরিক্ত অনুমতি ধার্য করা আবশ্যক:\n"
-"%s%s%sস্বয়ংক্রিয়ভাবে Nautilus দ্বারা এই ফোল্ডারের জন্য এই অনুমতিগুলি ধার্য করা হবে কি?"
+"যৌথ ব্যবহারের জন্য \"%s\" ফোল্ডাটি উপলব্ধ করা জন্য কিছু অতিরিক্ত অনুমতি ধার্য করা "
+"আবশ্যক:\n"
+"%s%s%sস্বয়ংক্রিয়ভাবে Nautilus দ্বারা এই ফোল্ডারের জন্য এই অনুমতিগুলি ধার্য করা হবে "
+"কি?"
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:140
 msgid "  - read permission by others\n"
 msgstr "  - অন্যান্য ব্যবহারকারীদের দ্বারা পড়ার অনুমতি\n"
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:141
 msgid "  - write permission by others\n"
 msgstr "  - অন্যান্য ব্যবহারকারীদের দ্বারা লেখার অনুমতি\n"
 
-#: ../src/nautilus-share.c:143
+#: ../src/nautilus-share.c:142
 msgid "  - execute permission by others\n"
 msgstr "  - অন্যান্য ব্যবহারকারীদের দ্বারা সঞ্চালনার অনুমতি\n"
 
-#: ../src/nautilus-share.c:147
+#: ../src/nautilus-share.c:146
 msgid "Add the permissions automatically"
 msgstr "স্বয়ংক্রিয়ভাবে অনুমতি যোগ করা হবে"
 
-#: ../src/nautilus-share.c:173
+#: ../src/nautilus-share.c:172
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "\"%s\" ফোল্ডারের জন্য অনুমতি পরিবর্তন করা যায়নি"
 
-#: ../src/nautilus-share.c:444
+#: ../src/nautilus-share.c:451
 msgid "Share name is too long"
 msgstr "শেয়ারের নাম অত্যাধিক লম্বা"
 
-#: ../src/nautilus-share.c:478
+#: ../src/nautilus-share.c:485
 msgid "The share name cannot be empty"
 msgstr "শেয়ারের নাম ফাঁকা রাখা চলবে না"
 
-#: ../src/nautilus-share.c:491
+#: ../src/nautilus-share.c:498
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "শেয়ার সংক্রান্ত তথ্য প্রাপ্ত করতে ত্রুটি: %s"
 
-#: ../src/nautilus-share.c:501
+#: ../src/nautilus-share.c:508
 msgid "Another share has the same name"
 msgstr "একটি ভিন্ন শেয়ারের জন্য একই নাম ব্যবহার করা হয়েছে"
 
-#: ../src/nautilus-share.c:669
-msgid "There was an error while getting the sharing information"
-msgstr "যৌথ ব্যবহার সংক্রান্ত তথ্য প্রাপ্ত করতে ত্রুটি দেখা দিয়েছে"
-
-#: ../src/nautilus-share.c:769
+#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:790
 msgid "Modify _Share"
 msgstr "শেয়ার পরিবর্তন করুন (_S)"
 
-#: ../src/nautilus-share.c:771
+#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:792
 msgid "Create _Share"
 msgstr "শেয়ার নির্মাণ করুন (_S)"
 
-#: ../src/nautilus-share.c:1029
+#: ../src/nautilus-share.c:683
+msgid "There was an error while getting the sharing information"
+msgstr "যৌথ ব্যবহার সংক্রান্ত তথ্য প্রাপ্ত করতে ত্রুটি দেখা দিয়েছে"
+
+#: ../src/nautilus-share.c:1054
 msgid "Share"
 msgstr "শেয়ার"
 
-#: ../src/nautilus-share.c:1129
+#: ../src/nautilus-share.c:1114
+#| msgid "<big><b>Folder Sharing</b></big>"
+msgid "Folder Sharing"
+msgstr "ফোল্ডারের যৌথ ব্যবহার"
+
+#: ../src/nautilus-share.c:1155
 msgid "Sharing Options"
 msgstr "যৌথ ব্যবহার সংক্রান্ত বিকল্প"
 
-#: ../src/nautilus-share.c:1130
+#: ../src/nautilus-share.c:1156
 msgid "Share this Folder"
 msgstr "এই ফোল্ডারটি যৌথ ব্যবহারের জন্য চিহ্নিত করুন"
 
@@ -158,29 +167,32 @@ msgstr "%s পাথের শেয়ার মুছে ফেলা সম্�
 msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
-msgstr "উপস্থিত শেয়ারের পাথ পরিবর্তন করা সম্ভব নয়; অনুগ্রহ করে পুরোনো শেয়ার মুছে ফেলুন ও নতুনটি যোগ করুন"
+msgstr ""
+"উপস্থিত শেয়ারের পাথ পরিবর্তন করা সম্ভব নয়; অনুগ্রহ করে পুরোনো শেয়ার মুছে ফেলুন ও "
+"নতুনটি যোগ করুন"
 
-#: ../interfaces/share-dialog.glade.in.h:1
+#: ../interfaces/share-dialog.ui.h:1
 msgid "<big><b>Folder Sharing</b></big>"
 msgstr "<big><b>ফোল্ডারের যৌথ ব্যবহার</b></big>"
 
-#: ../interfaces/share-dialog.glade.in.h:2
+#: ../interfaces/share-dialog.ui.h:2
 msgid "Co_mment:"
 msgstr "মন্তব্য: (_m)"
 
-#: ../interfaces/share-dialog.glade.in.h:3
+#: ../interfaces/share-dialog.ui.h:3
 msgid "Share _name:"
 msgstr "শেয়ারের নাম: (_n)"
 
-#: ../interfaces/share-dialog.glade.in.h:4
+#: ../interfaces/share-dialog.ui.h:4
 msgid "Share this _folder"
 msgstr "যৌথ ব্যবহারের জন্য এই ফোল্ডাটি চিহ্নিত করুন (_f)"
 
-#: ../interfaces/share-dialog.glade.in.h:5
-msgid "_Allow other people to write in this folder"
-msgstr "অন্যান্য ব্যবহারকারীদেরকে এই ফোল্ডারে লেখার অনুমতি প্রদান করা হবে (_A)"
+#: ../interfaces/share-dialog.ui.h:5
+#| msgid "_Allow other people to write in this folder"
+msgid "_Allow others to create and delete files in this folder"
+msgstr "অন্যান্য ব্যবহারকারীদেরকে এই ফোল্ডারে ফাইল তৈরি করতে ও মুছে ফেলার অনুমতি প্রদান করা হবে (_A)"
 
-#: ../interfaces/share-dialog.glade.in.h:6
+#: ../interfaces/share-dialog.ui.h:6
 msgid "_Guest access (for people without a user account)"
 msgstr "গেস্ট রূপে ব্যবহারাধিকার (অ্যাকাউন্ট বিহীন ব্যবহারকারীদের ক্ষেত্রে প্রযোজ্য) (_G)"
 
