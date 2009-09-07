@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-07 15:26+0200\n"
-"PO-Revision-Date: 2009-09-07 15:28+0100\n"
+"POT-Creation-Date: 2009-09-07 21:51+0200\n"
+"PO-Revision-Date: 2009-09-07 21:52+0100\n"
 "Last-Translator: Tomasz Dominikowski <dominikowski@gmail.com>\n"
 "Language-Team: Aviary.pl <gnomepl@aviary.pl>\n"
 "MIME-Version: 1.0\n"
@@ -174,7 +174,7 @@ msgstr "<big><b>Współdzielenie katalogów</b></big>"
 
 #: ../interfaces/share-dialog.ui.h:2
 msgid "Co_mment:"
-msgstr "Ko_mentarz:"
+msgstr "K_omentarz:"
 
 #: ../interfaces/share-dialog.ui.h:3
 msgid "Share _name:"
