@@ -691,6 +691,7 @@ create_property_page (NautilusFileInfo *fileinfo)
 
 
   page->xml = gtk_builder_new ();
+  gtk_builder_set_translation_domain (page->xml, "nautilus-share");
   g_assert (gtk_builder_add_from_file (page->xml,
               INTERFACES_DIR"/share-dialog.ui", &error));
 
