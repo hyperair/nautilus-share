@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus-share&component=general\n"
-"POT-Creation-Date: 2009-07-23 04:40+0000\n"
-"PO-Revision-Date: 2009-08-18 08:52+0100\n"
+"POT-Creation-Date: 2009-09-16 12:47+0000\n"
+"PO-Revision-Date: 2009-09-17 17:29+0100\n"
 "Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -157,4 +157,28 @@ msgstr "Ni mogoče odstraniti oznake souporabe z mape %s: mapa ni v souporabi"
 #, c-format
 msgid "Cannot change the path of an existing share; please remove the old share first and add a new one"
 msgstr "Ni mogoče spremeniti mape souporabe; odstranjena mora biti stara oznaka souporabe, da je mogoče dodati novo"
+
+#: ../interfaces/share-dialog.ui.h:1
+msgid "<big><b>Folder Sharing</b></big>"
+msgstr "<big><b>Deljenje map</b></big>"
+
+#: ../interfaces/share-dialog.ui.h:2
+msgid "Co_mment:"
+msgstr "Ko_mentar:"
+
+#: ../interfaces/share-dialog.ui.h:3
+msgid "Share _name:"
+msgstr "Ime mape _souporabe:"
+
+#: ../interfaces/share-dialog.ui.h:4
+msgid "Share this _folder"
+msgstr "Daj _mapo v souporabo"
+
+#: ../interfaces/share-dialog.ui.h:5
+msgid "_Allow others to create and delete files in this folder"
+msgstr "_Dovoli ostalim ustvarjanje in brisanje datotek v tej mapi "
+
+#: ../interfaces/share-dialog.ui.h:6
+msgid "_Guest access (for people without a user account)"
+msgstr "Dostop za _goste (za ljudi brez uporabniškega računa)"
 
