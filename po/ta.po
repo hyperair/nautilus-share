@@ -1,4 +1,4 @@
-# translation of nautilus-share.po.master.ta.po to Tamil
+# translation of nautilus-share.master.ta.po to Tamil
 # Tamil translation of nautilus-share.
 # Copyright (C) 2009 nautilus-share's COPYRIGHT HOLDER
 # This file is distributed under the same license as the nautilus-share package.
@@ -6,10 +6,10 @@
 # I. Felix <ifelix@redhat.com>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-share.po.master.ta\n"
+"Project-Id-Version: nautilus-share.master.ta\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilus-share&component=general\n"
-"POT-Creation-Date: 2009-06-11 01:23+0000\n"
-"PO-Revision-Date: 2009-06-25 13:51+0530\n"
+"POT-Creation-Date: 2009-08-09 23:38+0000\n"
+"PO-Revision-Date: 2009-10-30 12:26+0530\n"
 "Last-Translator: I. Felix <ifelix@redhat.com>\n"
 "Language-Team: Tamil <fedora-trans-ta@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -21,15 +21,16 @@ msgstr ""
 "\n"
 "\n"
 "\n"
+"\n"
 
-#: ../src/nautilus-share.c:129
+#: ../src/nautilus-share.c:128
 #, c-format
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
 "share it"
 msgstr "Nautilus உங்கள் அமைவு \"%s\"ஐ பகிர சில அனுமதிகளை சேர்க்க வேண்டும்"
 
-#: ../src/nautilus-share.c:137
+#: ../src/nautilus-share.c:136
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -37,69 +38,73 @@ msgid ""
 "%s%s%sDo you want Nautilus to add these permissions to the folder "
 "automatically?"
 msgstr ""
-"அடைவு \"%s\" பின்வரும் அனுமதிகளை கொண்டு பகிர வேலை "
-"செய்கிறது:\n"
+"அடைவு \"%s\" பின்வரும் அனுமதிகளை கொண்டு பகிர வேலை செய்கிறது:\n"
 "%s%s%sதானாக Nautilus இந்த அனுமதிகளை சேர்க்க வேண்டுமா?"
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:140
 msgid "  - read permission by others\n"
 msgstr "  - மற்றவர்களால் அனுமதியை வாசிக்கவும்\n"
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:141
 msgid "  - write permission by others\n"
 msgstr "  - மற்றவர்களால் அனுமதியை எழுதவும்\n"
 
-#: ../src/nautilus-share.c:143
+#: ../src/nautilus-share.c:142
 msgid "  - execute permission by others\n"
 msgstr "  - மற்றவர்களால் அனுமதியை இயக்கு\n"
 
-#: ../src/nautilus-share.c:147
+#: ../src/nautilus-share.c:146
 msgid "Add the permissions automatically"
 msgstr "அனுமதிகளை தானாகவே சேர்க்கவும்"
 
-#: ../src/nautilus-share.c:173
+#: ../src/nautilus-share.c:172
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "\"%s\" கோப்புறை அனுமதிகளை மாற்ற முடியவில்லை"
 
-#: ../src/nautilus-share.c:444
+#: ../src/nautilus-share.c:451
 msgid "Share name is too long"
 msgstr "பகிரும் பெயர் மிக நீளமாக உள்ளது"
 
-#: ../src/nautilus-share.c:478
+#: ../src/nautilus-share.c:485
 msgid "The share name cannot be empty"
 msgstr "பங்கு பெயரை காலியாக்க முடியவில்லை"
 
-#: ../src/nautilus-share.c:491
+#: ../src/nautilus-share.c:498
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "பங்கு தகவலைப் பெறும் போது பிழை: %s"
 
-#: ../src/nautilus-share.c:501
+#: ../src/nautilus-share.c:508
 msgid "Another share has the same name"
 msgstr "மற்றொரு பங்கிற்கும் அதே பெயர்"
 
-#: ../src/nautilus-share.c:669
-msgid "There was an error while getting the sharing information"
-msgstr "பகிரும் தகவலை பெறும் போது ஒரு பிழை ஏற்பட்டது"
-
-#: ../src/nautilus-share.c:769
+#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:790
 msgid "Modify _Share"
 msgstr "பங்கை மாற்றியமைவும் (_S)"
 
-#: ../src/nautilus-share.c:771
+#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:792
 msgid "Create _Share"
 msgstr "பங்கை உருவாக்கு (_S)"
 
-#: ../src/nautilus-share.c:1029
+#: ../src/nautilus-share.c:683
+msgid "There was an error while getting the sharing information"
+msgstr "பகிரும் தகவலை பெறும் போது ஒரு பிழை ஏற்பட்டது"
+
+#: ../src/nautilus-share.c:1054
 msgid "Share"
 msgstr "பங்கு"
 
-#: ../src/nautilus-share.c:1129
+#: ../src/nautilus-share.c:1114
+#| msgid "<big><b>Folder Sharing</b></big>"
+msgid "Folder Sharing"
+msgstr "பகிரப்படும் கோப்புறை"
+
+#: ../src/nautilus-share.c:1155
 msgid "Sharing Options"
 msgstr "பகிர்வு விருப்பங்கள்"
 
-#: ../src/nautilus-share.c:1130
+#: ../src/nautilus-share.c:1156
 msgid "Share this Folder"
 msgstr "இந்த கோப்புறையை பகிரவும்"
 
@@ -156,38 +161,39 @@ msgstr "Sambaவின் testparm பிழை %dஐ கொடுத்தத�
 #: ../src/shares.c:680
 #, c-format
 msgid "Cannot remove the share for path %s: that path is not shared"
-msgstr ""
-"இந்த பாதைக்கான %sபகிர்வினை நீக்க முடியவில்லை: அந்த பாதை பகிரப்படவில்லை "
-"ed"
+msgstr "இந்த பாதைக்கான %sபகிர்வினை நீக்க முடியவில்லை: அந்த பாதை பகிரப்படவில்லை ed"
 
 #: ../src/shares.c:726
 #, c-format
 msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
-msgstr "உள்ளிருக்கும் பங்கின் பாதையை மாற்ற முடியாது; முதலில் பழைய பங்கை நீக்கிவிட்டு மற்றும் ஒரு புதிய ஒன்றை சேர்க்கவும்"
+msgstr ""
+"உள்ளிருக்கும் பங்கின் பாதையை மாற்ற முடியாது; முதலில் பழைய பங்கை நீக்கிவிட்டு மற்றும் ஒரு "
+"புதிய ஒன்றை சேர்க்கவும்"
 
-#: ../interfaces/share-dialog.glade.in.h:1
+#: ../interfaces/share-dialog.ui.h:1
 msgid "<big><b>Folder Sharing</b></big>"
 msgstr "<big><b>பகிரப்படும் கோப்புறை</b></big>"
 
-#: ../interfaces/share-dialog.glade.in.h:2
+#: ../interfaces/share-dialog.ui.h:2
 msgid "Co_mment:"
 msgstr "கருத்து (_m):"
 
-#: ../interfaces/share-dialog.glade.in.h:3
+#: ../interfaces/share-dialog.ui.h:3
 msgid "Share _name:"
 msgstr "பெயரைப் பகிரவும் (_n):"
 
-#: ../interfaces/share-dialog.glade.in.h:4
+#: ../interfaces/share-dialog.ui.h:4
 msgid "Share this _folder"
 msgstr "இந்த கோப்புறையை பகிரவும் (_f)"
 
-#: ../interfaces/share-dialog.glade.in.h:5
-msgid "_Allow other people to write in this folder"
-msgstr "மற்ற மக்களை இந்த கோப்புறையில் எழுத அனுமதிக்கவும் (_A)"
+#: ../interfaces/share-dialog.ui.h:5
+#| msgid "_Allow other people to write in this folder"
+msgid "_Allow others to create and delete files in this folder"
+msgstr "மற்றவர்களை இந்த கோப்புறையில் கோப்புகளை உருவாக்க மற்றும் அழிக்க அனுமதிக்கவும் (_A)"
 
-#: ../interfaces/share-dialog.glade.in.h:6
+#: ../interfaces/share-dialog.ui.h:6
 msgid "_Guest access (for people without a user account)"
 msgstr "விருந்தினர் அணுகல் (_G) (ஒரு பயனர் கணக்கு இல்லாதவர்களுக்கு)"
 
