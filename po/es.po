@@ -3,14 +3,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 200, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus-share&component=general\n"
-"POT-Creation-Date: 2009-08-09 23:38+0000\n"
-"PO-Revision-Date: 2009-08-14 14:50+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-07 15:24+0100\n"
+"PO-Revision-Date: 2009-12-19 12:23+0100\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +18,7 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../src/nautilus-share.c:128
+#: ../src/nautilus-share.c:129
 #, c-format
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
@@ -28,7 +27,7 @@ msgstr ""
 "Nautilus necesita añadir algunos permisos a su carpeta «%s» para poder "
 "compartirla"
 
-#: ../src/nautilus-share.c:136
+#: ../src/nautilus-share.c:137
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -40,69 +39,65 @@ msgstr ""
 "compartirla:\n"
 "%s%s%s¿Quiere que Nautilus añada automáticamente estos permisos a la carpeta?"
 
-#: ../src/nautilus-share.c:140
+#: ../src/nautilus-share.c:141
 msgid "  - read permission by others\n"
 msgstr "  - permisos de lectura por otros\n"
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:142
 msgid "  - write permission by others\n"
 msgstr "  - permisos de escritura por otros\n"
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:143
 msgid "  - execute permission by others\n"
 msgstr "  - permisos de ejecución por otros\n"
 
-#: ../src/nautilus-share.c:146
+#: ../src/nautilus-share.c:147
 msgid "Add the permissions automatically"
 msgstr "Añadir los permisos automáticamente"
 
-#: ../src/nautilus-share.c:172
+#: ../src/nautilus-share.c:173
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "No se pudo cambiar los permisos de la carpeta «%s»"
 
-#: ../src/nautilus-share.c:451
+#: ../src/nautilus-share.c:444
 msgid "Share name is too long"
 msgstr "El nombre compartido es demasiado largo"
 
-#: ../src/nautilus-share.c:485
+#: ../src/nautilus-share.c:478
 msgid "The share name cannot be empty"
 msgstr "El nombre compartido no puede estar vacío"
 
-#: ../src/nautilus-share.c:498
+#: ../src/nautilus-share.c:491
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr "Error al obtener la información de compartición: %s"
 
-#: ../src/nautilus-share.c:508
+#: ../src/nautilus-share.c:501
 msgid "Another share has the same name"
 msgstr "Otro compartido tiene el mismo nombre"
 
-#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:790
-msgid "Modify _Share"
-msgstr "_Modificar compartición"
-
-#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:792
-msgid "Create _Share"
-msgstr "Crear _compartición"
-
-#: ../src/nautilus-share.c:683
+#: ../src/nautilus-share.c:669
 msgid "There was an error while getting the sharing information"
 msgstr "Hubo un error al obtener la información de compartición"
 
-#: ../src/nautilus-share.c:1054
+#: ../src/nautilus-share.c:769
+msgid "Modify _Share"
+msgstr "_Modificar compartición"
+
+#: ../src/nautilus-share.c:771
+msgid "Create _Share"
+msgstr "C_rear compartición"
+
+#: ../src/nautilus-share.c:1029
 msgid "Share"
 msgstr "Compartir"
 
-#: ../src/nautilus-share.c:1114
-msgid "Folder Sharing"
-msgstr "Compartición de carpetas"
-
-#: ../src/nautilus-share.c:1155
+#: ../src/nautilus-share.c:1129
 msgid "Sharing Options"
 msgstr "Opciones de compartición"
 
-#: ../src/nautilus-share.c:1156
+#: ../src/nautilus-share.c:1130
 msgid "Share this Folder"
 msgstr "Compartir esta carpeta"
 
@@ -172,28 +167,26 @@ msgstr ""
 "No se puede cambiar la ruta de una compartición existente; elimine la "
 "compartición antigua primero y añada una nueva"
 
-#: ../interfaces/share-dialog.ui.h:1
-#| msgid "Folder Sharing"
+#: ../interfaces/share-dialog.glade.in.h:1
 msgid "<big><b>Folder Sharing</b></big>"
 msgstr "<big><b>Compartición de carpetas</b></big>"
 
-#: ../interfaces/share-dialog.ui.h:2
+#: ../interfaces/share-dialog.glade.in.h:2
 msgid "Co_mment:"
 msgstr "Co_mentario:"
 
-#: ../interfaces/share-dialog.ui.h:3
+#: ../interfaces/share-dialog.glade.in.h:3
 msgid "Share _name:"
 msgstr "_Nombre compartido:"
 
-#: ../interfaces/share-dialog.ui.h:4
+#: ../interfaces/share-dialog.glade.in.h:4
 msgid "Share this _folder"
-msgstr "Compartir esta _carpeta"
+msgstr "Compartir _esta carpeta"
 
-#: ../interfaces/share-dialog.ui.h:5
-#| msgid "_Allow other people to write in this folder"
-msgid "_Allow others to create and delete files in this folder"
-msgstr "_Permitir a otros crear y borrar archivos en esta carpeta"
+#: ../interfaces/share-dialog.glade.in.h:5
+msgid "_Allow other people to write in this folder"
+msgstr "_Permitir a otras personas escribir en esta carpeta"
 
-#: ../interfaces/share-dialog.ui.h:6
+#: ../interfaces/share-dialog.glade.in.h:6
 msgid "_Guest access (for people without a user account)"
 msgstr "_Acceso invitado (para personas sin una cuenta de usuario)"
