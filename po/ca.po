@@ -1,14 +1,14 @@
 # Traducció del nautilus-share de l'equip de Softcatalà.
-# Copyright © 2008 Free Software Foundation, Inc.
+# Copyright © 2010 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus-share package.
-# Joan Duran <jodufi@gmail.com>, 2007, 2008.
+# Joan Duran <jodufi@gmail.com>, 2007-20010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-03-11 12:57+0100\n"
-"PO-Revision-Date: 2008-03-11 12:57+0100\n"
+"POT-Creation-Date: 2010-02-19 23:09+0100\n"
+"PO-Revision-Date: 2009-12-13 23:19+0100\n"
 "Last-Translator: Joan Duran <jodufi@gmail.com>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../src/nautilus-share.c:129
+#: ../src/nautilus-share.c:128
 #, c-format
 msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
@@ -25,7 +25,7 @@ msgstr ""
 "El Nautilus ha d'afegir alguns permisos a la carpeta «%s» per a poder "
 "compartir-la"
 
-#: ../src/nautilus-share.c:137
+#: ../src/nautilus-share.c:136
 #, c-format
 msgid ""
 "The folder \"%s\" needs the following extra permissions for sharing to "
@@ -38,66 +38,70 @@ msgstr ""
 "%s%s%sVoleu que el Nautilus afegeixi aquests permisos a la carpeta "
 "automàticament?"
 
-#: ../src/nautilus-share.c:141
+#: ../src/nautilus-share.c:140
 msgid "  - read permission by others\n"
 msgstr "  - permís de lectura per a altres\n"
 
-#: ../src/nautilus-share.c:142
+#: ../src/nautilus-share.c:141
 msgid "  - write permission by others\n"
 msgstr "  - permís d'escriptura per a altres\n"
 
-#: ../src/nautilus-share.c:143
+#: ../src/nautilus-share.c:142
 msgid "  - execute permission by others\n"
 msgstr "  - permís d'execució per a altres\n"
 
-#: ../src/nautilus-share.c:147
+#: ../src/nautilus-share.c:146
 msgid "Add the permissions automatically"
 msgstr "Afegeix els permisos automàticament"
 
-#: ../src/nautilus-share.c:173
+#: ../src/nautilus-share.c:172
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
 msgstr "No s'han pogut canviar els permisos de la carpeta «%s»"
 
-#: ../src/nautilus-share.c:444
+#: ../src/nautilus-share.c:451
 msgid "Share name is too long"
 msgstr "El nom del recurs compartit és massa llarg"
 
-#: ../src/nautilus-share.c:478
+#: ../src/nautilus-share.c:485
 msgid "The share name cannot be empty"
 msgstr "El nom del recurs compartit no pot ser buit"
 
-#: ../src/nautilus-share.c:491
+#: ../src/nautilus-share.c:498
 #, c-format
 msgid "Error while getting share information: %s"
 msgstr ""
 "S'ha produït un error en obtenir la informació del recurs compartit: %s"
 
-#: ../src/nautilus-share.c:501
+#: ../src/nautilus-share.c:508
 msgid "Another share has the same name"
 msgstr "Un altre recurs compartit té el mateix nom"
 
-#: ../src/nautilus-share.c:669
-msgid "There was an error while getting the sharing information"
-msgstr "S'ha produït un error en obtenir la informació del recurs compartit"
-
-#: ../src/nautilus-share.c:769
+#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:790
 msgid "Modify _Share"
 msgstr "Modifica el _recurs compartit"
 
-#: ../src/nautilus-share.c:771
+#: ../src/nautilus-share.c:555 ../src/nautilus-share.c:792
 msgid "Create _Share"
 msgstr "Crea un _recurs compartit"
 
-#: ../src/nautilus-share.c:1029
+#: ../src/nautilus-share.c:683
+msgid "There was an error while getting the sharing information"
+msgstr "S'ha produït un error en obtenir la informació del recurs compartit"
+
+#: ../src/nautilus-share.c:1054
 msgid "Share"
 msgstr "Recurs compartit"
 
-#: ../src/nautilus-share.c:1129
+#: ../src/nautilus-share.c:1114
+msgid "Folder Sharing"
+msgstr "Recursos compartits"
+
+#: ../src/nautilus-share.c:1155
 msgid "Sharing Options"
 msgstr "Opcions dels recursos compartits"
 
-#: ../src/nautilus-share.c:1130
+#: ../src/nautilus-share.c:1156
 msgid "Share this Folder"
 msgstr "Comparteix aquesta carpeta"
 
@@ -167,26 +171,26 @@ msgstr ""
 "No es pot canviar el camí d'un recurs compartit existent. Primer heu de "
 "suprimir el recurs compartit antic i després afegir el nou"
 
-#: ../interfaces/share-dialog.glade.in.h:1
+#: ../interfaces/share-dialog.ui.h:1
 msgid "<big><b>Folder Sharing</b></big>"
 msgstr "<big><b>Recursos compartits</b></big>"
 
-#: ../interfaces/share-dialog.glade.in.h:2
+#: ../interfaces/share-dialog.ui.h:2
 msgid "Co_mment:"
 msgstr "Co_mentari:"
 
-#: ../interfaces/share-dialog.glade.in.h:3
+#: ../interfaces/share-dialog.ui.h:3
 msgid "Share _name:"
 msgstr "_Nom del recurs compartit:"
 
-#: ../interfaces/share-dialog.glade.in.h:4
+#: ../interfaces/share-dialog.ui.h:4
 msgid "Share this _folder"
 msgstr "Comparteix aquesta _carpeta"
 
-#: ../interfaces/share-dialog.glade.in.h:5
-msgid "_Allow other people to write in this folder"
-msgstr "_Permet que altres persones puguin escriure en aquesta carpeta"
+#: ../interfaces/share-dialog.ui.h:5
+msgid "_Allow others to create and delete files in this folder"
+msgstr "_Permet que altres puguin crear i suprimir fitxers en aquesta carpeta"
 
-#: ../interfaces/share-dialog.glade.in.h:6
+#: ../interfaces/share-dialog.ui.h:6
 msgid "_Guest access (for people without a user account)"
 msgstr "_Accés de convidat (per a persones sense un compte d'usuari)"
