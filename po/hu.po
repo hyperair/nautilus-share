@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-15 02:22+0200\n"
+"POT-Creation-Date: 2010-04-11 01:54+0200\n"
 "PO-Revision-Date: 2009-08-15 02:24+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome at fsf dot hu>\n"
@@ -168,7 +168,8 @@ msgstr ""
 msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
-msgstr "A megosztás útvonala nem változtatható meg, először vonja vissza a megosztást"
+msgstr ""
+"A megosztás útvonala nem változtatható meg, először vonja vissza a megosztást"
 
 #: ../interfaces/share-dialog.ui.h:1
 msgid "<big><b>Folder Sharing</b></big>"
@@ -180,7 +181,7 @@ msgstr "Meg_jegyzés:"
 
 #: ../interfaces/share-dialog.ui.h:3
 msgid "Share _name:"
-msgstr "A m_egosztás neve:"
+msgstr "M_egosztás neve:"
 
 #: ../interfaces/share-dialog.ui.h:4
 msgid "Share this _folder"
@@ -193,4 +194,3 @@ msgstr "Mások létrehozhatnak fájlokat a m_appában és törölhetnek innen"
 #: ../interfaces/share-dialog.ui.h:6
 msgid "_Guest access (for people without a user account)"
 msgstr "_Vendéghozzáférés (felhasználói fiók nélküli személyeknek)"
-
