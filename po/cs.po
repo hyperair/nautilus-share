@@ -1,17 +1,18 @@
 # Czech translation of nautilus-share.
 # Copyright (C) 2008 the author(s) of nautilus-share.
 # This file is distributed under the same license as the nautilus-share package.
+#
 # Kamil Páral <ripper42@gmail.com>, 2008.
 # Lucas Lommer <llommer@svn.gnome.org>, 2008 (just corrections).
-# Marek Černocký <marek@manet.cz>, 2009.
+# Marek Černocký <marek@manet.cz>, 2009, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-share gnome-master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus-share&component=general\n"
-"POT-Creation-Date: 2009-10-11 10:16+0000\n"
-"PO-Revision-Date: 2009-10-14 12:27+0100\n"
+"POT-Creation-Date: 2010-06-24 07:53+0000\n"
+"PO-Revision-Date: 2010-06-28 23:24+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,8 +28,8 @@ msgid ""
 "Nautilus needs to add some permissions to your folder \"%s\" in order to "
 "share it"
 msgstr ""
-"Nautilus potřebuje přidat některá oprávnění k vaší složce \"%s\", aby ji "
-"mohl sdílet"
+"Nautilus potřebuje přidat některá oprávnění k vaší složce „%s“, aby ji mohl "
+"sdílet"
 
 #: ../src/nautilus-share.c:136
 #, c-format
@@ -38,7 +39,7 @@ msgid ""
 "%s%s%sDo you want Nautilus to add these permissions to the folder "
 "automatically?"
 msgstr ""
-"Složka \"%s\" potřebuje následující dodatečná oprávnění, aby sdílení "
+"Složka „%s“ potřebuje následující dodatečná oprávnění, aby sdílení "
 "fungovalo:\n"
 "%s%s%sChcete, aby Nautilus přidal tato oprávnění ke složce automaticky?"
 
@@ -61,7 +62,7 @@ msgstr "Přidat oprávnění automaticky"
 #: ../src/nautilus-share.c:172
 #, c-format
 msgid "Could not change the permissions of folder \"%s\""
-msgstr "Nemohu změnit oprávnění složky \"%s\""
+msgstr "Nelze změnit oprávnění složky „%s“"
 
 #: ../src/nautilus-share.c:451
 msgid "Share name is too long"
@@ -121,17 +122,17 @@ msgstr "%s %s %s selhal z neznámého důvodu"
 #: ../src/shares.c:154
 #, c-format
 msgid "'net usershare' returned error %d: %s"
-msgstr "'net usershare' vrátil chybu %d: %s"
+msgstr "„net usershare“ vrátil chybu %d: %s"
 
 #: ../src/shares.c:156
 #, c-format
 msgid "'net usershare' returned error %d"
-msgstr "'net usershare' vrátil chybu %d"
+msgstr "„net usershare“ vrátil chybu %d"
 
 #: ../src/shares.c:187
 #, c-format
 msgid "the output of 'net usershare' is not in valid UTF-8 encoding"
-msgstr "výstup z 'net usershare' není v platném kódování UTF-8"
+msgstr "výstup z „net usershare“ není v platném kódování UTF-8"
 
 #: ../src/shares.c:442 ../src/shares.c:615
 #, c-format
@@ -161,7 +162,7 @@ msgstr "Samba testparm vrátil chybu %d"
 #: ../src/shares.c:680
 #, c-format
 msgid "Cannot remove the share for path %s: that path is not shared"
-msgstr "Nemohu odstranit sdílení pro cestu %s: tato cesta není sdílena"
+msgstr "Nelze odstranit sdílení pro cestu %s: tato cesta není sdílena"
 
 #: ../src/shares.c:726
 #, c-format
@@ -169,7 +170,7 @@ msgid ""
 "Cannot change the path of an existing share; please remove the old share "
 "first and add a new one"
 msgstr ""
-"Nemohu změnit cestu existujícího sdílení; prosím odstraňte nejprve staré "
+"Nelze změnit cestu existujícího sdílení; prosím odstraňte nejprve staré "
 "sdílení a přidejte nové"
 
 #: ../interfaces/share-dialog.ui.h:1
