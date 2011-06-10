@@ -37,12 +37,7 @@
 
 #include <gio/gio.h>
 
-#include <gtk/gtktable.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtkhbox.h>
-#include <gtk/gtklabel.h>
 #include <gtk/gtk.h>
-#include <gtk/gtkentry.h>
 
 #include <string.h>
 #include <time.h>
