@@ -1,0 +1,66 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <!-- Project Info -->
+  <shortname>nautilus-share</shortname>
+  <created>2006-01-09</created>
+
+  <name xml:lang="en">Nautilus Share</name>
+  <shortdesc xml:lang="en">
+    Nautilus extension to share folder using Samba
+  </shortdesc>
+
+  <description xml:lang="en">
+    Nautilus Share allows you to quickly share a folder from the GNOME Nautilus
+    file manager without requiring root access.
+  </description>
+
+  <homepage rdf:resource="http://gentoo.ovibes.net/nautilus-share/" />
+  <download-page rdf:resource="" />
+  <bug-database rdf:resource="http://bugzilla.gnome.org/browse.cgi?product=nautilus-share" />
+  <license rdf:resource="http://usefulinc.com/doap/licenses/gpl" />
+
+  <!-- Current Releases -->
+  <release>
+    <Version>
+      <name>0.7.2 Release</name>
+      <branch>master</branch>
+      <created>2007-09-22</created>
+      <revision>0.7.2</revision>
+      <file-release rdf:resource="http://ftp.gnome.org/pub/GNOME/sources/nautilus-share/nautilus-share-0.7.2.tar.bz2" />
+    </Version>
+  </release>
+
+  <!-- Version Control -->
+  <repository>
+    <GitRepository>
+      <browse rdf:resource="http://git.gnome.org/cgit/nautilus-share" />
+      <location rdf:resource="git://git.gnome.org/nautilus-share" />
+    </GitRepository>
+  </repository>
+
+  <!-- Maintainers -->
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Sebastien Estienne</foaf:name>
+      <foaf:mbox rdf:resource="mailto:sebastien.estienne@gmail.com" />
+      <gnome:userid>sebest</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person><foaf:name>Federico Mena Quintero</foaf:name>
+    <foaf:mbox rdf:resource="mailto:federico@ximian.com" />
+    <gnome:userid>federico</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Chow Loong Jin</foaf:name>
+      <foaf:mbox rdf:resource="mailto:hyperair@ubuntu.com" />
+      <gnome:userid>ljchow</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
