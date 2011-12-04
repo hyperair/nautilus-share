@@ -1,6 +1,7 @@
 libnautilus_share_la_CFLAGS =				\
 	-Wall						\
 	-DG_LOG_DOMAIN=\"Nautilus-Share\"		\
+	-DINTERFACES_DIR=\"$(interfacesdir)\"		\
 	-DDATADIR=\"$(datadir)\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
@@ -8,8 +9,6 @@ libnautilus_share_la_CFLAGS =				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(NAUTILUS_CFLAGS)				\
 	$(GLIB_CFLAGS)
-
-nautilus_extensiondir=$(NAUTILUS_EXTENSION_DIR)
 
 nautilus_extension_LTLIBRARIES=libnautilus-share.la
 
